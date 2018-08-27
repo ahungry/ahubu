@@ -1,3 +1,13 @@
+function show_ob() {
+  document.getElementById('ab-ob').style.display = 'block'
+  ob.focus()
+}
+
+function hide_ob() {
+  ob.blur()
+  document.getElementById('ab-ob').style.display = 'none'
+}
+
 function do_ob_op() {
   let v = document.getElementById('ab-ob').value.trim()
 
@@ -26,11 +36,15 @@ function key_event_handler(e) {
     case 13: // Enter
       do_ob_op()
       break
+    case 27: // ESC
+      hide_ob()
+      break
   }
 }
 
 const ob = document.createElement('input')
 
+ob.style.display = 'block'
 ob.style.backgroundColor = '#af0'
 ob.style.position = 'fixed'
 ob.style.top = 0
@@ -41,4 +55,3 @@ ob.id = 'ab-ob'
 
 document.body.appendChild(ob)
 ob.addEventListener('keyup', key_event_handler)
-ob.focus()

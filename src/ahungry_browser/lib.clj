@@ -86,11 +86,13 @@
                      (when (= new-value Worker$State/SUCCEEDED)
                                         ;first remove this listener
                        (.removeListener observable this)
+                       (println "In the ChangeListener...")
+                       (execute-script webengine (slurp "js-src/omnibar.js"))
                                         ;and then redefine log and error (fresh page)
                        (bind "println" f webengine)
                        (future
                          (Thread/sleep 1000)
-                         (execute-script webengine js-disable-inputs)
+                         ;; (execute-script webengine js-disable-inputs)
                          (execute-script webengine "console.log = function(s) {println.invoke(s)};
                                                  console.error = function(s) {println.invoke(s)};
                                                  "))
@@ -121,9 +123,22 @@
     "g" "window.scrollTo(0, 0)"
     true))
 
+;; This is basically 'escape' mode -
 (defn keys-omnibar-map [key]
   (case key
-    "x" (key-map-set :default)))
+    "ESCAPE" (do
+               (println "ESC found..."))
+    ;; Default is to dispatch on the codes.
+    (let [ccodes (map int key)]
+      (println "In omnibar map with codes: ")
+      (println ccodes)
+      ;; Newline types
+      (when (or (= '(10) ccodes)        ; ret
+                (= '(13) ccodes)
+                (= '(27) ccodes)        ; escape
+                )
+        (key-map-set :default))
+      true)))
 
 (defn keys-def-map [key]
   (case key
@@ -135,13 +150,15 @@
     "r" "window.location.reload()"
     "a" "alert(1)"
     ;; "b" "confirm('you sure?')"
-    "o" (do (key-map-set :omnibar) (slurp "js-src/omnibar.js"))
+    ;; "o" (do (key-map-set :omnibar) (slurp "js-src/omnibar.js"))
+    "o" "show_ob()"
     true))
 
 (defn key-map-dispatcher []
   (case (key-map-get)
     :default keys-def-map
     :g keys-g-map
+    :omnibar keys-omnibar-map
     keys-def-map))
 
 (defn key-map-op [key]
@@ -154,6 +171,12 @@
     (when (= java.lang.String (type op))
       (execute-script webengine op))))
 
+;; ENTER (code) vs <invis> (char), we want ENTER
+;; Ideally, we want the char, since it tracks lowercase etc.
+(defn get-readable-key [code text]
+  (if (>= (count text) (count code))
+    text code))
+
 ;; https://docs.oracle.com/javafx/2/events/filters.htm
 (defn bind-keys [wv webengine]
   (doto wv
@@ -162,15 +185,15 @@
       (. KeyEvent KEY_PRESSED)
       (reify EventHandler ;; EventHandler
         (handle [this event]
-          ;; (println "Clojure keypress detected\n")
-          (println (-> event .getCode .toString))
-          (println (-> event .getText .toString))
-          ;; (.consume event)
-          ;; disable webview here, until some delay was met
-          ;; https://stackoverflow.com/questions/27038443/javafx-disable-highlight-and-copy-mode-in-webengine
-          ;; https://docs.oracle.com/javase/8/javafx/api/javafx/scene/web/WebView.html
-          (execute-script webengine js-disable-inputs)
-          (key-map-handler (-> event .getText .toString) wv webengine)
+          (let [ecode (-> event .getCode .toString)
+                etext (-> event .getText .toString)]
+            (println (get-readable-key ecode etext))
+            ;; (.consume event)
+            ;; disable webview here, until some delay was met
+            ;; https://stackoverflow.com/questions/27038443/javafx-disable-highlight-and-copy-mode-in-webengine
+            ;; https://docs.oracle.com/javase/8/javafx/api/javafx/scene/web/WebView.html
+            ;; (execute-script webengine js-disable-inputs)
+            (key-map-handler (get-readable-key ecode etext) wv webengine))
           ))))))
 
 (defn url-ignore-regexes-from-file [file]

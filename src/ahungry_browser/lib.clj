@@ -129,6 +129,8 @@
     "j" "window.scrollTo(window.scrollX, window.scrollY + 50)"
     "c" "document.body.innerHTML=''"
     "r" "window.location.reload()"
+    "a" "alert(1)"
+    ;; "b" "confirm('you sure?')"
     "o" (slurp "js-src/omnibar.js")
     true))
 
@@ -204,3 +206,9 @@
                 (proxy-super openConnection (url-or-no url protocol) proxy)))
     nil
     ))
+
+(defn show-alert [s]
+  (doto (javafx.scene.control.Dialog.)
+    (-> .getDialogPane (.setContentText s))
+    (-> .getDialogPane .getButtonTypes (.add (. javafx.scene.control.ButtonType OK)))
+    (.showAndWait)))

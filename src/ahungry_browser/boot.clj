@@ -43,6 +43,19 @@
     (doto (java.net.CookieManager.)
       java.net.CookieHandler/setDefault))
 
+  (doto webengine
+    (.setOnAlert
+     (reify javafx.event.EventHandler
+       (handle [this event]
+         (println (.getData event))
+         (show-alert (.getData event)))))
+
+    ;; (.setConfirmHandler
+    ;;  (reify javafx.event.EventHandler
+    ;;    (handle [this event]
+    ;;      (println (.getData event)))))
+    )
+
   (bind-keys webview webengine)
 
   (defonce stream-handler-factory

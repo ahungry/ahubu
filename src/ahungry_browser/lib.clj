@@ -126,8 +126,8 @@
 ;; This is basically 'escape' mode -
 (defn keys-omnibar-map [key]
   (case key
-    "ESCAPE" (do
-               (println "ESC found..."))
+    "ENTER" (key-map-set :default)
+    "ESCAPE" (key-map-set :default)
     ;; Default is to dispatch on the codes.
     (let [ccodes (map int key)]
       (println "In omnibar map with codes: ")
@@ -151,7 +151,7 @@
     "a" "alert(1)"
     ;; "b" "confirm('you sure?')"
     ;; "o" (do (key-map-set :omnibar) (slurp "js-src/omnibar.js"))
-    "o" "show_ob()"
+    "o" (do (key-map-set :omnibar) "show_ob()")
     true))
 
 (defn key-map-dispatcher []

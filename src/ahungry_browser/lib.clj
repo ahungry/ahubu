@@ -74,7 +74,7 @@
 (defmacro compile-time-slurp [file]
   (slurp file))
 
-(def js-disable-inputs (compile-time-slurp "js-src/disable-inputs.js"))
+(def js-disable-inputs (slurp "js-src/disable-inputs.js"))
 
 (defn async-load [url webengine]
   (let [
@@ -129,6 +129,7 @@
     "j" "window.scrollTo(window.scrollX, window.scrollY + 50)"
     "c" "document.body.innerHTML=''"
     "r" "window.location.reload()"
+    "o" (slurp "js-src/omnibar.js")
     false))
 
 (defn key-map-dispatcher []

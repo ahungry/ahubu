@@ -121,6 +121,10 @@
     "g" "window.scrollTo(0, 0)"
     true))
 
+(defn keys-omnibar-map [key]
+  (case key
+    "x" (key-map-set :default)))
+
 (defn keys-def-map [key]
   (case key
     "g" (key-map-set :g)
@@ -131,7 +135,7 @@
     "r" "window.location.reload()"
     "a" "alert(1)"
     ;; "b" "confirm('you sure?')"
-    "o" (slurp "js-src/omnibar.js")
+    "o" (do (key-map-set :omnibar) (slurp "js-src/omnibar.js"))
     true))
 
 (defn key-map-dispatcher []
@@ -159,7 +163,7 @@
       (reify EventHandler ;; EventHandler
         (handle [this event]
           ;; (println "Clojure keypress detected\n")
-          ;; (println (-> event .getCode .toString))
+          (println (-> event .getCode .toString))
           (println (-> event .getText .toString))
           ;; (.consume event)
           ;; disable webview here, until some delay was met

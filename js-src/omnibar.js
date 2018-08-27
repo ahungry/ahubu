@@ -21,8 +21,9 @@ function do_ob_op() {
 }
 
 function key_event_handler(e) {
-  switch (e.key) {
-    case 'Enter':
+  // For some reason, webview does not recognize 'key' prop, only keycode
+  switch (e.keyCode) {
+    case 13: // Enter
       do_ob_op()
       break
   }
@@ -32,7 +33,7 @@ const ob = document.createElement('input')
 
 ob.style.backgroundColor = '#af0'
 ob.style.position = 'fixed'
-ob.style.bottom = 0
+ob.style.top = 0
 ob.style.left = 0
 ob.style.height = '20px'
 ob.style.width = '100%'

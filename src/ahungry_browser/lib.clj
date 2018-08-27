@@ -84,8 +84,8 @@
         listener (reify ChangeListener
                    (changed [this observable old-value new-value]
                      (when (= new-value Worker$State/SUCCEEDED)
-                                        ;first remove this listener
-                       (.removeListener observable this)
+                                        ;; ;first remove this listener
+                       ;; (.removeListener observable this)
                        (println "In the ChangeListener...")
                        (execute-script webengine (slurp "js-src/omnibar.js"))
                                         ;and then redefine log and error (fresh page)
@@ -118,9 +118,9 @@
 ;; TODO: Add numeric prefixes for repeatables
 
 (defn keys-g-map [key]
-  (key-map-set :default)
   (case key
-    "g" "window.scrollTo(0, 0)"
+    "g" (do (key-map-set :default) "window.scrollTo(0, 0)")
+    "o" (key-map-set :quickmarks)
     true))
 
 ;; This is basically 'escape' mode -
@@ -154,11 +154,20 @@
     "o" (do (key-map-set :omnibar) "show_ob()")
     true))
 
+;; TODO: Build this map from file
+(defn keys-quickmarks-map [key]
+  (key-map-set :default)
+  (case key
+    "a" "window.location.assign('http://ahungry.com')"
+    "g" "window.location.assign('https://github.com/ahungry/ahungry-browser')"
+    true))
+
 (defn key-map-dispatcher []
   (case (key-map-get)
     :default keys-def-map
     :g keys-g-map
     :omnibar keys-omnibar-map
+    :quickmarks keys-quickmarks-map
     keys-def-map))
 
 (defn key-map-op [key]

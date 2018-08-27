@@ -17,7 +17,7 @@ function do_ob_op() {
   document.body.style.fontFamily = 'Iosevka, monospace'
   document.body.innerHTML = 'Loading...'
 
-  window.location = v.trim()
+  window.location.assign(v.trim())
 }
 
 function key_event_handler(e) {

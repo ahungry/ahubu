@@ -119,7 +119,7 @@
   (key-map-set :default)
   (case key
     "g" "window.scrollTo(0, 0)"
-    false))
+    true))
 
 (defn keys-def-map [key]
   (case key
@@ -130,7 +130,7 @@
     "c" "document.body.innerHTML=''"
     "r" "window.location.reload()"
     "o" (slurp "js-src/omnibar.js")
-    false))
+    true))
 
 (defn key-map-dispatcher []
   (case (key-map-get)
@@ -159,7 +159,7 @@
           ;; (println "Clojure keypress detected\n")
           ;; (println (-> event .getCode .toString))
           (println (-> event .getText .toString))
-          (.consume event)
+          ;; (.consume event)
           ;; disable webview here, until some delay was met
           ;; https://stackoverflow.com/questions/27038443/javafx-disable-highlight-and-copy-mode-in-webengine
           ;; https://docs.oracle.com/javase/8/javafx/api/javafx/scene/web/WebView.html

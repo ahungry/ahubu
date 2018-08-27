@@ -11,13 +11,7 @@
 (import javafx.concurrent.Worker$State)
 (import WebUIController)
 (import MyEventDispatcher)
-
-;; https://www.java-forums.org/javafx/93113-custom-javafx-webview-protocol-handler-print.html
-;; ;over riding URL handlers
-;; (import sun.net.www.protocol.http.Handler)
-;; (import sun.net.www.protocol.http.HttpURLConnection)
 (import sun.net.www.protocol.https.Handler)
-;; (import sun.net.www.protocol.https.HttpsURLConnectionImpl)
 (import java.net.URL)
 (import java.net.URLConnection)
 (import java.net.HttpURLConnection)

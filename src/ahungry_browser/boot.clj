@@ -58,21 +58,22 @@
     ;;      (println (.getData event)))))
     )
 
-(run-later
-     (doto webengine
-       (-> .getLoadWorker
-           .stateProperty
-           (.addListener
-            (reify ChangeListener
-              (changed [this observable old-value new-value]
-                (when (= new-value Worker$State/SUCCEEDED)
-                  ;; (.removeListener observable this)
-                  (println "In boot change listener")
-                  (execute-script webengine (slurp "js-src/omnibar.js"))
-                  )))))))
+  (run-later
+   (doto webengine
+     (-> .getLoadWorker
+         .stateProperty
+         (.addListener
+          (reify ChangeListener
+            (changed [this observable old-value new-value]
+              (when (= new-value Worker$State/SUCCEEDED)
+                ;; (.removeListener observable this)
+                (println "In boot change listener")
+                (execute-script webengine (slurp "js-src/omnibar.js"))
+                )))))))
 
   (bind-keys webview webengine)
 
+  ;; FIXME: Find out why this unbinds seemingly randomly
   (defonce stream-handler-factory
     (URL/setURLStreamHandlerFactory
      (reify URLStreamHandlerFactory

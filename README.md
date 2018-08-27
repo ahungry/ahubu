@@ -33,6 +33,28 @@ host OS drive as well).
 
 ## Installation
 
+Make sure you have a java distribution with openjfx available (on Arch
+Linux openjdk + openjfx worked out of the box.  On Ubuntu 18.04 I
+needed to do some extra work).
+
+### Java Dependencies
+
+#### Arch Linux
+
+Just install openjdk and openjfx
+
+#### Ubuntu 18.04
+
+Install this:
+
+```sh
+sudo add-apt-repository ppa:linuxuprising/java
+sudo apt update
+sudo apt install oracle-java10-installer # accept the license
+sudo apt install oracle-java10-set-default
+sudo apt install libcanberra-gtk3-dev libcanberra-gtk-module
+```
+
 Run the following (until I am distributing the uberjar to run a standalone):
 
 ```

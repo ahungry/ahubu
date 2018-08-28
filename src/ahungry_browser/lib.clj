@@ -146,6 +146,7 @@
       true)))
 
 (declare new-scene)
+(declare goto-scene)
 
 (defn keys-def-map [key]
   (case key
@@ -159,6 +160,9 @@
     ;; "b" "confirm('you sure?')"
     ;; "o" (do (key-map-set :omnibar) (slurp "js-src/omnibar.js"))
     "O" (new-scene)
+    "DIGIT1" (goto-scene 0)
+    "DIGIT2" (goto-scene 1)
+    "DIGIT3" (goto-scene 2)
     "o" (do (key-map-set :omnibar) "show_ob()")
     true))
 
@@ -272,8 +276,28 @@
      (br/add-scene scene)
 
      ;; Bind the keys
-     (let [webview (.lookup scene "#webView")]
-       (bind-keys webview (.getEngine webview)))
+     (let [webview (.lookup scene "#webView")
+           webengine (.getEngine webview)]
+       (bind-keys webview webengine)
+
+       ;; Clean up this mess
+       (doto webengine
+
+         (.setOnAlert
+          (reify javafx.event.EventHandler
+            (handle [this event]
+              (println (.getData event))
+              (show-alert (.getData event)))))
+
+         (-> .getLoadWorker
+             .stateProperty
+             (.addListener
+              (reify ChangeListener
+                (changed [this observable old-value new-value]
+                  (when (= new-value Worker$State/SUCCEEDED)
+                    ;; (.removeListener observable this)
+                    (println "In boot change listener")
+                    (execute-script webengine (slurp "js-src/omnibar.js")))))))))
 
      ;; Add it to the stage
      (doto (br/get-atomic-stage)

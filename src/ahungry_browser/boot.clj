@@ -45,12 +45,22 @@
 
   (run-later
    (doto webengine
-     (.setOnAlert
-      (reify javafx.event.EventHandler
-        (handle [this event]
-          (println (.getData event))
-          (show-alert (.getData event)))))
+     (-> .getLoadWorker
+         .stateProperty
+         (.setOnAlert
+          (reify javafx.event.EventHandler
+            (handle [this event]
+              (println (.getData event))
+              (show-alert (.getData event))))))
 
+     ;; (.setConfirmHandler
+     ;;  (reify javafx.event.EventHandler
+     ;;    (handle [this event]
+     ;;      (println (.getData event)))))
+     ))
+
+  (run-later
+   (doto webengine
      (-> .getLoadWorker
          .stateProperty
          (.addListener
@@ -60,8 +70,9 @@
                 ;; (.removeListener observable this)
                 (println "In boot change listener")
                 (execute-script webengine (slurp "js-src/omnibar.js"))
-                ))))))
+                )))))))
 
+  (run-later
    (bind-keys webview webengine))
 
   ;; FIXME: Find out why this unbinds seemingly randomly

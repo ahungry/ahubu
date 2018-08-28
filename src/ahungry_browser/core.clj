@@ -6,6 +6,7 @@
 
 (defn -main []
   (println "Starting version 0.0.0")
-  (l/async-load "http://ahungry.com" (b/boot))
+  (b/boot)
+  ;; (l/async-load "http://ahungry.com" (b/boot))
   ;; (l/inject-firebug b/webengine)
   )

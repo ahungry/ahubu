@@ -19,7 +19,7 @@
 (defn get-atomic-stage [] @atomic-stage)
 
 (def atomic-scenes (atom []))
-(defn add-scene [scene] (swap! atomic-scenes (fn [scene] (conj @atomic-scenes scene))))
+(defn add-scene [scene] (swap! atomic-scenes (fn [_] (conj @atomic-scenes scene))))
 (defn get-scene [n] (get @atomic-scenes n))
 (defn get-scenes [] @atomic-scenes)
 

@@ -270,3 +270,6 @@
      (doto (br/get-atomic-stage)
        (.setScene scene)
        (.show)))))
+
+;; Abstract the webview + webengine
+;; (-> (-> (get (ahungry-browser.browser/get-scenes) 0) (.lookup "#webView")) .getEngine)

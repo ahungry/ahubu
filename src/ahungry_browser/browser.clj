@@ -18,6 +18,11 @@
 (defn set-atomic-stage [stage] (swap! atomic-stage (fn [_] stage)))
 (defn get-atomic-stage [] @atomic-stage)
 
+(def atomic-scenes (atom []))
+(defn add-scene [scene] (swap! atomic-scenes (fn [scene] (conj @atomic-scenes scene))))
+(defn get-scene [n] (get @atomic-scenes n))
+(defn get-scenes [] @atomic-scenes)
+
 (defn -start [this stage]
   (let [
         root (FXMLLoader/load (-> "resources/WebUI.fxml" File. .toURI .toURL))
@@ -34,12 +39,19 @@
       (.setScene scene)
       (.show))))
 
+(defn goto-scene [n]
+  (run-later
+   (doto (get-atomic-stage)
+     (.setScene (get-scene n))
+     (.show))))
+
 (defn new-scene []
   (run-later
    (let [
          root (FXMLLoader/load (-> "resources/WebUI.fxml" File. .toURI .toURL))
          scene (Scene. root)
          ]
+     (add-scene scene)
      (doto (get-atomic-stage)
        (.setScene scene)
        (.show)))))

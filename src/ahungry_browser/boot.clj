@@ -43,23 +43,14 @@
     (doto (java.net.CookieManager.)
       java.net.CookieHandler/setDefault))
 
-  (doto webengine
-    (.setOnAlert
-     (reify javafx.event.EventHandler
-       (handle [this event]
-         (println (.getData event))
-         (show-alert (.getData event)))))
-
-
-
-    ;; (.setConfirmHandler
-    ;;  (reify javafx.event.EventHandler
-    ;;    (handle [this event]
-    ;;      (println (.getData event)))))
-    )
-
   (run-later
    (doto webengine
+     (.setOnAlert
+      (reify javafx.event.EventHandler
+        (handle [this event]
+          (println (.getData event))
+          (show-alert (.getData event)))))
+
      (-> .getLoadWorker
          .stateProperty
          (.addListener
@@ -69,9 +60,9 @@
                 ;; (.removeListener observable this)
                 (println "In boot change listener")
                 (execute-script webengine (slurp "js-src/omnibar.js"))
-                )))))))
+                ))))))
 
-  (bind-keys webview webengine)
+   (bind-keys webview webengine))
 
   ;; FIXME: Find out why this unbinds seemingly randomly
   (defonce stream-handler-factory

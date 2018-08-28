@@ -15,9 +15,9 @@
  :extends javafx.application.Application
  :name com.ahungry.Browser)
 
-;; (def atomic-stage (atom nil))
-;; (defn set-atomic-stage [stage] (swap! atomic-stage (fn [_] stage)))
-;; (defn get-atomic-stage [] @atomic-stage)
+(def atomic-stage (atom nil))
+(defn set-atomic-stage [stage] (swap! atomic-stage (fn [_] stage)))
+(defn get-atomic-stage [] @atomic-stage)
 
 ;; (def atomic-scenes (atom []))
 ;; (defn add-scene [scene] (swap! atomic-scenes (fn [_] (conj @atomic-scenes scene))))
@@ -34,7 +34,7 @@
                  (javafx.application.Platform/exit)
                  (System/exit 0)))
         ]
-    ;; (set-atomic-stage stage)
+    (set-atomic-stage stage)
     (doto stage
       (.setOnCloseRequest exit)
       (.setScene scene)

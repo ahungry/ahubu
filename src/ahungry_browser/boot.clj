@@ -70,7 +70,8 @@
                 (execute-script webengine (slurp "js-src/omnibar.js"))
                 )))))))
 
-  (bind-keys webview webengine)
+  (run-later
+   (bind-keys webview webengine))
 
   ;; FIXME: Find out why this unbinds seemingly randomly
   (defonce stream-handler-factory

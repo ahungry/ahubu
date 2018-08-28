@@ -145,6 +145,8 @@
         (key-map-set :default))
       true)))
 
+(declare new-scene)
+
 (defn keys-def-map [key]
   (case key
     "g" (key-map-set :g)
@@ -156,6 +158,7 @@
     "a" "alert(1)"
     ;; "b" "confirm('you sure?')"
     ;; "o" (do (key-map-set :omnibar) (slurp "js-src/omnibar.js"))
+    "O" (new-scene)
     "o" (do (key-map-set :omnibar) "show_ob()")
     true))
 
@@ -267,6 +270,12 @@
          scene (Scene. root)
          ]
      (br/add-scene scene)
+
+     ;; Bind the keys
+     (let [webview (.lookup scene "#webView")]
+       (bind-keys webview (.getEngine webview)))
+
+     ;; Add it to the stage
      (doto (br/get-atomic-stage)
        (.setScene scene)
        (.show)))))

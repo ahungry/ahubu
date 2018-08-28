@@ -31,7 +31,7 @@
 (defn boot []
   (defonce launch (future (Application/launch com.ahungry.Browser (make-array String 0))))
 
-  (defonce webengine (do
+  (def webengine (do
                        (Thread/sleep 1000)
                        WebUIController/engine
                        #_@(run-later (.getEngine (WebView.)))))

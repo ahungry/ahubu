@@ -19,10 +19,10 @@
 (defn set-atomic-stage [stage] (swap! atomic-stage (fn [_] stage)))
 (defn get-atomic-stage [] @atomic-stage)
 
-;; (def atomic-scenes (atom []))
-;; (defn add-scene [scene] (swap! atomic-scenes (fn [_] (conj @atomic-scenes scene))))
-;; (defn get-scene [n] (get @atomic-scenes n))
-;; (defn get-scenes [] @atomic-scenes)
+(def atomic-scenes (atom []))
+(defn add-scene [scene] (swap! atomic-scenes (fn [_] (conj @atomic-scenes scene))))
+(defn get-scene [n] (get @atomic-scenes n))
+(defn get-scenes [] @atomic-scenes)
 
 (defn -start [this stage]
   (let [
@@ -35,6 +35,7 @@
                  (System/exit 0)))
         ]
     (set-atomic-stage stage)
+    (add-scene scene)
     (doto stage
       (.setOnCloseRequest exit)
       (.setScene scene)

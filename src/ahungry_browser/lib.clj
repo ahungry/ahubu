@@ -20,6 +20,10 @@
 (import java.net.URLStreamHandlerFactory)
 (import java.net.URLStreamHandler)
 
+(import javafx.fxml.FXMLLoader)
+(import javafx.scene.Parent)
+(import javafx.scene.Scene)
+
 (defmacro run-later [& forms]
   `(let [
          p# (promise)

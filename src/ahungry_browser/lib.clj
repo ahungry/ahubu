@@ -1,6 +1,6 @@
 (ns ahungry-browser.lib
   (:require [clojure.string :as str]
-            [ahungry-browser.browser :as bro]))
+            [ahungry-browser.browser :as br]))
 
 (import javafx.application.Application)
 (import javafx.application.Platform)
@@ -253,3 +253,20 @@
     (-> .getDialogPane (.setContentText s))
     (-> .getDialogPane .getButtonTypes (.add (. javafx.scene.control.ButtonType OK)))
     (.showAndWait)))
+
+(defn goto-scene [n]
+  (run-later
+   (doto (br/get-atomic-stage)
+     (.setScene (br/get-scene n))
+     (.show))))
+
+(defn new-scene []
+  (run-later
+   (let [
+         root (FXMLLoader/load (-> "resources/WebUI.fxml" File. .toURI .toURL))
+         scene (Scene. root)
+         ]
+     (br/add-scene scene)
+     (doto (br/get-atomic-stage)
+       (.setScene scene)
+       (.show)))))

@@ -43,18 +43,19 @@
     (doto (java.net.CookieManager.)
       java.net.CookieHandler/setDefault))
 
-  (doto webengine
-    (.setOnAlert
-     (reify javafx.event.EventHandler
-       (handle [this event]
-         (println (.getData event))
-         (show-alert (.getData event)))))
+  (run-later
+   (doto webengine
+     (.setOnAlert
+      (reify javafx.event.EventHandler
+        (handle [this event]
+          (println (.getData event))
+          (show-alert (.getData event)))))
 
-    ;; (.setConfirmHandler
-    ;;  (reify javafx.event.EventHandler
-    ;;    (handle [this event]
-    ;;      (println (.getData event)))))
-    )
+     ;; (.setConfirmHandler
+     ;;  (reify javafx.event.EventHandler
+     ;;    (handle [this event]
+     ;;      (println (.getData event)))))
+     ))
 
   (run-later
    (doto webengine

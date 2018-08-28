@@ -1,5 +1,6 @@
 (ns ahungry-browser.lib
-  (:require [clojure.string :as str]))
+  (:require [clojure.string :as str]
+            [ahungry-browser.browser :as bro]))
 
 (import javafx.application.Application)
 (import javafx.application.Platform)

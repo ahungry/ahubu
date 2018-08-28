@@ -1,4 +1,6 @@
-(ns ahungry-browser.browser)
+(ns ahungry-browser.browser
+  (:use ahungry-browser.lib)
+  (:require [ahungry-browser.lib]))
 
 (import javafx.application.Application)
 (import javafx.fxml.FXMLLoader)
@@ -12,6 +14,10 @@
  :extends javafx.application.Application
  :name com.ahungry.Browser)
 
+(def atomic-stage (atom nil))
+(defn set-atomic-stage [stage] (swap! atomic-stage (fn [_] stage)))
+(defn get-atomic-stage [] @atomic-stage)
+
 (defn -start [this stage]
   (let [
         root (FXMLLoader/load (-> "resources/WebUI.fxml" File. .toURI .toURL))
@@ -22,7 +28,18 @@
                  (javafx.application.Platform/exit)
                  (System/exit 0)))
         ]
+    (set-atomic-stage stage)
     (doto stage
       (.setOnCloseRequest exit)
       (.setScene scene)
       (.show))))
+
+(defn new-scene []
+  (run-later
+   (let [
+         root (FXMLLoader/load (-> "resources/WebUI.fxml" File. .toURI .toURL))
+         scene (Scene. root)
+         ]
+     (doto (get-atomic-stage)
+       (.setScene scene)
+       (.show)))))

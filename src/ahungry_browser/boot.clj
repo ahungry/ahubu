@@ -43,21 +43,18 @@
     (doto (java.net.CookieManager.)
       java.net.CookieHandler/setDefault))
 
-  (run-later
-   (doto webengine
-     (-> .getLoadWorker
-         .stateProperty
-         (.setOnAlert
-          (reify javafx.event.EventHandler
-            (handle [this event]
-              (println (.getData event))
-              (show-alert (.getData event))))))
+  (doto webengine
+    (.setOnAlert
+     (reify javafx.event.EventHandler
+       (handle [this event]
+         (println (.getData event))
+         (show-alert (.getData event)))))
 
-     ;; (.setConfirmHandler
-     ;;  (reify javafx.event.EventHandler
-     ;;    (handle [this event]
-     ;;      (println (.getData event)))))
-     ))
+    ;; (.setConfirmHandler
+    ;;  (reify javafx.event.EventHandler
+    ;;    (handle [this event]
+    ;;      (println (.getData event)))))
+    )
 
   (run-later
    (doto webengine
@@ -72,8 +69,7 @@
                 (execute-script webengine (slurp "js-src/omnibar.js"))
                 )))))))
 
-  (run-later
-   (bind-keys webview webengine))
+  (bind-keys webview webengine)
 
   ;; FIXME: Find out why this unbinds seemingly randomly
   (defonce stream-handler-factory

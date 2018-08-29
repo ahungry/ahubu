@@ -55,7 +55,7 @@
 
 (def atomic-new-tab (atom false))
 (defn set-new-tab [b] (swap! atomic-new-tab (fn [_] b)))
-(defn get-new-tab [] @atomic-new-tab)
+(defn get-new-tab? [] @atomic-new-tab)
 
 (def atomic-default-url (atom "http://ahungry.com"))
 (defn set-default-url [s] (swap! atomic-default-url (fn [_] s)))
@@ -355,7 +355,7 @@
 
 (defn omnibar-load-url [url]
   (run-later
-   (if (get-new-tab)
+   (if (get-new-tab?)
      (do
        (set-default-url url)
        (new-scene)

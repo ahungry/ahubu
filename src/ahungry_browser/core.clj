@@ -1,6 +1,7 @@
 (ns ahungry-browser.core
   (:require [ahungry-browser.lib :as l]
             [ahungry-browser.boot :as b]
+            [clojure.string :as str]
             ;; [ahungry-browser.browser :as browser]
             )
   (:gen-class))

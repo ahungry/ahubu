@@ -50,6 +50,14 @@
 (defn set-scene-id [n] (swap! atomic-scene-id (fn [_] n)))
 (defn get-scene-id [] @atomic-scene-id)
 
+(def atomic-new-tab (atom false))
+(defn set-new-tab [b] (swap! atomic-new-tab (fn [_] b)))
+(defn get-new-tab [] @atomic-new-tab)
+
+(def atomic-default-url (atom "http://ahungry.com"))
+(defn set-default-url [s] (swap! atomic-default-url (fn [_] s)))
+(defn get-default-url [] @atomic-default-url)
+
 (defn get-omnibar []
   (-> (get-scene-id) get-scene (.lookup "#txtURL")))
 
@@ -222,6 +230,11 @@
     ;; "b" "confirm('you sure?')"
     ;; "o" (do (key-map-set :omnibar) (slurp "js-src/omnibar.js"))
     "O" (new-scene)
+    "t" (do
+          (set-new-tab true)
+          (key-map-set :omnibar)
+          (omnibar-start)
+          "show_ob()")
     "DIGIT1" (goto-scene 0)
     "DIGIT2" (goto-scene 1)
     "DIGIT3" (goto-scene 2)
@@ -335,7 +348,12 @@
 
 (defn omnibar-load-url [url]
   (run-later
-   (-> (get-webengine) (.load url))))
+   (if (get-new-tab)
+     (do
+       (set-default-url url)
+       (new-scene)
+       (set-new-tab false))
+     (-> (get-webengine) (.load url)))))
 
 (defn omnibar-handler [n]
   (println "In Omnibar Handler")
@@ -387,8 +405,7 @@
                     (println "In boot change listener")
                     (execute-script webengine (slurp "js-src/omnibar.js")))))))
 
-         ;; TODO: User homepage
-         (.load "http://ahungry.com")
+         (.load (get-default-url))
          ))
 
      ;; Add it to the stage

@@ -378,18 +378,28 @@
     (run-later
      (-> bufs .getChildren .clear))))
 
+(defn is-matching-buf? [s]
+  (let [omnibar (-> (get-scene-id) get-scene (.lookup "#txtURL") .getText)
+        pattern (re-pattern (str/join "" [".*" omnibar ".*"]))]
+    (re-matches pattern s)))
+
 (defn show-buffers []
   (let [scenes (get-scenes)]
     (let [bufs (-> (get-scene-id) get-scene (.lookup "#buffers"))]
       (run-later
        (-> bufs .getChildren .clear))
 
+      (run-later
+       (doto bufs
+         (-> .getChildren (.add (Label. "Buffers:")))))
+
       (map
        (fn [scene]
          (let [title (.getText (.lookup scene "#txtURL"))]
-           (run-later
-            (doto bufs
-              (-> .getChildren (.add (Label. title)) )))
+           (when (is-matching-buf? title)
+             (run-later
+              (doto bufs
+                (-> .getChildren (.add (Label. title)) ))))
            ))
        scenes))))
 

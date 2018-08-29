@@ -67,9 +67,12 @@
                  (System/exit 0)
                  ))
         ]
-    (set-atomic-stage stage)
+
     (bind-keys stage)
+    (set-atomic-stage stage)
+    ;; (set-scene-id 0)
     ;; (add-scene scene)
+    ;; (bind-keys scene)
     (doto stage
       (.setOnCloseRequest exit)
       (.setScene scene)
@@ -316,6 +319,7 @@
 
 (defn goto-scene [n]
   (run-later
+   (set-scene-id n)
    (doto (get-atomic-stage)
      (.setScene (get-scene n))
      (.show))))
@@ -328,6 +332,9 @@
          ]
 
      (add-scene scene)
+     (set-scene-id (- (count (get-scenes)) 1))
+     ;; (bind-keys scene)
+     ;; (set-scene-id (+ 1 (get-scene-id)))
 
      (println "Getting new scene, binding keys...")
 

@@ -58,7 +58,7 @@
                (handle [this event]
                  (println "Goodbye")
                  (javafx.application.Platform/exit)
-                 ;; (System/exit 0)
+                 (System/exit 0)
                  ))
         ]
     (set-atomic-stage stage)

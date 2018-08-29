@@ -212,10 +212,8 @@
 
 ;; This is basically 'escape' mode -
 (defn keys-omnibar-map [key]
-  ;; (when (get-showing-buffers?)
-  ;;   (println "I am here")
-  ;;   (filter-buffers))
-  ;; (filter-buffers)
+  (when (get-showing-buffers?)
+    (filter-buffers))
   (case key
     "ENTER" (do (omnibar-stop) "hide_ob()")
     "ESCAPE" (do (omnibar-stop) "hide_ob()")
@@ -306,7 +304,6 @@
           (let [ecode (-> event .getCode .toString)
                 etext (-> event .getText .toString)]
             (println (get-readable-key ecode etext))
-            (filter-buffers)
             ;; (.consume event)
             ;; disable webview here, until some delay was met
             ;; https://stackoverflow.com/questions/27038443/javafx-disable-highlight-and-copy-mode-in-webengine
@@ -412,7 +409,8 @@
     (println (map (fn [c]
                     (when (not (is-matching-buf? (.getText c)))
                       (run-later
-                       (.remove children c)))
+                       (.remove children c)
+                       ))
                     (println c)
                     true) children))
     (println "Done with loop?")))

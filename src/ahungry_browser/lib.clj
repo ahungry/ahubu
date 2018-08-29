@@ -394,8 +394,8 @@
 
 (defn is-matching-buf? [s]
   (let [ob-text (-> (get-omnibar) .getText)
-        pattern (re-pattern (str/join "" [".*" ob-text ".*"]))]
-    (re-matches pattern s)))
+        pattern (re-pattern (str/lower-case (str/join "" [".*" ob-text ".*"])))]
+    (re-matches pattern (str/lower-case s))))
 
 (defn get-buffer-entry-text [scene]
   (let [webview (.lookup scene "#webView")

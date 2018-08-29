@@ -39,6 +39,7 @@
 (declare hide-buffers)
 (declare show-buffers)
 (declare filter-buffers)
+(declare omnibar-load-url)
 
 (def atomic-stage (atom nil))
 (defn set-atomic-stage [stage] (swap! atomic-stage (fn [_] stage)))
@@ -212,6 +213,9 @@
   (case key
     "g" (do (key-map-set :default) "window.scrollTo(0, 0)")
     "o" (key-map-set :quickmarks)
+    "n" (do
+          (set-new-tab true)
+          (key-map-set :quickmarks))
     "T" (do (key-map-set :default) (prev-scene))
     "t" (do (key-map-set :default) (next-scene))
     true))
@@ -278,12 +282,15 @@
             "show_ob()")
     true))
 
+(defn quickmark-url [url]
+  (omnibar-load-url url))
+
 ;; TODO: Build this map from file
 (defn keys-quickmarks-map [key]
   (key-map-set :default)
   (case key
-    "a" "window.location.assign('http://ahungry.com')"
-    "g" "window.location.assign('https://github.com/ahungry/ahungry-browser')"
+    "a" (quickmark-url "http://ahungry.com")
+    "g" (quickmark-url "https://github.com/ahungry/ahungry-browser")
     true))
 
 (defn key-map-dispatcher []

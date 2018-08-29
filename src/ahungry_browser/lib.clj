@@ -38,6 +38,7 @@
 (declare goto-scene)
 (declare hide-buffers)
 (declare show-buffers)
+(declare filter-buffers)
 
 (def atomic-stage (atom nil))
 (defn set-atomic-stage [stage] (swap! atomic-stage (fn [_] stage)))
@@ -211,10 +212,10 @@
 
 ;; This is basically 'escape' mode -
 (defn keys-omnibar-map [key]
-  (println (get-showing-buffers?))
-  (when (get-showing-buffers?)
-    (println "Should be showing here...")
-    (show-buffers))
+  ;; (when (get-showing-buffers?)
+  ;;   (println "I am here")
+  ;;   (filter-buffers))
+  ;; (filter-buffers)
   (case key
     "ENTER" (do (omnibar-stop) "hide_ob()")
     "ESCAPE" (do (omnibar-stop) "hide_ob()")
@@ -305,6 +306,7 @@
           (let [ecode (-> event .getCode .toString)
                 etext (-> event .getText .toString)]
             (println (get-readable-key ecode etext))
+            (filter-buffers)
             ;; (.consume event)
             ;; disable webview here, until some delay was met
             ;; https://stackoverflow.com/questions/27038443/javafx-disable-highlight-and-copy-mode-in-webengine
@@ -393,7 +395,6 @@
 (defn is-matching-buf? [s]
   (let [ob-text (-> (get-omnibar) .getText)
         pattern (re-pattern (str/join "" [".*" ob-text ".*"]))]
-    (printf "buf match: %s vs %s\n" ob-text s)
     (re-matches pattern s)))
 
 (defn get-buffer-entry-text [scene]
@@ -403,26 +404,34 @@
         location (-> engine .getLocation)]
     (format "%s :: %s" title location)))
 
+(defn filter-buffers []
+  (let [bufs (-> (get-scene-id) get-scene (.lookup "#buffers"))
+        children (-> bufs .getChildren)]
+
+    ;; TODO: Why does this only run if we print it??
+    (println (map (fn [c]
+                    (when (not (is-matching-buf? (.getText c)))
+                      (run-later
+                       (.remove children c)))
+                    (println c)
+                    true) children))
+    (println "Done with loop?")))
+
 (defn show-buffers []
-  (println "In show-buffers")
   (let [scenes (get-scenes)]
-    (let [bufs (-> (get-scene-id) get-scene (.lookup "#buffers"))]
-      (run-later
-       (-> bufs .getChildren .clear))
 
-      (run-later
+    (run-later
+     (let [bufs (-> (get-scene-id) get-scene (.lookup "#buffers"))]
        (doto bufs
-         (-> .getChildren (.add (Label. "Buffers:")))))
+         (-> .getChildren .clear)
+         (-> .getChildren (.add (Label. "Buffers: "))))))
 
-      (map
-       (fn [scene]
-         (let [title (get-buffer-entry-text scene)]
-           (when (is-matching-buf? title)
-             (run-later
-              (doto bufs
-                (-> .getChildren (.add (Label. title)) ))))
-           ))
-       scenes))))
+    (map (fn [scene]
+           (println "Make the scene....")
+           (run-later
+            (doto (-> (get-scene-id) get-scene (.lookup "#buffers"))
+              (-> .getChildren (.add (Label. (get-buffer-entry-text scene)))))))
+         scenes)))
 
 (defn new-scene []
   (run-later

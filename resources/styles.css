@@ -1,6 +1,6 @@
 #buffers Label {
-  -fx-background-color: #039;
-  -fx-text-fill: #aaff00;
+  -fx-background-color: #aaff00;
+  -fx-text-fill: #333333;
   -fx-pref-width: 10000;
   -fx-font: 14px Iosevka, monospace;
   -fx-padding: 8px;

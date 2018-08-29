@@ -406,14 +406,14 @@
         children (-> bufs .getChildren)]
 
     ;; TODO: Why does this only run if we print it??
-    (println (map (fn [c]
-                    (when (not (is-matching-buf? (.getText c)))
-                      (run-later
-                       (.remove children c)
-                       ))
-                    (println c)
-                    true) children))
-    (println "Done with loop?")))
+    (doall
+     (map (fn [c]
+            (when (not (is-matching-buf? (.getText c)))
+              (run-later
+               (.remove children c)
+               ))
+            (println c)
+            true) children))))
 
 (defn show-buffers []
   (let [scenes (get-scenes)]

@@ -172,11 +172,16 @@
     "o" (key-map-set :quickmarks)
     true))
 
+(defn omnibar-stop []
+  (key-map-set :default)
+  (run-later
+   (-> (get-webview) (.setDisable false))))
+
 ;; This is basically 'escape' mode -
 (defn keys-omnibar-map [key]
   (case key
-    "ENTER" (key-map-set :default)
-    "ESCAPE" (key-map-set :default)
+    "ENTER" (omnibar-stop)
+    "ESCAPE" (omnibar-stop)
     ;; Default is to dispatch on the codes.
     (let [ccodes (map int key)]
       (println "In omnibar map with codes: ")
@@ -186,7 +191,7 @@
                 (= '(13) ccodes)
                 (= '(27) ccodes)        ; escape
                 )
-        (key-map-set :default))
+        (omnibar-stop))
       true)))
 
 (declare new-scene)
@@ -207,7 +212,10 @@
     "DIGIT1" (goto-scene 0)
     "DIGIT2" (goto-scene 1)
     "DIGIT3" (goto-scene 2)
-    "o" (do (key-map-set :omnibar) "show_ob()")
+    "o" (do (key-map-set :omnibar)
+            (run-later
+             (-> (get-webview) (.setDisable true)))
+            "show_ob()")
     true))
 
 ;; TODO: Build this map from file

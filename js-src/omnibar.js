@@ -53,10 +53,11 @@ ob.style.fontWeight = 'bold'
 ob.style.position = 'fixed'
 ob.style.top = 0
 ob.style.left = 0
-ob.style.height = '20px'
+ob.style.height = '100%'
 ob.style.padding = '30px'
 ob.style.width = '100%'
 ob.id = 'ab-ob'
+ob.zIndex = '99999999999999999999999999'
 
 document.body.appendChild(ob)
 ob.addEventListener('keyup', key_event_handler)

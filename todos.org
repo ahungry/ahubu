@@ -1,0 +1,3 @@
+* Bugs
+** Double free or malloc error if duckduckgo searching for
+good stuff my dude

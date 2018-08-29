@@ -34,27 +34,41 @@
         <WebView fx:id="webView" prefHeight="200.0" prefWidth="200.0" />
       </center>
       <bottom>
-        <HBox prefHeight="27.0" prefWidth="431.0">
-          <children>
-            <TextField
-                fx:id="txtURL" onAction="#goAction"
-                prefHeight="27.0" prefWidth="382.0"
-                HBox.hgrow="ALWAYS"
-                disable="true"
-                style="" />
-            <Label prefHeight="27.0"
-                   fx:id="tip"
-                   prefWidth="300"
-                   HBox.hgrow="NEVER"
-                   text="  (press 'o' to enable omnibar)  " />
-            <Button mnemonicParsing="false" onAction="#goAction"
-                    prefHeight="27.0" prefWidth="47.0"
-                    text="go"
-                    wrapText="false"
-                    HBox.hgrow="NEVER"
-                    style="" />
-          </children>
-        </HBox>
+        <StackPane>
+          <VBox prefHeight="30" prefWidth="431.0">
+            <children>
+              <VBox fx:id="buffers">
+                <Label prefHeight="20"
+                       text="I am a candidate"
+                       HBox.hgrow="ALWAYS" />
+                <Label prefHeight="20"
+                       text="I am a second candidate"
+                       HBox.hgrow="ALWAYS" />
+              </VBox>
+              <HBox prefHeight="27.0" prefWidth="431.0">
+                <children>
+                  <TextField
+                      fx:id="txtURL" onAction="#goAction"
+                      prefHeight="27.0" prefWidth="382.0"
+                      HBox.hgrow="ALWAYS"
+                      disable="true"
+                      style="" />
+                  <Label prefHeight="27.0"
+                         fx:id="tip"
+                         prefWidth="300"
+                         HBox.hgrow="NEVER"
+                         text="  (press 'o' to enable omnibar)  " />
+                  <Button mnemonicParsing="false" onAction="#goAction"
+                          prefHeight="27.0" prefWidth="47.0"
+                          text="go"
+                          wrapText="false"
+                          HBox.hgrow="NEVER"
+                          style="" />
+                </children>
+              </HBox>
+            </children>
+          </VBox>
+        </StackPane>
       </bottom>
     </BorderPane>
   </children>

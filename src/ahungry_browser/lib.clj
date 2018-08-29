@@ -36,6 +36,7 @@
 (declare bind-keys)
 (declare new-scene)
 (declare goto-scene)
+(declare hide-buffers)
 (declare show-buffers)
 
 (def atomic-stage (atom nil))
@@ -193,6 +194,7 @@
 
 (defn omnibar-stop []
   (key-map-set :default)
+  (hide-buffers)
   (run-later
    (doto (get-omnibar) (.setDisable true))
    (doto (get-webview) (.setDisable false))))
@@ -240,7 +242,9 @@
     "DIGIT1" (goto-scene 0)
     "DIGIT2" (goto-scene 1)
     "DIGIT3" (goto-scene 2)
-    "b" (do (show-buffers))
+    "b" (do (key-map-set :omnibar)
+            (omnibar-start)
+            (show-buffers))
     "o" (do (key-map-set :omnibar)
             (omnibar-start)
             "show_ob()")
@@ -368,6 +372,11 @@
                 )]
     (println query)
     (omnibar-load-url query)))
+
+(defn hide-buffers []
+  (let [bufs (-> (get-scene-id) get-scene (.lookup "#buffers"))]
+    (run-later
+     (-> bufs .getChildren .clear))))
 
 (defn show-buffers []
   (let [scenes (get-scenes)]

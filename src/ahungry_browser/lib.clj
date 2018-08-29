@@ -324,6 +324,10 @@
      (.setScene (get-scene n))
      (.show))))
 
+(defn omnibar-handler [n]
+  (println "In Omnibar Handler")
+  (println n))
+
 (defn new-scene []
   (run-later
    (let [

@@ -196,8 +196,8 @@
 ;; This is basically 'escape' mode -
 (defn keys-omnibar-map [key]
   (case key
-    "ENTER" (omnibar-stop)
-    "ESCAPE" (omnibar-stop)
+    "ENTER" (do (omnibar-stop) "hide_ob()")
+    "ESCAPE" (do (omnibar-stop) "hide_ob()")
     ;; Default is to dispatch on the codes.
     (let [ccodes (map int key)]
       (println "In omnibar map with codes: ")
@@ -207,7 +207,7 @@
                 (= '(13) ccodes)
                 (= '(27) ccodes)        ; escape
                 )
-        (omnibar-stop))
+        (do (omnibar-stop) "hide_ob()"))
       true)))
 
 (defn keys-def-map [key]
@@ -385,7 +385,11 @@
                   (when (= new-value Worker$State/SUCCEEDED)
                     ;; (.removeListener observable this)
                     (println "In boot change listener")
-                    (execute-script webengine (slurp "js-src/omnibar.js")))))))))
+                    (execute-script webengine (slurp "js-src/omnibar.js")))))))
+
+         ;; TODO: User homepage
+         (.load "http://ahungry.com")
+         ))
 
      ;; Add it to the stage
      (doto (get-atomic-stage)

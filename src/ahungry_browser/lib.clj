@@ -19,6 +19,7 @@
 (import javafx.fxml.FXMLLoader)
 (import javafx.scene.Parent)
 (import javafx.scene.Scene)
+(import javafx.scene.control.Label)
 (import javafx.scene.input.KeyEvent)
 (import javafx.scene.web.WebView)
 (import javafx.stage.Stage)
@@ -366,6 +367,25 @@
     (println query)
     (omnibar-load-url query)))
 
+(defn show-buffers []
+  (let [scenes (get-scenes)]
+    (println "SCENES WERE")
+    (println (get-scenes))
+    ;; TODO: Abstract to its own thing
+    (let [bufs (-> (get-scene-id) get-scene (.lookup "#buffers"))]
+      (run-later
+       (.removeChildren bufs))
+      (map
+       (fn [scene]
+         (let [title (.getText (.lookup scene "#txtURL"))]
+           (println "TiTLE WAS: ")
+           (println title)
+           (run-later
+            (doto bufs
+              (-> .getChildren (.add (Label. title)) )))
+           ))
+       scenes))))
+
 (defn new-scene []
   (run-later
    (let [
@@ -383,8 +403,6 @@
      ;; Bind the keys
      (let [webview (.lookup scene "#webView")
            webengine (.getEngine webview)]
-
-       ;; (bind-keys webview webengine)
 
        ;; Clean up this mess
        (doto webengine

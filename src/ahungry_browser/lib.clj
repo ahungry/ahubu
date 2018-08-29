@@ -34,10 +34,21 @@
 (defn set-atomic-stage [stage] (swap! atomic-stage (fn [_] stage)))
 (defn get-atomic-stage [] @atomic-stage)
 
+;; Each scene is basically a tab
 (def atomic-scenes (atom []))
 (defn add-scene [scene] (swap! atomic-scenes (fn [_] (conj @atomic-scenes scene))))
 (defn get-scene [n] (get @atomic-scenes n))
 (defn get-scenes [] @atomic-scenes)
+
+(def atomic-scene-id (atom 0))
+(defn set-scene-id [n] (swap! atomic-scene-id (fn [_] n)))
+(defn get-scene-id [] @atomic-scene-id)
+
+(defn get-webview []
+  (-> (get-scene-id) get-scene (.lookup "#webView")))
+
+(defn get-webengine []
+  (-> (get-webview) .getEngine))
 
 (defn -start [this stage]
   (let [
@@ -51,7 +62,7 @@
                  ))
         ]
     (set-atomic-stage stage)
-    (add-scene scene)
+    ;; (add-scene scene)
     (doto stage
       (.setOnCloseRequest exit)
       (.setScene scene)
@@ -113,8 +124,9 @@
 
 (def js-disable-inputs (slurp "js-src/disable-inputs.js"))
 
-(defn async-load [url webengine]
+(defn async-load [url]
   (let [
+        webengine (get-webengine)
         p (promise)
         f (fn [s]
             (binding [*out* *out*] (println s)))

@@ -35,7 +35,7 @@
     (doto (java.net.CookieManager.)
       java.net.CookieHandler/setDefault))
 
-(defonce stream-handler-factory
+  (defonce stream-handler-factory
     (URL/setURLStreamHandlerFactory
      (reify URLStreamHandlerFactory
        (createURLStreamHandler [this protocol] (#'my-connection-handler protocol)))))

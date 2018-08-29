@@ -7,7 +7,11 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.web.*?>
 
+
 <AnchorPane id="AnchorPane" prefHeight="371.0" prefWidth="431.0" xmlns:fx="http://javafx.com/fxml" fx:controller="WebUIController">
+  <stylesheets>
+    <String fx:value="styles.css" />
+  </stylesheets>
   <children>
     <AnchorPane id="AnchorPane" layoutX="0.0" layoutY="0.0">
       <children>
@@ -32,15 +36,23 @@
       <bottom>
         <HBox prefHeight="27.0" prefWidth="431.0">
           <children>
-            <TextField fx:id="txtURL" onAction="#goAction"
-                       prefHeight="27.0" prefWidth="382.0"
-                       HBox.hgrow="ALWAYS"
-                       style="-fx-background-color: #333; -fx-font:
-                              16px Iosevka, monospace; -fx-text-inner-color: #aaff00;" />
+            <TextField
+                fx:id="txtURL" onAction="#goAction"
+                prefHeight="27.0" prefWidth="382.0"
+                HBox.hgrow="ALWAYS"
+                disable="true"
+                style="" />
+            <Label prefHeight="27.0"
+                   fx:id="tip"
+                   prefWidth="300"
+                   HBox.hgrow="NEVER"
+                   text="  (press 'o' to enable omnibar)  " />
             <Button mnemonicParsing="false" onAction="#goAction"
-                    prefHeight="27.0" prefWidth="47.0" text="GO"
-                    wrapText="false" HBox.hgrow="NEVER" style="-fx-background-color: #aaff00; -fx-font:
-                              16px Iosevka, monospace; -fx-text-fill: black;" />
+                    prefHeight="27.0" prefWidth="47.0"
+                    text="go"
+                    wrapText="false"
+                    HBox.hgrow="NEVER"
+                    style="" />
           </children>
         </HBox>
       </bottom>

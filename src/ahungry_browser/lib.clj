@@ -61,6 +61,10 @@
 (defn set-default-url [s] (swap! atomic-default-url (fn [_] s)))
 (defn get-default-url [] @atomic-default-url)
 
+(def atomic-showing-buffers (atom false))
+(defn set-showing-buffers [b] (swap! atomic-showing-buffers (fn [_] b)))
+(defn get-showing-buffers? [] @atomic-showing-buffers)
+
 (defn get-omnibar []
   (-> (get-scene-id) get-scene (.lookup "#txtURL")))
 
@@ -207,6 +211,7 @@
 
 ;; This is basically 'escape' mode -
 (defn keys-omnibar-map [key]
+  (when (get-showing-buffers?) (show-buffers))
   (case key
     "ENTER" (do (omnibar-stop) "hide_ob()")
     "ESCAPE" (do (omnibar-stop) "hide_ob()")
@@ -243,6 +248,8 @@
     "DIGIT2" (goto-scene 1)
     "DIGIT3" (goto-scene 2)
     "b" (do (key-map-set :omnibar)
+            (run-later
+             (-> (get-omnibar) (.setText "")))
             (omnibar-start)
             (show-buffers))
     "o" (do (key-map-set :omnibar)
@@ -374,16 +381,19 @@
     (omnibar-load-url query)))
 
 (defn hide-buffers []
+  (set-showing-buffers false)
   (let [bufs (-> (get-scene-id) get-scene (.lookup "#buffers"))]
     (run-later
      (-> bufs .getChildren .clear))))
 
 (defn is-matching-buf? [s]
-  (let [omnibar (-> (get-scene-id) get-scene (.lookup "#txtURL") .getText)
-        pattern (re-pattern (str/join "" [".*" omnibar ".*"]))]
+  (let [ob-text (-> (get-omnibar) .getText)
+        pattern (re-pattern (str/join "" [".*" ob-text ".*"]))]
+    (printf "buf match: %s vs %s\n" ob-text s)
     (re-matches pattern s)))
 
 (defn show-buffers []
+  (set-showing-buffers true)
   (let [scenes (get-scenes)]
     (let [bufs (-> (get-scene-id) get-scene (.lookup "#buffers"))]
       (run-later

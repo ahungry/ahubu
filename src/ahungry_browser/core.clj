@@ -1,4 +1,5 @@
 (ns ahungry-browser.core
+  (:use ahungry-browser.lib)
   (:require [ahungry-browser.lib :as l]
             [ahungry-browser.boot :as b]
             [clojure.string :as str]

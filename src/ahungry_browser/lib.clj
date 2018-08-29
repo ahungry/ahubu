@@ -211,7 +211,10 @@
 
 ;; This is basically 'escape' mode -
 (defn keys-omnibar-map [key]
-  (when (get-showing-buffers?) (show-buffers))
+  (println (get-showing-buffers?))
+  (when (get-showing-buffers?)
+    (println "Should be showing here...")
+    (show-buffers))
   (case key
     "ENTER" (do (omnibar-stop) "hide_ob()")
     "ESCAPE" (do (omnibar-stop) "hide_ob()")
@@ -248,6 +251,7 @@
     "DIGIT2" (goto-scene 1)
     "DIGIT3" (goto-scene 2)
     "b" (do (key-map-set :omnibar)
+            (set-showing-buffers true)
             (run-later
              (-> (get-omnibar) (.setText "")))
             (omnibar-start)
@@ -392,8 +396,15 @@
     (printf "buf match: %s vs %s\n" ob-text s)
     (re-matches pattern s)))
 
+(defn get-buffer-entry-text [scene]
+  (let [webview (.lookup scene "#webView")
+        engine (-> webview .getEngine)
+        title (-> engine .getTitle)
+        location (-> engine .getLocation)]
+    (format "%s :: %s" title location)))
+
 (defn show-buffers []
-  (set-showing-buffers true)
+  (println "In show-buffers")
   (let [scenes (get-scenes)]
     (let [bufs (-> (get-scene-id) get-scene (.lookup "#buffers"))]
       (run-later
@@ -405,7 +416,7 @@
 
       (map
        (fn [scene]
-         (let [title (.getText (.lookup scene "#txtURL"))]
+         (let [title (get-buffer-entry-text scene)]
            (when (is-matching-buf? title)
              (run-later
               (doto bufs

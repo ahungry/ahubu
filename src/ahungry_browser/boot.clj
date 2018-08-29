@@ -31,52 +31,25 @@
 (defn boot []
   (defonce launch (future (Application/launch com.ahungry.Browser (make-array String 0))))
 
-  (def webengine (do
-                       (Thread/sleep 1000)
-                       WebUIController/engine
-                       #_@(run-later (.getEngine (WebView.)))))
-
-  ;; https://stackoverflow.com/questions/22778241/javafx-webview-scroll-to-desired-position
-  (def webview WebUIController/view)
-
   (defonce cookie-manager
     (doto (java.net.CookieManager.)
       java.net.CookieHandler/setDefault))
 
-  (run-later
-   (doto webengine
-     (.setOnAlert
-      (reify javafx.event.EventHandler
-        (handle [this event]
-          (println (.getData event))
-          (show-alert (.getData event)))))
-
-     ;; (.setConfirmHandler
-     ;;  (reify javafx.event.EventHandler
-     ;;    (handle [this event]
-     ;;      (println (.getData event)))))
-     ))
-
-  (run-later
-   (doto webengine
-     (-> .getLoadWorker
-         .stateProperty
-         (.addListener
-          (reify ChangeListener
-            (changed [this observable old-value new-value]
-              (when (= new-value Worker$State/SUCCEEDED)
-                ;; (.removeListener observable this)
-                (println "In boot change listener")
-                (execute-script webengine (slurp "js-src/omnibar.js"))
-                )))))))
-
-  (run-later
-   (bind-keys webview webengine))
-
-  ;; FIXME: Find out why this unbinds seemingly randomly
-  (defonce stream-handler-factory
+(defonce stream-handler-factory
     (URL/setURLStreamHandlerFactory
      (reify URLStreamHandlerFactory
-       (createURLStreamHandler [this protocol] (#'my-connection-handler protocol))
-       )))
-  webengine)
+       (createURLStreamHandler [this protocol] (#'my-connection-handler protocol)))))
+
+  ;; @launch
+  (do
+    (Thread/sleep 1000)
+    (new-scene))
+
+  ;; (do
+  ;;   ;; Delay to allow JavaFX Toolkit to boot up
+  ;;   ;; TODO: Couldn't this be done in a callback or something?
+  ;;   (Thread/sleep 100)
+  ;;   (new-scene))
+
+  ;; FIXME: Find out why this unbinds seemingly randomly
+  )

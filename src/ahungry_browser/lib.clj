@@ -305,7 +305,10 @@
          root (FXMLLoader/load (-> "resources/WebUI.fxml" File. .toURI .toURL))
          scene (Scene. root)
          ]
+
      (add-scene scene)
+
+     (println "Getting new scene, binding keys...")
 
      ;; Bind the keys
      (let [webview (.lookup scene "#webView")

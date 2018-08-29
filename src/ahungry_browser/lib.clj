@@ -285,13 +285,19 @@
 (defn quickmark-url [url]
   (omnibar-load-url url))
 
-;; TODO: Build this map from file
+(defn get-rc-file []
+  (try
+    (read-string (slurp (format "%s/.ahuburc" (System/getProperty "user.home"))))
+    (catch Throwable t
+      (println t)
+      (read-string (slurp "conf/default-rc")))))
+
 (defn keys-quickmarks-map [key]
   (key-map-set :default)
-  (case key
-    "a" (quickmark-url "http://ahungry.com")
-    "g" (quickmark-url "https://github.com/ahungry/ahungry-browser")
-    true))
+  (let [rc (:quickmarks (get-rc-file))
+        url (get rc (keyword key))]
+    (quickmark-url url))
+  true)
 
 (defn key-map-dispatcher []
   (case (key-map-get)

@@ -1,0 +1,10 @@
+;; -*- mode: clojure -*-
+
+{:quickmarks
+  {
+    :a "http://ahungry.com"
+    :b "http://example.com"
+    :g "https://github.com"
+    :2 "http://example.com"
+  }
+}

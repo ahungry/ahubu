@@ -75,6 +75,9 @@
 (defn get-webengine []
   (-> (get-webview) .getEngine))
 
+(defn get-buffers []
+  (-> (get-scene-id) get-scene (.lookup "#buffers")))
+
 (defn -start [this stage]
   (let [
         root (FXMLLoader/load (-> "resources/WebUI.fxml" File. .toURI .toURL))
@@ -162,7 +165,7 @@
         listener (reify ChangeListener
                    (changed [this observable old-value new-value]
                      (when (= new-value Worker$State/SUCCEEDED)
-                                        ;; ;first remove this listener
+                       ;; ;first remove this listener
                        ;; (.removeListener observable this)
                        (println "In the ChangeListener...")
                        (execute-script webengine (slurp "js-src/omnibar.js"))
@@ -191,15 +194,30 @@
 (defn key-map-get [] @key-map-current)
 ;; TODO: Add numeric prefixes for repeatables
 
+(defn prev-scene []
+  (let [n (get-scene-id)
+        id (- n 1)]
+    (if (< id 0)
+      (goto-scene (- (count (get-scenes)) 1))
+      (goto-scene id))))
+
+(defn next-scene []
+  (let [n (get-scene-id)
+        id (+ n 1)]
+    (if (>= id (count (get-scenes)))
+      (goto-scene 0)
+      (goto-scene id))))
+
 (defn keys-g-map [key]
   (case key
     "g" (do (key-map-set :default) "window.scrollTo(0, 0)")
     "o" (key-map-set :quickmarks)
+    "T" (do (key-map-set :default) (prev-scene))
+    "t" (do (key-map-set :default) (next-scene))
     true))
 
 (defn omnibar-stop []
   (key-map-set :default)
-  (hide-buffers)
   (run-later
    (doto (get-omnibar) (.setDisable true))
    (doto (get-webview) (.setDisable false))))
@@ -216,7 +234,7 @@
     (filter-buffers))
   (case key
     "ENTER" (do (omnibar-stop) "hide_ob()")
-    "ESCAPE" (do (omnibar-stop) "hide_ob()")
+    "ESCAPE" (do (set-showing-buffers false) (hide-buffers) (omnibar-stop) "hide_ob()")
     ;; Default is to dispatch on the codes.
     (let [ccodes (map int key)]
       (println "In omnibar map with codes: ")
@@ -357,6 +375,8 @@
     (.showAndWait)))
 
 (defn goto-scene [n]
+  (println "GOING TO SCENE")
+  (println n)
   (run-later
    (set-scene-id n)
    (doto (get-atomic-stage)
@@ -372,20 +392,34 @@
        (set-new-tab false))
      (-> (get-webengine) (.load url)))))
 
+(defn get-selected-buffer-text []
+  (let [bufs (get-buffers)
+        children (-> bufs .getChildren)
+        id 0
+        child (when children (get (vec children) id))]
+    (if child (.getText child) "")))
+
+(defn switch-to-buffer []
+  (let [s (get-selected-buffer-text)
+        maybe-id (last (re-matches #"^([0-9]).*" s))
+        id (if maybe-id (Integer/parseInt maybe-id) -1)]
+    (when (>= id 0)
+      (goto-scene id))
+    (set-showing-buffers false)
+    (hide-buffers)))
+
 (defn omnibar-handler [n]
-  (println "In Omnibar Handler")
-  (println n)
-  (let [query (cond
-                (re-matches #"^http:.*" n) n
-                (re-matches #".*\..*" n) (format "http://%s" n)
-                :else (format "https://duckduckgo.com/lite/?q=%s" n)
-                )]
-    (println query)
-    (omnibar-load-url query)))
+  (if (get-showing-buffers?) (switch-to-buffer)
+      (let [query
+            (cond
+              (re-matches #"^http:.*" n) n
+              (re-matches #".*\..*" n) (format "http://%s" n)
+              :else (format "https://duckduckgo.com/lite/?q=%s" n)
+              )]
+        (omnibar-load-url query))))
 
 (defn hide-buffers []
-  (set-showing-buffers false)
-  (let [bufs (-> (get-scene-id) get-scene (.lookup "#buffers"))]
+  (let [bufs (get-buffers)]
     (run-later
      (-> bufs .getChildren .clear))))
 
@@ -394,42 +428,45 @@
         pattern (re-pattern (str/lower-case (str/join "" [".*" ob-text ".*"])))]
     (re-matches pattern (str/lower-case s))))
 
-(defn get-buffer-entry-text [scene]
+(defn get-buffer-entry-text [scene n]
   (let [webview (.lookup scene "#webView")
         engine (-> webview .getEngine)
         title (-> engine .getTitle)
         location (-> engine .getLocation)]
-    (format "%s :: %s" title location)))
+    (format "%s :: %s :: %s" n title location)))
 
 (defn filter-buffers []
-  (let [bufs (-> (get-scene-id) get-scene (.lookup "#buffers"))
-        children (-> bufs .getChildren)]
+  (future
+    (Thread/sleep 100)
+    (let [bufs (get-buffers)
+          children (-> bufs .getChildren)]
 
-    ;; TODO: Why does this only run if we print it??
-    (doall
-     (map (fn [c]
-            (when (not (is-matching-buf? (.getText c)))
-              (run-later
-               (.remove children c)
-               ))
-            (println c)
-            true) children))))
+      (doall
+       (map
+        (fn [c]
+          (when (not (is-matching-buf? (.getText c)))
+            (run-later
+             (.remove children c)
+             )))
+        children)))))
 
 (defn show-buffers []
   (let [scenes (get-scenes)]
 
     (run-later
-     (let [bufs (-> (get-scene-id) get-scene (.lookup "#buffers"))]
+     (let [bufs (get-buffers)]
        (doto bufs
          (-> .getChildren .clear)
          (-> .getChildren (.add (Label. "Buffers: "))))))
 
-    (map (fn [scene]
-           (println "Make the scene....")
-           (run-later
-            (doto (-> (get-scene-id) get-scene (.lookup "#buffers"))
-              (-> .getChildren (.add (Label. (get-buffer-entry-text scene)))))))
-         scenes)))
+    (doall
+     (map (fn [i]
+            (let [scene (get scenes i)]
+              (println "Make the scene....")
+              (run-later
+               (doto (-> (get-scene-id) get-scene (.lookup "#buffers"))
+                 (-> .getChildren (.add (Label. (get-buffer-entry-text scene i))))))))
+          (range (count scenes))))))
 
 (defn new-scene []
   (run-later

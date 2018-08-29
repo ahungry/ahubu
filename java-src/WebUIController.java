@@ -34,9 +34,10 @@ public class WebUIController implements Initializable {
     require.invoke(Clojure.read("ahungry-browser.lib"));
 
     IFn omnibar = Clojure.var("ahungry-browser.lib", "omnibar-handler");
-    omnibar.invoke(Clojure.read(txtURL.getText()));
+    // omnibar.invoke(Clojure.read(txtURL.getText()));
+    omnibar.invoke(txtURL.getText());
 
-    webEngine.load(txtURL.getText().startsWith("http") ? txtURL.getText() : "http://" + txtURL.getText());
+    //webEngine.load(txtURL.getText().startsWith("http") ? txtURL.getText() : "http://" + txtURL.getText());
   }
 
   @Override

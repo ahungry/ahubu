@@ -50,6 +50,9 @@
 (defn set-scene-id [n] (swap! atomic-scene-id (fn [_] n)))
 (defn get-scene-id [] @atomic-scene-id)
 
+(defn get-omnibar []
+  (-> (get-scene-id) get-scene (.lookup "#txtURL")))
+
 (defn get-webview []
   (-> (get-scene-id) get-scene (.lookup "#webView")))
 
@@ -181,7 +184,14 @@
 (defn omnibar-stop []
   (key-map-set :default)
   (run-later
-   (-> (get-webview) (.setDisable false))))
+   (doto (get-omnibar) (.setDisable true))
+   (doto (get-webview) (.setDisable false))))
+
+(defn omnibar-start []
+  (key-map-set :omnibar)
+  (run-later
+   (doto (get-omnibar) (.setDisable false) (.requestFocus))
+   (doto (get-webview) (.setDisable true))))
 
 ;; This is basically 'escape' mode -
 (defn keys-omnibar-map [key]
@@ -216,8 +226,7 @@
     "DIGIT2" (goto-scene 1)
     "DIGIT3" (goto-scene 2)
     "o" (do (key-map-set :omnibar)
-            (run-later
-             (-> (get-webview) (.setDisable true)))
+            (omnibar-start)
             "show_ob()")
     true))
 
@@ -324,9 +333,20 @@
      (.setScene (get-scene n))
      (.show))))
 
+(defn omnibar-load-url [url]
+  (run-later
+   (-> (get-webengine) (.load url))))
+
 (defn omnibar-handler [n]
   (println "In Omnibar Handler")
-  (println n))
+  (println n)
+  (let [query (cond
+                (re-matches #"^http:.*" n) n
+                (re-matches #".*\..*" n) (format "http://%s" n)
+                :else (format "https://duckduckgo.com/lite/?q=%s" n)
+                )]
+    (println query)
+    (omnibar-load-url query)))
 
 (defn new-scene []
   (run-later

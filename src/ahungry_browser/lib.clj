@@ -30,6 +30,12 @@
  :extends javafx.application.Application
  :name com.ahungry.Browser)
 
+(declare keys-g-map)
+(declare keys-default)
+(declare bind-keys)
+(declare new-scene)
+(declare goto-scene)
+
 (def atomic-stage (atom nil))
 (defn set-atomic-stage [stage] (swap! atomic-stage (fn [_] stage)))
 (defn get-atomic-stage [] @atomic-stage)
@@ -62,6 +68,7 @@
                  ))
         ]
     (set-atomic-stage stage)
+    (bind-keys stage)
     ;; (add-scene scene)
     (doto stage
       (.setOnCloseRequest exit)
@@ -156,10 +163,6 @@
 (defn back [webengine]
   (execute-script webengine "window.history.back()"))
 
-(declare keys-g-map)
-(declare keys-default)
-(declare bind-keys)
-
 ;; Atomic (thread safe), pretty neat.
 (def key-map-current (atom :default))
 (defn key-map-set [which] (swap! key-map-current (fn [_] which)))
@@ -193,9 +196,6 @@
                 )
         (omnibar-stop))
       true)))
-
-(declare new-scene)
-(declare goto-scene)
 
 (defn keys-def-map [key]
   (case key
@@ -238,8 +238,9 @@
   (let [fn-map (key-map-dispatcher)]
     (fn-map key)))
 
-(defn key-map-handler [key webview webengine]
-  (let [op (key-map-op key )]
+(defn key-map-handler [key]
+  (let [op (key-map-op key )
+        webengine (get-webengine)]
     (println (format "KM OP: %s" op))
     (when (= java.lang.String (type op))
       (execute-script webengine op))))
@@ -251,8 +252,8 @@
     text code))
 
 ;; https://docs.oracle.com/javafx/2/events/filters.htm
-(defn bind-keys [wv webengine]
-  (doto wv
+(defn bind-keys [what]
+  (doto what
     (->
      (.addEventFilter
       (. KeyEvent KEY_PRESSED)
@@ -266,7 +267,7 @@
             ;; https://stackoverflow.com/questions/27038443/javafx-disable-highlight-and-copy-mode-in-webengine
             ;; https://docs.oracle.com/javase/8/javafx/api/javafx/scene/web/WebView.html
             ;; (execute-script webengine js-disable-inputs)
-            (key-map-handler (get-readable-key ecode etext) wv webengine))
+            (key-map-handler (get-readable-key ecode etext)))
           ))))))
 
 (defn url-ignore-regexes-from-file [file]
@@ -333,7 +334,8 @@
      ;; Bind the keys
      (let [webview (.lookup scene "#webView")
            webengine (.getEngine webview)]
-       (bind-keys webview webengine)
+
+       ;; (bind-keys webview webengine)
 
        ;; Clean up this mess
        (doto webengine

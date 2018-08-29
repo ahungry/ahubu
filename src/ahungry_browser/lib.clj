@@ -1,29 +1,61 @@
 (ns ahungry-browser.lib
-  (:require [clojure.string :as str]
-            [ahungry-browser.browser :as br]))
+  (:require [clojure.string :as str]))
 
-(import javafx.application.Application)
-(import javafx.application.Platform)
-(import javafx.scene.web.WebView)
-(import netscape.javascript.JSObject)
-(import javafx.beans.value.ChangeListener)
-(import javafx.event.EventHandler)
-(import javafx.scene.input.KeyEvent)
-(import javafx.concurrent.Worker$State)
-(import WebUIController)
 (import MyEventDispatcher)
-(import sun.net.www.protocol.https.Handler)
+(import WebUIController)
+(import java.io.File)
+(import java.io.File)
+(import java.net.HttpURLConnection)
+(import java.net.URL)
 (import java.net.URL)
 (import java.net.URLConnection)
-(import java.net.HttpURLConnection)
-(import javax.net.ssl.HttpsURLConnection)
-(import java.io.File)
-(import java.net.URLStreamHandlerFactory)
 (import java.net.URLStreamHandler)
-
+(import java.net.URLStreamHandlerFactory)
+(import javafx.application.Application)
+(import javafx.application.Platform)
+(import javafx.beans.value.ChangeListener)
+(import javafx.concurrent.Worker$State)
+(import javafx.event.EventHandler)
 (import javafx.fxml.FXMLLoader)
 (import javafx.scene.Parent)
 (import javafx.scene.Scene)
+(import javafx.scene.input.KeyEvent)
+(import javafx.scene.web.WebView)
+(import javafx.stage.Stage)
+(import javax.net.ssl.HttpsURLConnection)
+(import netscape.javascript.JSObject)
+(import sun.net.www.protocol.https.Handler)
+
+(gen-class
+ :extends javafx.application.Application
+ :name com.ahungry.Browser)
+
+(def atomic-stage (atom nil))
+(defn set-atomic-stage [stage] (swap! atomic-stage (fn [_] stage)))
+(defn get-atomic-stage [] @atomic-stage)
+
+(def atomic-scenes (atom []))
+(defn add-scene [scene] (swap! atomic-scenes (fn [_] (conj @atomic-scenes scene))))
+(defn get-scene [n] (get @atomic-scenes n))
+(defn get-scenes [] @atomic-scenes)
+
+(defn -start [this stage]
+  (let [
+        root (FXMLLoader/load (-> "resources/WebUI.fxml" File. .toURI .toURL))
+        scene (Scene. root)
+        exit (reify javafx.event.EventHandler
+               (handle [this event]
+                 (println "Goodbye")
+                 (javafx.application.Platform/exit)
+                 ;; (System/exit 0)
+                 ))
+        ]
+    (set-atomic-stage stage)
+    (add-scene scene)
+    (doto stage
+      (.setOnCloseRequest exit)
+      (.setScene scene)
+      (.show))))
 
 (defmacro run-later [& forms]
   `(let [
@@ -263,8 +295,8 @@
 
 (defn goto-scene [n]
   (run-later
-   (doto (br/get-atomic-stage)
-     (.setScene (br/get-scene n))
+   (doto (get-atomic-stage)
+     (.setScene (get-scene n))
      (.show))))
 
 (defn new-scene []
@@ -273,7 +305,7 @@
          root (FXMLLoader/load (-> "resources/WebUI.fxml" File. .toURI .toURL))
          scene (Scene. root)
          ]
-     (br/add-scene scene)
+     (add-scene scene)
 
      ;; Bind the keys
      (let [webview (.lookup scene "#webView")
@@ -300,7 +332,7 @@
                     (execute-script webengine (slurp "js-src/omnibar.js")))))))))
 
      ;; Add it to the stage
-     (doto (br/get-atomic-stage)
+     (doto (get-atomic-stage)
        (.setScene scene)
        (.show)))))
 

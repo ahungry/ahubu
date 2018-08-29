@@ -6,7 +6,7 @@
   :dependencies [[org.clojure/clojure "1.9.0"]]
   :java-source-paths ["java-src"]
   :main ahungry-browser.core
-  :aot [ahungry-browser.browser]
+  :aot [ahungry-browser.lib]
   :target-path "target/%s"
   :profiles {:uberjar {:aot :all}}
   :jvm-opts ["-Dfile.encoding=UTF8"])

@@ -36,6 +36,7 @@
 (declare bind-keys)
 (declare new-scene)
 (declare goto-scene)
+(declare show-buffers)
 
 (def atomic-stage (atom nil))
 (defn set-atomic-stage [stage] (swap! atomic-stage (fn [_] stage)))
@@ -239,6 +240,7 @@
     "DIGIT1" (goto-scene 0)
     "DIGIT2" (goto-scene 1)
     "DIGIT3" (goto-scene 2)
+    "b" (do (show-buffers))
     "o" (do (key-map-set :omnibar)
             (omnibar-start)
             "show_ob()")
@@ -369,17 +371,13 @@
 
 (defn show-buffers []
   (let [scenes (get-scenes)]
-    (println "SCENES WERE")
-    (println (get-scenes))
-    ;; TODO: Abstract to its own thing
     (let [bufs (-> (get-scene-id) get-scene (.lookup "#buffers"))]
       (run-later
-       (.removeChildren bufs))
+       (-> bufs .getChildren .clear))
+
       (map
        (fn [scene]
          (let [title (.getText (.lookup scene "#txtURL"))]
-           (println "TiTLE WAS: ")
-           (println title)
            (run-later
             (doto bufs
               (-> .getChildren (.add (Label. title)) )))

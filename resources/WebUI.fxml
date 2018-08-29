@@ -38,12 +38,6 @@
           <VBox prefHeight="30" prefWidth="431.0">
             <children>
               <VBox fx:id="buffers">
-                <Label prefHeight="20"
-                       text="I am a candidate"
-                       HBox.hgrow="ALWAYS" />
-                <Label prefHeight="20"
-                       text="I am a second candidate"
-                       HBox.hgrow="ALWAYS" />
               </VBox>
               <HBox prefHeight="27.0" prefWidth="431.0">
                 <children>

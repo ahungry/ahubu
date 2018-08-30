@@ -42,16 +42,20 @@ public class WebUIController implements Initializable {
 
   @Override
   public void initialize(URL url, ResourceBundle rb) {
+    // TODO: Why is this being hit twice?
+    System.out.println("INITIALIZE WAS CALLED!!!");
 
     webEngine = webView.getEngine();
     engine = webEngine;
     view = webView;
+
     webEngine.locationProperty().addListener(new ChangeListener<String>() {
         @Override
         public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
           txtURL.setText(newValue);
         }
       });
+
     txtURL.setText("http://ahungry.com");
 
     view.setOnKeyPressed(new EventHandler<KeyEvent>() {

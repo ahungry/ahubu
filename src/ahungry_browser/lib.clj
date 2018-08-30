@@ -260,6 +260,8 @@
     "c" "document.body.innerHTML=''"
     "r" "window.location.reload()"
     "a" "alert(1)"
+    "" "window.history.back()"        ; C-o
+    "	" "window.history.forward()"    ; C-i
     ;; "b" "confirm('you sure?')"
     ;; "o" (do (key-map-set :omnibar) (slurp "js-src/omnibar.js"))
     "O" (new-scene)

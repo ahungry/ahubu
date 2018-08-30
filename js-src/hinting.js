@@ -2,14 +2,14 @@
 
 const hints = 'abcdefghijklmnopqrstuvwxyz1234567890'.split('')
 
-function hint_span(c) {
+function hint_span (c) {
   return '<span class="ahubu-hint" style="display:none;font-style:none !important; font-size:16px !important; position:absolute;background:rgba(0,0,0,.7);color:#fa0;font-weight:bold;padding:4px;left:10;top:-8;font-family:Iosevka,monospace;">' + c + '</span>'
 }
 
 const hinted = false
 var hint_map = {}
 
-function hinting() {
+function hinting () {
   if (hinted) return
 
   var links = document.getElementsByTagName("a")
@@ -25,7 +25,7 @@ function hinting() {
 
 setTimeout(hinting, 100)
 
-function hinting_set(display) {
+function hinting_set (display) {
   var links = document.getElementsByClassName("ahubu-hint")
 
   for (var i = 0; i < links.length; i++) {
@@ -33,7 +33,11 @@ function hinting_set(display) {
   }
 }
 
-function find_hint(c) {
+let hint_mode = false
+
+function find_hint (c) {
+  hint_mode = false
+
   var url = hint_map[c.toLowerCase()]
   window.location.assign(url)
   /*
@@ -47,8 +51,6 @@ function find_hint(c) {
   }
   */
 }
-
-let hint_mode = false
 
 document.addEventListener('keyup', (e) => {
   if (!hint_mode) return

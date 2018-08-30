@@ -14,7 +14,7 @@ function hinting() {
   var links = document.getElementsByTagName("a")
 
   for (var i = 0; i < links.length; i++) {
-    const hint = hints[i]
+    const hint = i > hints.length ? '' : hints[i]
     links[i].innerHTML = hint_span(hint) + links[i].innerHTML
   }
 

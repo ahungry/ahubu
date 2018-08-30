@@ -240,10 +240,11 @@
    (doto (get-omnibar) (.setDisable false) (.requestFocus))
    (doto (get-webview) (.setDisable true))))
 
+;; TODO: Timing event - hinting_off should run after js link visit does
 (defn keys-hinting-map [key]
   (case key
     "ESCAPE" (do (set-tip "NORMAL") (key-map-set :default) "hinting_off()")
-    (key-map-set :default)))
+    (do (set-tip "NORMAL") (key-map-set :default) "setTimeout(hinting_off, 100)")))
 
 (defn keys-insert-map [key]
   (case key

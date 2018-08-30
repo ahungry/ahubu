@@ -21,7 +21,7 @@ function hinting() {
   hinted = true
 }
 
-setTimeout(hinting, 500)
+setTimeout(hinting, 100)
 
 function hinting_set(display) {
   var links = document.getElementsByClassName("ahubu-hint")

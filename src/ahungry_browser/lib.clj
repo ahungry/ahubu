@@ -243,7 +243,7 @@
 (defn keys-hinting-map [key]
   (case key
     "ESCAPE" (do (set-tip "NORMAL") (key-map-set :default) "hinting_off()")
-    true))
+    (key-map-set :default)))
 
 (defn keys-insert-map [key]
   (case key

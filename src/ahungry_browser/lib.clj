@@ -240,6 +240,11 @@
    (doto (get-omnibar) (.setDisable false) (.requestFocus))
    (doto (get-webview) (.setDisable true))))
 
+(defn keys-hinting-map [key]
+  (case key
+    "ESCAPE" (do (set-tip "NORMAL") (key-map-set :default) "hinting_off()")
+    true))
+
 (defn keys-insert-map [key]
   (case key
     "ESCAPE" (do (set-tip "NORMAL") (key-map-set :default))
@@ -268,7 +273,7 @@
   (case key
     "g" (key-map-set :g)
     "G" "window.scrollTo(0, window.scrollY + 5000)"
-    "f" (slurp "js-src/hinting.js")
+    "f" (do (key-map-set :hinting) (slurp "js-src/hinting.js"))
     "F12" (slurp "js-src/inject-firebug.js")
     "k" "window.scrollTo(window.scrollX, window.scrollY - 50)"
     "j" "window.scrollTo(window.scrollX, window.scrollY + 50)"
@@ -321,6 +326,7 @@
   (case (key-map-get)
     :default keys-def-map
     :g keys-g-map
+    :hinting keys-hinting-map
     :insert keys-insert-map
     :omnibar keys-omnibar-map
     :quickmarks keys-quickmarks-map

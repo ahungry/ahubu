@@ -51,7 +51,7 @@
                          fx:id="tip"
                          prefWidth="300"
                          HBox.hgrow="NEVER"
-                         text="  (press 'o' to enable omnibar)  " />
+                         text="NORMAL (press 'o' to enable omnibar)  " />
                   <Button mnemonicParsing="false" onAction="#goAction"
                           prefHeight="27.0" prefWidth="47.0"
                           text="go"

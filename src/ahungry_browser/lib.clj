@@ -41,6 +41,15 @@
 (declare filter-buffers)
 (declare omnibar-load-url)
 
+(defmacro run-later [& forms]
+  `(let [
+         p# (promise)
+         ]
+     (Platform/runLater
+      (fn []
+        (deliver p# (try ~@forms (catch Throwable t# t#)))))
+     p#))
+
 (def atomic-stage (atom nil))
 (defn set-atomic-stage [stage] (swap! atomic-stage (fn [_] stage)))
 (defn get-atomic-stage [] @atomic-stage)
@@ -79,6 +88,13 @@
 (defn get-buffers []
   (-> (get-scene-id) get-scene (.lookup "#buffers")))
 
+(defn get-tip []
+  (-> (get-scene-id) get-scene (.lookup "#tip")))
+
+(defn set-tip [s]
+  (run-later
+   (-> (get-tip) (.setText s))))
+
 (defn -start [this stage]
   (let [
         root (FXMLLoader/load (-> "resources/WebUI.fxml" File. .toURI .toURL))
@@ -100,15 +116,6 @@
       (.setOnCloseRequest exit)
       (.setScene scene)
       (.show))))
-
-(defmacro run-later [& forms]
-  `(let [
-         p# (promise)
-         ]
-     (Platform/runLater
-      (fn []
-        (deliver p# (try ~@forms (catch Throwable t# t#)))))
-     p#))
 
 (defn execute-script [w-engine s]
   (run-later
@@ -212,6 +219,7 @@
 (defn keys-g-map [key]
   (case key
     "g" (do (key-map-set :default) "window.scrollTo(0, 0)")
+    "i" (do (set-tip "INSERT") (key-map-set :insert))
     "o" (key-map-set :quickmarks)
     "n" (do
           (set-new-tab true)
@@ -231,6 +239,11 @@
   (run-later
    (doto (get-omnibar) (.setDisable false) (.requestFocus))
    (doto (get-webview) (.setDisable true))))
+
+(defn keys-insert-map [key]
+  (case key
+    "ESCAPE" (do (set-tip "NORMAL") (key-map-set :default))
+    true))
 
 ;; This is basically 'escape' mode -
 (defn keys-omnibar-map [key]
@@ -255,6 +268,8 @@
   (case key
     "g" (key-map-set :g)
     "G" "window.scrollTo(0, window.scrollY + 5000)"
+    "f" (slurp "js-src/hinting.js")
+    "F12" (slurp "js-src/inject-firebug.js")
     "k" "window.scrollTo(window.scrollX, window.scrollY - 50)"
     "j" "window.scrollTo(window.scrollX, window.scrollY + 50)"
     "c" "document.body.innerHTML=''"
@@ -282,6 +297,7 @@
     "o" (do (key-map-set :omnibar)
             (omnibar-start)
             "show_ob()")
+    ;; TODO: Hmm, if we return false, it does not seem to bubble
     true))
 
 (defn quickmark-url [url]
@@ -305,6 +321,7 @@
   (case (key-map-get)
     :default keys-def-map
     :g keys-g-map
+    :insert keys-insert-map
     :omnibar keys-omnibar-map
     :quickmarks keys-quickmarks-map
     keys-def-map))
@@ -343,6 +360,7 @@
             ;; https://docs.oracle.com/javase/8/javafx/api/javafx/scene/web/WebView.html
             ;; (execute-script webengine js-disable-inputs)
             (key-map-handler (get-readable-key ecode etext)))
+          false
           ))))))
 
 (defn url-ignore-regexes-from-file [file]

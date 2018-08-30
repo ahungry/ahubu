@@ -6,6 +6,10 @@
   -fx-padding: 8px;
 }
 
+#tip {
+  -fx-padding: 0.333333em 0.583em 0.333333em 0.583em; /* 4 7 4 7 */
+}
+
 #tip, #txtURL {
   -fx-background-color: #333;
   -fx-font: 14px Iosevka, monospace;

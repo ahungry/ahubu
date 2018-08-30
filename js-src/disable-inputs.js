@@ -1,3 +1,4 @@
+// This can disable all the inputs (to avoid eating user key commands that pass through)
 function disableForm() {
   var inputs = document.getElementsByTagName("input");
   for (var i = 0; i < inputs.length; i++) {

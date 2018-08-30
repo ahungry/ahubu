@@ -7,6 +7,7 @@ function hint_span(c) {
 }
 
 const hinted = false
+var hint_map = {}
 
 function hinting() {
   if (hinted) return
@@ -16,6 +17,7 @@ function hinting() {
   for (var i = 0; i < links.length; i++) {
     const hint = i > hints.length ? '' : hints[i]
     links[i].innerHTML = hint_span(hint) + links[i].innerHTML
+    hint_map[hint] = links[i].href
   }
 
   hinted = true
@@ -32,6 +34,9 @@ function hinting_set(display) {
 }
 
 function find_hint(c) {
+  var url = hint_map[c.toLowerCase()]
+  window.location.assign(url)
+  /*
   var links = document.getElementsByClassName("ahubu-hint")
 
   for (var i = 0; i < links.length; i++) {
@@ -40,6 +45,7 @@ function find_hint(c) {
       window.location.assign(href)
     }
   }
+  */
 }
 
 let hint_mode = false

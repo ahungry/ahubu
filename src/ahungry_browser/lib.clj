@@ -273,7 +273,7 @@
   (case key
     "g" (key-map-set :g)
     "G" "window.scrollTo(0, window.scrollY + 5000)"
-    "f" (do (key-map-set :hinting) (slurp "js-src/hinting.js"))
+    "f" (do (set-tip "HINTING") (key-map-set :hinting) "hinting_on()" )
     "F12" (slurp "js-src/inject-firebug.js")
     "k" "window.scrollTo(window.scrollX, window.scrollY - 50)"
     "j" "window.scrollTo(window.scrollX, window.scrollY + 50)"
@@ -542,6 +542,7 @@
                   (when (= new-value Worker$State/SUCCEEDED)
                     ;; (.removeListener observable this)
                     (println "In boot change listener")
+                    (execute-script webengine (slurp "js-src/hinting.js"))
                     (execute-script webengine (slurp "js-src/omnibar.js")))))))
 
          (.load (get-default-url))

@@ -1,9 +1,9 @@
-(ns ahungry-browser.core
-  (:use ahungry-browser.lib)
-  (:require [ahungry-browser.lib :as l]
-            [ahungry-browser.boot :as b]
+(ns ahubu.core
+  (:use ahubu.lib)
+  (:require [ahubu.lib :as l]
+            [ahubu.boot :as b]
             [clojure.string :as str]
-            ;; [ahungry-browser.browser :as browser]
+            ;; [ahubu.browser :as browser]
             )
   (:gen-class))
 

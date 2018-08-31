@@ -1,4 +1,4 @@
-(ns ahungry-browser.lib
+(ns ahubu.lib
   (:require [clojure.string :as str]))
 
 (import MyEventDispatcher)
@@ -583,4 +583,4 @@
        (.show)))))
 
 ;; Abstract the webview + webengine
-;; (-> (-> (get (ahungry-browser.browser/get-scenes) 0) (.lookup "#webView")) .getEngine)
+;; (-> (-> (get (ahubu.browser/get-scenes) 0) (.lookup "#webView")) .getEngine)

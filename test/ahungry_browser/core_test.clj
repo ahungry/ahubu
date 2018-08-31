@@ -1,6 +1,6 @@
-(ns ahungry-browser.core-test
+(ns ahubu.core-test
   (:require [clojure.test :refer :all]
-            [ahungry-browser.core :refer :all]))
+            [ahubu.core :refer :all]))
 
 (deftest a-test
   (testing "FIXME, I fail."

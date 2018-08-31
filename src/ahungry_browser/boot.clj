@@ -1,6 +1,6 @@
-(ns ahungry-browser.boot
-  (:use ahungry-browser.lib)
-  (:require [ahungry-browser.lib]))
+(ns ahubu.boot
+  (:use ahubu.lib)
+  (:require [ahubu.lib]))
 
 (import javafx.application.Application)
 (import javafx.application.Platform)

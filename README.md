@@ -24,12 +24,23 @@ A very customizable browser - initial keybindings are a mesh
 between Emacs and VIM, as I use Emacs with Evil bindings and that's my
 preference.
 
+The closest browsers in default keybindings would be compared to
+Firefox or Chrom(e|ium) with vimium/vimperator etc., or one of the
+niche webkit browsers such as Lisp Kit or Vimprobable2.
+
+### Why?
+
+Most the good built in keybind browsers (vimprobable2) have outdated
+web engines with little maintenance, and the new module system on
+Firefox 55+ has weak support for the level of sophistication we need
+in handling these key bindings.
+
 ## Todones and Todos
 
 Built in regex based URL filtering (dynamic content
 filtering/replacement to come).
 
-Custom interaction between the website and the ahungry-browser is
+Custom interaction between the website and the ahubu is
 possible thanks to JavaFX allowing 2 way calling (which means, in
 theory, I can set up a per-page Lisp REPL for the user to go way
 beyond standard page scraping integration some other browser add ons
@@ -79,7 +90,7 @@ Run the following (until I am distributing the uberjar to run a standalone):
 
 ```
 lein deps
-lein run -m ahungry-browser.core
+lein run -m ahubu.core
 ```
 
 (this will of course require leiningen to be installed)
@@ -88,7 +99,7 @@ lein run -m ahungry-browser.core
 
 When it exists, you would run that command below.
 
-    $ java -jar ahungry-browser-0.1.0-standalone.jar [args]
+    $ java -jar ahubu-0.1.0-standalone.jar [args]
 
 ## Options
 

@@ -31,9 +31,9 @@ public class WebUIController implements Initializable {
   @FXML
   private void goAction(ActionEvent evt) {
     IFn require = Clojure.var("clojure.core", "require");
-    require.invoke(Clojure.read("ahungry-browser.lib"));
+    require.invoke(Clojure.read("ahubu.lib"));
 
-    IFn omnibar = Clojure.var("ahungry-browser.lib", "omnibar-handler");
+    IFn omnibar = Clojure.var("ahubu.lib", "omnibar-handler");
     // omnibar.invoke(Clojure.read(txtURL.getText()));
     omnibar.invoke(txtURL.getText());
 

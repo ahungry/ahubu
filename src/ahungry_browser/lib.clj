@@ -74,7 +74,8 @@
 (defn set-new-tab [b] (swap! atomic-new-tab (fn [_] b)))
 (defn get-new-tab? [] @atomic-new-tab)
 
-(def atomic-default-url (atom "http://ahungry.com"))
+;; (def atomic-default-url (atom "http://ahungry.com"))
+(def atomic-default-url (atom (format "file://%s/docs/index.html" (System/getProperty "user.dir"))))
 (defn set-default-url [s] (swap! atomic-default-url (fn [_] s)))
 (defn get-default-url [] @atomic-default-url)
 
@@ -299,7 +300,7 @@
 (defn keys-hinting-map [key]
   (case key
     "ESCAPE" (do (set-tip "NORMAL") (key-map-set :default) "hinting_off()")
-    (do (set-tip "NORMAL") (key-map-set :default) "setTimeout(hinting_off, 100)")))
+    (do (set-tip "NORMAL") (key-map-set :default) "setTimeout(hinting_off, 500)")))
 
 (defn keys-insert-map [key]
   (case key
@@ -478,6 +479,7 @@
   (if (get-showing-buffers?) (switch-to-buffer)
       (let [query
             (cond
+              (re-matches #"^file:.*" n) n
               (re-matches #"^http:.*" n) n
               (re-matches #".*\..*" n) (format "http://%s" n)
               :else (format "https://duckduckgo.com/lite/?q=%s" n)

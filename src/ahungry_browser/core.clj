@@ -12,6 +12,8 @@
   (b/boot)
   (do
     (Thread/sleep 100)
-    (l/async-load "http://ahungry.com"))
+    (l/async-load (l/get-default-url))
+    ;; (l/async-load "http://ahungry.com")
+    )
   ;; (l/inject-firebug b/webengine)
   )

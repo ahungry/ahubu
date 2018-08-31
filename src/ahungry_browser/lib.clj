@@ -42,6 +42,11 @@
 (declare filter-buffers)
 (declare omnibar-load-url)
 
+(defmacro compile-time-slurp [file]
+  (slurp file))
+
+(def js-bundle (slurp "js-src/bundle.js"))
+
 (defmacro run-later [& forms]
   `(let [
          p# (promise)
@@ -215,11 +220,6 @@
 (defn clear-cookies [cookie-manager]
   (-> cookie-manager .getCookieStore .removeAll))
 
-(defmacro compile-time-slurp [file]
-  (slurp file))
-
-(def js-disable-inputs (slurp "js-src/disable-inputs.js"))
-
 (defn async-load [url]
   (let [
         webengine (get-webengine)
@@ -232,7 +232,7 @@
                        ;; ;first remove this listener
                        ;; (.removeListener observable this)
                        (println "In the ChangeListener...")
-                       (execute-script webengine (slurp "js-src/omnibar.js"))
+                       (execute-script webengine js-bundle)
                                         ;and then redefine log and error (fresh page)
                        (bind "println" f webengine)
                        (future
@@ -275,7 +275,7 @@
 (defn keys-g-map [key]
   (case key
     "g" (do (key-map-set :default) "window.scrollTo(0, 0)")
-    "i" (do (set-tip "INSERT") (key-map-set :insert) "enable_form()")
+    "i" (do (set-tip "INSERT") (key-map-set :insert) "Form.enable()")
     "o" (key-map-set :quickmarks)
     "n" (do
           (set-new-tab true)
@@ -296,15 +296,15 @@
    (doto (get-omnibar) (.setDisable false) (.requestFocus))
    (doto (get-webview) (.setDisable true))))
 
-;; TODO: Timing event - hinting_off should run after js link visit does
+;; TODO: Timing event - Hinting.off should run after js link visit does
 (defn keys-hinting-map [key]
   (case key
-    "ESCAPE" (do (set-tip "NORMAL") (key-map-set :default) "hide_ob(); hinting_off(); ")
-    (do (set-tip "NORMAL") (key-map-set :default) "hide_ob(); setTimeout(hinting_off, 500)")))
+    "ESCAPE" (do (set-tip "NORMAL") (key-map-set :default) "Overlay.hide(); Hinting.off(); ")
+    (do (set-tip "NORMAL") (key-map-set :default) "Overlay.hide(); setTimeout(Hinting.off, 500)")))
 
 (defn keys-insert-map [key]
   (case key
-    "ESCAPE" (do (set-tip "NORMAL") (key-map-set :default) "disable_form()")
+    "ESCAPE" (do (set-tip "NORMAL") (key-map-set :default) "Form.disable()")
     true))
 
 ;; This is basically 'escape' mode -
@@ -312,8 +312,8 @@
   (when (get-showing-buffers?)
     (filter-buffers))
   (case key
-    "ENTER" (do (omnibar-stop) (set-tip "NORMAL") "hide_ob()")
-    "ESCAPE" (do (set-showing-buffers false) (hide-buffers) (omnibar-stop) (set-tip "NORMAL") "hide_ob()")
+    "ENTER" (do (omnibar-stop) (set-tip "NORMAL") "Overlay.hide()")
+    "ESCAPE" (do (set-showing-buffers false) (hide-buffers) (omnibar-stop) (set-tip "NORMAL") "Overlay.hide()")
     ;; Default is to dispatch on the codes.
     (let [ccodes (map int key)]
       (println "In omnibar map with codes: ")
@@ -323,7 +323,7 @@
                 (= '(13) ccodes)
                 (= '(27) ccodes)        ; escape
                 )
-        (do (omnibar-stop) (set-tip "NORMAL") "hide_ob()"))
+        (do (omnibar-stop) (set-tip "NORMAL") "Overlay.hide()"))
       true)))
 
 (defn keys-def-map [key]
@@ -331,7 +331,7 @@
     "g" (key-map-set :g)
     "d" (delete-current-scene)
     "G" "window.scrollTo(0, window.scrollY + 5000)"
-    "f" (do (set-tip "HINTING") (key-map-set :hinting) "hinting_on(); show_ob()" )
+    "f" (do (set-tip "HINTING") (key-map-set :hinting) "Hinting.on(); Overlay.show()" )
     "F12" (slurp "js-src/inject-firebug.js")
     "k" "window.scrollTo(window.scrollX, window.scrollY - 50)"
     "j" "window.scrollTo(window.scrollX, window.scrollY + 50)"
@@ -347,7 +347,7 @@
           (set-new-tab true)
           (key-map-set :omnibar)
           (omnibar-start)
-          "show_ob()")
+          "Overlay.show()")
     "DIGIT1" (goto-scene 0)
     "DIGIT2" (goto-scene 1)
     "DIGIT3" (goto-scene 2)
@@ -358,11 +358,11 @@
              (-> (get-omnibar) (.setText "")))
             (omnibar-start)
             (show-buffers)
-            "show_ob()")
+            "Overlay.show()")
     "o" (do (key-map-set :omnibar)
             (set-tip "OMNI")
             (omnibar-start)
-            "show_ob()")
+            "Overlay.show()")
     ;; TODO: Hmm, if we return false, it does not seem to bubble
     true))
 
@@ -572,9 +572,7 @@
                   (when (= new-value Worker$State/SUCCEEDED)
                     ;; (.removeListener observable this)
                     (println "In boot change listener")
-                    (execute-script webengine (slurp "js-src/disable-inputs.js"))
-                    (execute-script webengine (slurp "js-src/hinting.js"))
-                    (execute-script webengine (slurp "js-src/omnibar.js")))))))
+                    (execute-script webengine js-bundle))))))
 
          (.load (get-default-url))
          ))

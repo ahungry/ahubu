@@ -1,0 +1,17 @@
+* AHUBU Helps Users Be Utilitarian
+Welcome to AHUBU, the best web browser around.
+** Getting started / key binds
+To move around the page, try the j/k keys for scrolling.
+
+Press 'f' for link hinting.
+
+Type 'o' to pop open the buffer prompt to enter a new URL or search
+term.
+
+Press 't' to do the same, but in a new tab.
+
+Use 'gt' and 'gT' to cycle through tabs (or just push 1 - 9 to hop to
+the aforementioned tab).
+
+Press 'b' to view a list of your open buffers (tabs) and type some
+partial match on the URL or title to filter your results to that match.

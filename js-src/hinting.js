@@ -1,55 +1,55 @@
 // This will control the hinting on page
-
+var hint_map = {}
+var hint_mode = false
 var hints = 'abcdefghijklmnopqrstuvwxyz1234567890'.split('')
 
 function hint_span (c) {
-  return '<span class="ahubu-hint" style="display:none;font-style:none !important; font-size:16px !important; position:absolute;background:rgba(0,0,0,.7);color:#fa0;font-weight:bold;padding:4px;left:10;top:-8;font-family:Iosevka,monospace;">' + c + '</span>'
+  return '<span class="ahubu-hint" style="display:block;font-style:none !important; font-size:16px !important; position:absolute;background:rgba(0,0,0,.7);color:#fa0;font-weight:bold;padding:4px;left:0;top:0;font-family:Iosevka,monospace;">' + c + '</span>'
 }
 
-var hinted = false
-var hint_map = {}
+function get_hint (c, href, parent) {
+  var h = document.createElement('button')
 
-function hinting () {
-  if (hinted) return
+  h.style.backgroundColor = '#000'
+  h.style.color = '#af0'
+  h.innerHTML = c
 
-  var links = document.getElementsByTagName("a")
+  return { el: h, href, parent }
+}
+
+function hinting_on () {
+  hint_map = {}
+  var links = document.getElementsByTagName('a')
 
   for (var i = 0; i < links.length; i++) {
     var hint = i > hints.length ? '' : hints[i]
-    links[i].innerHTML = hint_span(hint) + links[i].innerHTML
-    hint_map[hint] = links[i].href
+    var href = links[i].href
+    var parent = links[i].parentNode
+
+    var h = get_hint(hint, href, parent)
+    parent.appendChild(h.el)
+
+    hint_map[hint] = h
   }
 
-  hinted = true
+  setTimeout(() => { hint_mode = true }, 200)
 }
 
-setTimeout(hinting, 100)
+function hinting_off (display) {
+  Object.keys(hint_map).map((k) => {
+    hint_map[k].el.remove()
+  })
 
-function hinting_set (display) {
-  var links = document.getElementsByClassName("ahubu-hint")
-
-  for (var i = 0; i < links.length; i++) {
-    links[i].style.display = display
-  }
+  hint_mode = false
 }
-
-var hint_mode = false
 
 function find_hint (c) {
   hint_mode = false
 
-  var url = hint_map[c.toLowerCase()]
+  var url = hint_map[c.toLowerCase()].href
   window.location.assign(url)
-  /*
-  var links = document.getElementsByClassName("ahubu-hint")
 
-  for (var i = 0; i < links.length; i++) {
-    if (links[i].innerHTML.toLowerCase() === c.toLowerCase()) {
-      var href = links[i].parentNode  //.getElementsByTagName('a')//[0].href
-      window.location.assign(href)
-    }
-  }
-  */
+  hinting_off()
 }
 
 document.addEventListener('keyup', (e) => {
@@ -57,14 +57,3 @@ document.addEventListener('keyup', (e) => {
 
   find_hint(String.fromCharCode(e.keyCode))
 })
-
-var hinting_on = () => {
-  hinting_set('initial')
-  hint_mode = true
-  setTimeout(() => { hint_mode = true }, 10)
-}
-
-var hinting_off = () => {
-  hinting_set('none')
-  hint_mode = false
-}

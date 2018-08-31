@@ -3,7 +3,7 @@ var hint_map = {}
 var hint_mode = false
 var hints = 'abcdefghijklmnopqrstuvwxyz1234567890'.split('')
 
-function get_hint (c, href, parent) {
+function get_hint (c) {
   var h = document.createElement('div')
 
   h.style.backgroundColor = 'rgba(0,0,0,.6)'
@@ -18,7 +18,7 @@ function get_hint (c, href, parent) {
   h.style.zIndex = '999999999999999999999999999999999999999999999'
   h.innerHTML = c
 
-  return { el: h, href, parent }
+  return h
 }
 
 function hinting_on () {
@@ -27,15 +27,14 @@ function hinting_on () {
 
   for (var i = 0; i < links.length; i++) {
     var hint = i > hints.length ? '' : hints[i]
-    var href = links[i].href
     var parent = links[i]
 
     // This could maybe break some floating links or something...
     // TODO: Maybe check existing position setting is not absolute first.
     parent.style.position = 'relative'
 
-    var h = get_hint(hint, href, parent)
-    parent.appendChild(h.el)
+    var h = get_hint(hint)
+    parent.appendChild(h)
 
     hint_map[hint] = h
   }
@@ -45,19 +44,39 @@ function hinting_on () {
 
 function hinting_off (display) {
   Object.keys(hint_map).map((k) => {
-    hint_map[k].el.remove()
+    hint_map[k].remove()
   })
 
   hint_mode = false
 }
 
-function find_hint (c) {
+// Simulate an event
+function eventFire (el, etype) {
+  if (el.fireEvent) {
+    el.fireEvent('on' + etype)
+  } else {
+    var evObj = document.createEvent('Events')
+    evObj.initEvent(etype, true, false)
+    el.dispatchEvent(evObj)
+  }
+}
+
+function find_hint (c, retries = 0) {
   hint_mode = false
 
-  var url = hint_map[c.toLowerCase()].href
-  window.location.assign(url)
+  var el = hint_map[c.toLowerCase()]
 
-  hinting_off()
+  if (undefined === el && retries < 2) {
+    hinting_off()
+    hinting_on()
+
+    return find_hint(c, ++retries)
+  }
+
+  eventFire(el, 'click')
+  setTimeout(() => {
+    hinting_off()
+  }, 50)
 }
 
 document.addEventListener('keyup', (e) => {

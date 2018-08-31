@@ -1,6 +1,26 @@
-# ahungry-browser
+# AHUBU (ahungry-browser)
 
-A very customizable browser - initial keybindings will be a mesh
+![ahubu](https://github.com/ahungry/ahubu/blob/master/ahubu.png)
+
+## AHUBU Helps Users Be Utilitarian
+
+A doctrine that the useful is the good and that the determining
+consideration of right conduct should be the usefulness of its
+consequences; specifically : a theory that the aim of action should be
+the largest possible balance of pleasure over pain or the greatest
+happiness of the greatest number .
+
+> Stinson notes that many computer scientists have an implicit
+> orientation to utilitarianism, an ethical theory that aims to maximize
+> happiness for the greatest number by adding up each action’s costs and
+> benefits.
+> —
+> molly driscoll, The Christian Science Monitor, "‘2001: A Space
+> Odyssey’ turns 50: Why HAL endures," 3 Apr. 2018
+
+## What is it?
+
+A very customizable browser - initial keybindings are a mesh
 between Emacs and VIM, as I use Emacs with Evil bindings and that's my
 preference.
 

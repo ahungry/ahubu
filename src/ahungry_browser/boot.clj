@@ -35,7 +35,12 @@
     (doto (java.net.CookieManager.)
       java.net.CookieHandler/setDefault))
 
-  (quietly-set-stream-factory)
+  ;; Call this infinitely so it just always keeps setting it
+  (future
+    (while true
+      (do
+        (quietly-set-stream-factory)
+        (Thread/sleep 500))))
 
   ;; @launch
   (do

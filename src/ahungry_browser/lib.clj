@@ -274,7 +274,7 @@
 (defn keys-g-map [key]
   (case key
     "g" (do (key-map-set :default) "window.scrollTo(0, 0)")
-    "i" (do (set-tip "INSERT") (key-map-set :insert))
+    "i" (do (set-tip "INSERT") (key-map-set :insert) "enable_form()")
     "o" (key-map-set :quickmarks)
     "n" (do
           (set-new-tab true)
@@ -303,7 +303,7 @@
 
 (defn keys-insert-map [key]
   (case key
-    "ESCAPE" (do (set-tip "NORMAL") (key-map-set :default))
+    "ESCAPE" (do (set-tip "NORMAL") (key-map-set :default) "disable_form()")
     true))
 
 ;; This is basically 'escape' mode -
@@ -414,9 +414,6 @@
       (. KeyEvent KEY_PRESSED)
       (reify EventHandler ;; EventHandler
         (handle [this event]
-          ;; TODO: Do we need this here?
-          ;; Rebinding it on each key press does ensure it doesn't drop off the main thread.
-          (quietly-set-stream-factory)
           (let [ecode (-> event .getCode .toString)
                 etext (-> event .getText .toString)]
             (println (get-readable-key ecode etext))
@@ -570,6 +567,7 @@
                   (when (= new-value Worker$State/SUCCEEDED)
                     ;; (.removeListener observable this)
                     (println "In boot change listener")
+                    (execute-script webengine (slurp "js-src/disable-inputs.js"))
                     (execute-script webengine (slurp "js-src/hinting.js"))
                     (execute-script webengine (slurp "js-src/omnibar.js")))))))
 

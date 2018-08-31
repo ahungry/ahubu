@@ -1,3 +1,8 @@
+#+BEGIN_EXPORT html
+<link type="text/css" rel="stylesheet" href="./main.css"></link>
+<img src="../ahubu.png" />
+#+END_EXPORT
+
 * AHUBU Helps Users Be Utilitarian
 Welcome to AHUBU, the best web browser around.
 ** Getting started / key binds

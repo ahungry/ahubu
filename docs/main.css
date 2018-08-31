@@ -1,0 +1,70 @@
+@charset "UTF-8";
+
+html {
+    background:#fff;
+    color:#333;
+    font-family: 'Iosevka', 'Myriad Pro', Calibri, Helvetica, Arial, sans-serif;
+    max-width: 60%;
+    margin:auto;
+    padding:0% 5% 0% 5%;
+}
+
+ul li {
+    display:list;
+    font-size:.95em;
+    margin-bottom:10px;
+    margin-top:10px;
+}
+h2 {
+    background: #ffdd33;
+    border-bottom: 4px solid #ddbb11;
+    font-family:serif;
+    font-style:italic;
+    font-weight:normal;
+    margin-top:40px;
+    padding:10px;
+}
+a {
+    background: #ddff99;
+    border-bottom:1px solid #ddd;
+    border-top:2px solid #ddd;
+    box-shadow:0px 1px 1px #000;
+    color:navy;
+    display:inline-block;
+    font-size:.95em;
+    font-style:italic;
+    font-weight:normal;
+    margin-bottom:0px;
+    padding:4px;
+    padding-bottom:1px;
+    padding-top:1px;
+    text-decoration:none;
+}
+a:hover {
+    background:#ddd;
+    color:maroon;
+    text-decoration:underline;
+}
+.src {
+    background:#111;
+    border:1px solid #999;
+    border-radius:3px;
+    color:#eee;
+    overflow-y:scroll;
+    padding:10px;
+}
+
+img {
+    max-width: 100%;
+}
+
+/* If width is less than 600 do this stuff */
+@media (max-width: 600px)
+{
+    .cyborg {
+        display:none;
+    }
+    img {
+        max-width: 100%;
+    }
+}

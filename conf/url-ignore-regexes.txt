@@ -1,3 +1,2 @@
 .*analytics.*
-.*\.css$
 .*pagead.*

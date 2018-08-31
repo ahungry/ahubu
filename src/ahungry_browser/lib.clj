@@ -31,6 +31,7 @@
  :extends javafx.application.Application
  :name com.ahungry.Browser)
 
+(declare delete-current-scene)
 (declare keys-g-map)
 (declare keys-default)
 (declare bind-keys)
@@ -59,6 +60,11 @@
 (defn add-scene [scene] (swap! atomic-scenes (fn [_] (conj @atomic-scenes scene))))
 (defn get-scene [n] (get @atomic-scenes n))
 (defn get-scenes [] @atomic-scenes)
+(defn delete-nth-scene [scenes n]
+  (into []
+        (concat (subvec scenes 0 n)
+                (subvec scenes (+ 1 n) (count scenes)))))
+(defn del-scene [n] (swap! atomic-scenes delete-nth-scene n))
 
 (def atomic-scene-id (atom 0))
 (defn set-scene-id [n] (swap! atomic-scene-id (fn [_] n)))
@@ -322,6 +328,7 @@
 (defn keys-def-map [key]
   (case key
     "g" (key-map-set :g)
+    "d" (delete-current-scene)
     "G" "window.scrollTo(0, window.scrollY + 5000)"
     "f" (do (set-tip "HINTING") (key-map-set :hinting) "hinting_on()" )
     "F12" (slurp "js-src/inject-firebug.js")
@@ -436,6 +443,12 @@
    (doto (get-atomic-stage)
      (.setScene (get-scene n))
      (.show))))
+
+(defn delete-current-scene []
+  (let [n (get-scene-id)]
+    (when (> n 0)
+      (goto-scene (- n 1))
+      (del-scene n))))
 
 (defn omnibar-load-url [url]
   (run-later

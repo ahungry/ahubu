@@ -3,15 +3,18 @@ var hint_map = {}
 var hint_mode = false
 var hints = 'abcdefghijklmnopqrstuvwxyz1234567890'.split('')
 
-function hint_span (c) {
-  return '<span class="ahubu-hint" style="display:block;font-style:none !important; font-size:16px !important; position:absolute;background:rgba(0,0,0,.7);color:#fa0;font-weight:bold;padding:4px;left:0;top:0;font-family:Iosevka,monospace;">' + c + '</span>'
-}
-
 function get_hint (c, href, parent) {
-  var h = document.createElement('button')
+  var h = document.createElement('div')
 
-  h.style.backgroundColor = '#000'
+  h.style.backgroundColor = 'rgba(0,0,0,.6)'
+  h.style.fontFamily = 'Iosevka, monospace'
+  h.style.fontWeight = 'bold'
+  h.style.padding = '3px'
+  h.style.borderRadius = '3px'
   h.style.color = '#af0'
+  h.style.position = 'absolute'
+  h.style.left = '0'
+  h.style.top = '0'
   h.innerHTML = c
 
   return { el: h, href, parent }
@@ -24,7 +27,11 @@ function hinting_on () {
   for (var i = 0; i < links.length; i++) {
     var hint = i > hints.length ? '' : hints[i]
     var href = links[i].href
-    var parent = links[i].parentNode
+    var parent = links[i]
+
+    // This could maybe break some floating links or something...
+    // TODO: Maybe check existing position setting is not absolute first.
+    parent.style.position = 'relative'
 
     var h = get_hint(hint, href, parent)
     parent.appendChild(h.el)

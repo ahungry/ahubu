@@ -311,8 +311,8 @@
   (when (get-showing-buffers?)
     (filter-buffers))
   (case key
-    "ENTER" (do (omnibar-stop) "hide_ob()")
-    "ESCAPE" (do (set-showing-buffers false) (hide-buffers) (omnibar-stop) "hide_ob()")
+    "ENTER" (do (omnibar-stop) (set-tip "NORMAL") "hide_ob()")
+    "ESCAPE" (do (set-showing-buffers false) (hide-buffers) (omnibar-stop) (set-tip "NORMAL") "hide_ob()")
     ;; Default is to dispatch on the codes.
     (let [ccodes (map int key)]
       (println "In omnibar map with codes: ")
@@ -322,7 +322,7 @@
                 (= '(13) ccodes)
                 (= '(27) ccodes)        ; escape
                 )
-        (do (omnibar-stop) "hide_ob()"))
+        (do (omnibar-stop) (set-tip "NORMAL") "hide_ob()"))
       true)))
 
 (defn keys-def-map [key]
@@ -351,12 +351,14 @@
     "DIGIT2" (goto-scene 1)
     "DIGIT3" (goto-scene 2)
     "b" (do (key-map-set :omnibar)
+            (set-tip "BUFFERS")
             (set-showing-buffers true)
             (run-later
              (-> (get-omnibar) (.setText "")))
             (omnibar-start)
             (show-buffers))
     "o" (do (key-map-set :omnibar)
+            (set-tip "OMNI")
             (omnibar-start)
             "show_ob()")
     ;; TODO: Hmm, if we return false, it does not seem to bubble

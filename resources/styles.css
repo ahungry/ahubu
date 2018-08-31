@@ -1,9 +1,12 @@
+#buffers {
+  -fx-background-color: rgba(200,250,00,.5);
+}
+
 #buffers Label {
-  -fx-background-color: #aaff00;
+  -fx-border-radius: 40px;
   -fx-text-fill: #333333;
-  -fx-pref-width: 10000;
-  -fx-font: 14px Iosevka, monospace;
-  -fx-padding: 8px;
+  -fx-font: 16px Iosevka, monospace;
+  -fx-padding: 3px;
 }
 
 #tip {
@@ -11,26 +14,36 @@
 }
 
 #tip, #txtURL {
-  -fx-background-color: #333;
-  -fx-font: 14px Iosevka, monospace;
+  -fx-font: 16px Iosevka, monospace;
   -fx-text-inner-color: #aaff00;
   -fx-text-fill: #aaff00;
+  -fx-background-color: linear-gradient(to bottom, #333, #000),
+                        linear-gradient(from 0px 0px to 0px 5px, #333, #000);
+  -fx-background-insets: 0, 1;
+  -fx-background-radius: 3, 2;
+  -fx-cursor: text;
 }
 
 #tip:disabled, #txtURL:disabled {
-  -fx-background-color: #333;
-  -fx-font-style: italic;
-  -fx-opacity: 0.8;
+  -fx-opacity: 1.0;
+  -fx-font: 16px Iosevka, monospace;
+  -fx-text-inner-color: #aaff00;
+  -fx-text-fill: #aaff00;
+  -fx-background-color: linear-gradient(to bottom, #333, #000),
+                        linear-gradient(from 0px 0px to 0px 5px, #333, #000);
+  -fx-background-insets: 0, 1;
+  -fx-background-radius: 3, 2;
+  -fx-cursor: text;
 }
 
 Button {
-  -fx-background-color: #aaff00;
-  -fx-font: 14px Iosevka, monospace;
+  -fx-background-color: linear-gradient(to bottom, #aaff00, #aaff00),
+                        linear-gradient(from 0px 0px to 0px 5px, #aaff00, #aaff00);
+  -fx-font: 16px Iosevka, monospace;
   -fx-text-fill: black;
 }
 
 Button:hover, Button:focused {
-  -fx-background-color: red;
 }
 
 .text-input {

@@ -1,0 +1,4 @@
+#!/bin/sh
+# -*- mode: sh -*-
+
+java -jar ahubu-0.1.0-SNAPSHOT-standalone.jar

@@ -15,6 +15,7 @@ function get_hint (c, href, parent) {
   h.style.position = 'absolute'
   h.style.left = '0'
   h.style.top = '0'
+  h.style.zIndex = '999999999999999999999999999999999999999999999'
   h.innerHTML = c
 
   return { el: h, href, parent }

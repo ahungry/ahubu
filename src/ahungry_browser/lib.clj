@@ -299,8 +299,8 @@
 ;; TODO: Timing event - hinting_off should run after js link visit does
 (defn keys-hinting-map [key]
   (case key
-    "ESCAPE" (do (set-tip "NORMAL") (key-map-set :default) "hinting_off()")
-    (do (set-tip "NORMAL") (key-map-set :default) "setTimeout(hinting_off, 500)")))
+    "ESCAPE" (do (set-tip "NORMAL") (key-map-set :default) "hide_ob(); hinting_off(); ")
+    (do (set-tip "NORMAL") (key-map-set :default) "hide_ob(); setTimeout(hinting_off, 500)")))
 
 (defn keys-insert-map [key]
   (case key
@@ -331,7 +331,7 @@
     "g" (key-map-set :g)
     "d" (delete-current-scene)
     "G" "window.scrollTo(0, window.scrollY + 5000)"
-    "f" (do (set-tip "HINTING") (key-map-set :hinting) "hinting_on()" )
+    "f" (do (set-tip "HINTING") (key-map-set :hinting) "hinting_on(); show_ob()" )
     "F12" (slurp "js-src/inject-firebug.js")
     "k" "window.scrollTo(window.scrollX, window.scrollY - 50)"
     "j" "window.scrollTo(window.scrollX, window.scrollY + 50)"
@@ -357,7 +357,8 @@
             (run-later
              (-> (get-omnibar) (.setText "")))
             (omnibar-start)
-            (show-buffers))
+            (show-buffers)
+            "show_ob()")
     "o" (do (key-map-set :omnibar)
             (set-tip "OMNI")
             (omnibar-start)

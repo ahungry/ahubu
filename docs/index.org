@@ -15,3 +15,25 @@ the aforementioned tab).
 
 Press 'b' to view a list of your open buffers (tabs) and type some
 partial match on the URL or title to filter your results to that match.
+
+To jump to a quickmark (like a bookmark, but much better), press 'go'
+followed by te quickmark defined in your ~/.ahuburc file (you do have
+one of those right?)
+
+So, if your file looked like this:
+
+#+BEGIN_SRC clojure
+;; -*- mode: clojure -*-
+
+{:quickmarks
+  {
+    :a "http://ahungry.com"
+    :e "http://example.com"
+    :g "https://github.com"
+    :2 "http://example.com"
+  }
+}
+#+END_SRC
+
+You could press 'goa' to jump to ahungry.com, or 'gne' to open
+example.com in a new buffer.

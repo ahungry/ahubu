@@ -3,7 +3,7 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!-- 2018-08-31 Fri 02:27 -->
+<!-- 2018-08-31 Fri 02:29 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>&lrm;</title>
@@ -233,23 +233,23 @@ for the JavaScript code in this tag.
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#org2e750c4">1. AHUBU Helps Users Be Utilitarian</a>
+<li><a href="#orgc39c298">1. AHUBU Helps Users Be Utilitarian</a>
 <ul>
-<li><a href="#org15ac2bc">1.1. Getting started / key binds</a></li>
+<li><a href="#org349fb56">1.1. Getting started / key binds</a></li>
 </ul>
 </li>
 </ul>
 </div>
 </div>
-<div id="outline-container-org2e750c4" class="outline-2">
-<h2 id="org2e750c4"><span class="section-number-2">1</span> AHUBU Helps Users Be Utilitarian</h2>
+<div id="outline-container-orgc39c298" class="outline-2">
+<h2 id="orgc39c298"><span class="section-number-2">1</span> AHUBU Helps Users Be Utilitarian</h2>
 <div class="outline-text-2" id="text-1">
 <p>
 Welcome to AHUBU, the best web browser around.
 </p>
 </div>
-<div id="outline-container-org15ac2bc" class="outline-3">
-<h3 id="org15ac2bc"><span class="section-number-3">1.1</span> Getting started / key binds</h3>
+<div id="outline-container-org349fb56" class="outline-3">
+<h3 id="org349fb56"><span class="section-number-3">1.1</span> Getting started / key binds</h3>
 <div class="outline-text-3" id="text-1-1">
 <p>
 To move around the page, try the j/k keys for scrolling.
@@ -277,13 +277,42 @@ the aforementioned tab).
 Press 'b' to view a list of your open buffers (tabs) and type some
 partial match on the URL or title to filter your results to that match.
 </p>
+
+<p>
+To jump to a quickmark (like a bookmark, but much better), press 'go'
+followed by te quickmark defined in your ~/.ahuburc file (you do have
+one of those right?)
+</p>
+
+<p>
+So, if your file looked like this:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-clojure"><span style="color: #888a85; font-style: italic;">;; </span><span style="color: #888a85; font-style: italic;">-*- mode: clojure -*-</span>
+
+<span style="color: #cf0;">{</span><span style="color: #a6f000;">:quickmarks</span>
+  <span style="color: #0cf;">{</span>
+    <span style="color: #a6f000;">:a</span> <span style="color: #0c6;">"http://ahungry.com"</span>
+    <span style="color: #a6f000;">:e</span> <span style="color: #0c6;">"http://example.com"</span>
+    <span style="color: #a6f000;">:g</span> <span style="color: #0c6;">"https://github.com"</span>
+    :2 <span style="color: #0c6;">"http://example.com"</span>
+  <span style="color: #0cf;">}</span>
+<span style="color: #cf0;">}</span>
+</pre>
+</div>
+
+<p>
+You could press 'goa' to jump to ahungry.com, or 'gne' to open
+example.com in a new buffer.
+</p>
 </div>
 </div>
 </div>
 </div>
 <div id="postamble" class="status">
 <p class="author">Author: Matthew Carter</p>
-<p class="date">Created: 2018-08-31 Fri 02:27</p>
+<p class="date">Created: 2018-08-31 Fri 02:29</p>
 <p class="validation"><a href="http://validator.w3.org/check?uri=referer">Validate</a></p>
 </div>
 </body>

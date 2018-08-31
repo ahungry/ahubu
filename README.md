@@ -103,6 +103,21 @@ When it exists, you would run that command below.
 
 ## Options
 
+Create an rc file in ~/.ahuburc with contents such as this:
+
+```clojure
+;; -*- mode: clojure -*-
+
+{:quickmarks
+  {
+    :a "http://ahungry.com"
+    :b "http://example.com"
+    :g "https://github.com"
+    :2 "http://example.com"
+  }
+}
+```
+
 Look in conf/url-ignore-regexes.txt for now - any URL patterns you add
 here (newline separated) will be stopped from downloading at the
 browser's network request level (aka, your browser will never even

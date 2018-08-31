@@ -1,5 +1,5 @@
 (defproject ahubu "0.1.0-SNAPSHOT"
-  :description "The best browser"
+  :description "AHUBU Helps Users Be Utilitarian"
   :url "https://github.com/ahungry/ahubu"
   :license {:name "GPLv3 or Later"
             :url "http://www.gnu.org/licenses/"}

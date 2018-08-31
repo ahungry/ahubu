@@ -95,6 +95,55 @@
   (run-later
    (-> (get-tip) (.setText s))))
 
+(defn url-ignore-regexes-from-file [file]
+  (map re-pattern (str/split (slurp file) #"\n")))
+
+(defn url-ignore-regexes []
+  (url-ignore-regexes-from-file "conf/url-ignore-regexes.txt"))
+
+(defn matching-regexes [url regexes]
+  (filter #(re-matches % url) regexes))
+
+(defn url-ignorable? [url]
+  (let [ignorables (matching-regexes url (url-ignore-regexes))]
+    (if (> (count ignorables) 0)
+      (do
+        (println (format "Ignoring URL: %s, hit %d matchers." url (count ignorables)))
+        true)
+      false)))
+
+(defn url-or-no [url proto]
+  (let [url (.toString url)]
+    (URL.
+     (if (url-ignorable? url)
+       (format "%s://0.0.0.0:65535" proto)
+       url))))
+
+;; Hmm, we could hide things we do not want to see.
+(defn my-connection-handler [protocol]
+  (case protocol
+    "http" (proxy [sun.net.www.protocol.http.Handler] []
+             (openConnection [& [url proxy :as args]]
+               (println url)
+               (proxy-super openConnection (url-or-no url protocol) proxy)))
+    "https" (proxy [sun.net.www.protocol.https.Handler] []
+              (openConnection [& [url proxy :as args]]
+                (println url)
+                (proxy-super openConnection (url-or-no url protocol) proxy)))
+    nil
+    ))
+
+(defn quietly-set-stream-factory []
+  (try
+    (def stream-handler-factory
+      (URL/setURLStreamHandlerFactory
+       (reify URLStreamHandlerFactory
+         (createURLStreamHandler [this protocol] (#'my-connection-handler protocol)))))
+    (catch Throwable e
+      ;; TODO: Attempt to force set with reflection maybe - although this is usually good enough.
+      ;; TODO: Make sure this isn't some big performance penalty.
+      )))
+
 (defn -start [this stage]
   (let [
         root (FXMLLoader/load (-> "resources/WebUI.fxml" File. .toURI .toURL))
@@ -358,6 +407,9 @@
       (. KeyEvent KEY_PRESSED)
       (reify EventHandler ;; EventHandler
         (handle [this event]
+          ;; TODO: Do we need this here?
+          ;; Rebinding it on each key press does ensure it doesn't drop off the main thread.
+          (quietly-set-stream-factory)
           (let [ecode (-> event .getCode .toString)
                 etext (-> event .getText .toString)]
             (println (get-readable-key ecode etext))
@@ -369,44 +421,6 @@
             (key-map-handler (get-readable-key ecode etext)))
           false
           ))))))
-
-(defn url-ignore-regexes-from-file [file]
-  (map re-pattern (str/split (slurp file) #"\n")))
-
-(defn url-ignore-regexes []
-  (url-ignore-regexes-from-file "conf/url-ignore-regexes.txt"))
-
-(defn matching-regexes [url regexes]
-  (filter #(re-matches % url) regexes))
-
-(defn url-ignorable? [url]
-  (let [ignorables (matching-regexes url (url-ignore-regexes))]
-    (if (> (count ignorables) 0)
-      (do
-        (println (format "Ignoring URL: %s, hit %d matchers." url (count ignorables)))
-        true)
-      false)))
-
-(defn url-or-no [url proto]
-  (let [url (.toString url)]
-    (URL.
-     (if (url-ignorable? url)
-       (format "%s://0.0.0.0:65535" proto)
-       url))))
-
-;; Hmm, we could hide things we do not want to see.
-(defn my-connection-handler [protocol]
-  (case protocol
-    "http" (proxy [sun.net.www.protocol.http.Handler] []
-             (openConnection [& [url proxy :as args]]
-               (println url)
-               (proxy-super openConnection (url-or-no url protocol) proxy)))
-    "https" (proxy [sun.net.www.protocol.https.Handler] []
-              (openConnection [& [url proxy :as args]]
-                (println url)
-                (proxy-super openConnection (url-or-no url protocol) proxy)))
-    nil
-    ))
 
 (defn show-alert [s]
   (doto (javafx.scene.control.Dialog.)

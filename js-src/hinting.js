@@ -1,12 +1,12 @@
 // This will control the hinting on page
 
-const hints = 'abcdefghijklmnopqrstuvwxyz1234567890'.split('')
+var hints = 'abcdefghijklmnopqrstuvwxyz1234567890'.split('')
 
 function hint_span (c) {
   return '<span class="ahubu-hint" style="display:none;font-style:none !important; font-size:16px !important; position:absolute;background:rgba(0,0,0,.7);color:#fa0;font-weight:bold;padding:4px;left:10;top:-8;font-family:Iosevka,monospace;">' + c + '</span>'
 }
 
-const hinted = false
+var hinted = false
 var hint_map = {}
 
 function hinting () {
@@ -15,7 +15,7 @@ function hinting () {
   var links = document.getElementsByTagName("a")
 
   for (var i = 0; i < links.length; i++) {
-    const hint = i > hints.length ? '' : hints[i]
+    var hint = i > hints.length ? '' : hints[i]
     links[i].innerHTML = hint_span(hint) + links[i].innerHTML
     hint_map[hint] = links[i].href
   }
@@ -33,7 +33,7 @@ function hinting_set (display) {
   }
 }
 
-let hint_mode = false
+var hint_mode = false
 
 function find_hint (c) {
   hint_mode = false
@@ -58,13 +58,13 @@ document.addEventListener('keyup', (e) => {
   find_hint(String.fromCharCode(e.keyCode))
 })
 
-const hinting_on = () => {
+var hinting_on = () => {
   hinting_set('initial')
-
-  setTimeout(() => { hint_mode = true }, 100)
+  hint_mode = true
+  setTimeout(() => { hint_mode = true }, 10)
 }
 
-const hinting_off = () => {
+var hinting_off = () => {
   hinting_set('none')
   hint_mode = false
 }

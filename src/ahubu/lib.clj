@@ -545,13 +545,9 @@
   (doall
    (map (fn [i]
           (let [el (-> els (.item i))]
-            (println (-> el .getText))
             ;; https://docs.oracle.com/cd/E13222_01/wls/docs61/xerces/org/apache/html/dom/HTMLAnchorElementImpl.html
-            (println (-> el (.setTitle "TITLE")))
-            (println (-> el (.setNodeValue "NODE_VALUE")))
+            ;; (-> el (.setTextContent  "OH WEL"))
             (println (-> el .getTextContent))
-            (-> el (.setTextContent  "OH WEL"))
-            ;; getNodeName().contains('xx')
             (println (-> el (.getAttribute "href")))
 
             (-> el (.addEventListener

@@ -31,14 +31,11 @@
 (defn boot []
   (defonce launch (future (Application/launch com.ahungry.Browser (make-array String 0))))
 
-  (defonce cookie-manager
-    (doto (java.net.CookieManager.)
-      java.net.CookieHandler/setDefault))
-
   ;; Call this infinitely so it just always keeps setting it
   (future
     (while true
       (do
+        (quietly-set-cookies)
         (quietly-set-stream-factory)
         (Thread/sleep 500))))
 

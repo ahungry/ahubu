@@ -153,6 +153,11 @@
     nil
     ))
 
+(defn quietly-set-cookies []
+  (def cookie-manager
+    (doto (java.net.CookieManager.)
+      java.net.CookieHandler/setDefault)))
+
 (defn quietly-set-stream-factory []
   (try
     (def stream-handler-factory
@@ -194,6 +199,15 @@
      (if (instance? JSObject result)
        (str result)
        result))))
+
+(defn dojs [file]
+  (execute-script (get-webengine) (slurp (format "js-src/%s.js" file))))
+
+(defn decrease-font-size []
+  (dojs "decrease-font-size"))
+
+(defn increase-font-size []
+  (dojs "increase-font-size"))
 
 (defn inject-firebug [w-engine]
   (execute-script w-engine (slurp "js-src/inject-firebug.js")))
@@ -309,11 +323,18 @@
 (defn keys-hinting-map [key]
   (case key
     "ESCAPE" (do (set-tip "NORMAL") (key-map-set :default) "Overlay.hide(); Hinting.off(); ")
-    (do (set-tip "NORMAL") (key-map-set :default) "Overlay.hide(); setTimeout(Hinting.off, 500)")))
+    (do (set-tip "NORMAL") (key-map-set :default) "Overlay.hide(); setTimeout(Hinting.off, 200)")))
 
 (defn keys-insert-map [key]
   (case key
     "ESCAPE" (do (set-tip "NORMAL") (key-map-set :default) "Form.disable()")
+    true))
+
+(defn keys-fontsize-map [key]
+  (key-map-set :default)
+  (case key
+    "o" (decrease-font-size)
+    "i" (increase-font-size)
     true))
 
 ;; This is basically 'escape' mode -
@@ -340,6 +361,7 @@
     "g" (key-map-set :g)
     "d" (delete-current-scene)
     "G" "window.scrollTo(0, window.scrollY + 5000)"
+    "z" (key-map-set :fontsize)
     "f" (do (set-tip "HINTING") (key-map-set :hinting) "Hinting.on(); Overlay.show()" )
     "F12" (slurp "js-src/inject-firebug.js")
     "k" "window.scrollTo(window.scrollX, window.scrollY - 50)"
@@ -397,6 +419,7 @@
     :default keys-def-map
     :g keys-g-map
     :hinting keys-hinting-map
+    :fontsize keys-fontsize-map
     :insert keys-insert-map
     :omnibar keys-omnibar-map
     :quickmarks keys-quickmarks-map
@@ -616,6 +639,8 @@
 
                     ;; map over all the page links on load
                     (-> webengine .getDocument (.getElementsByTagName "a") el-link-fn)
+
+                    (-> webengine (.setUserAgent "Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2228.0 Safari/537.36"))
 
                     ;; (-> webengine .getDocument (.getElementById "content")
                     ;;     (.addEventListener

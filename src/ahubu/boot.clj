@@ -35,7 +35,7 @@
   (future
     (while true
       (do
-        (quietly-set-cookies)
+        ;; (quietly-set-cookies)
         (quietly-set-stream-factory)
         (Thread/sleep 500))))
 

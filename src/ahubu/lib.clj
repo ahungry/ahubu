@@ -538,15 +538,33 @@
           (range (count scenes))))))
 
 ;; Map over elements (links) on page load...sweet
+;; TODO: Based on this filter list, we can show the user a native list
+;; of jumpable links (instead of relying on JS), where it works like the buffer
+;; jump list, but the action is set to .load url or simulate a key click
 (defn el-link-fn [els]
   (doall
    (map (fn [i]
           (let [el (-> els (.item i))]
             (println (-> el .getText))
+            ;; https://docs.oracle.com/cd/E13222_01/wls/docs61/xerces/org/apache/html/dom/HTMLAnchorElementImpl.html
+            (println (-> el (.setTitle "TITLE")))
+            (println (-> el (.setNodeValue "NODE_VALUE")))
             (println (-> el .getTextContent))
+            (-> el (.setTextContent  "OH WEL"))
             ;; getNodeName().contains('xx')
             (println (-> el (.getAttribute "href")))
-            ))
+
+            ;;(-> el (.addEventListener "click" (fn [event] (println event))))
+
+            ;; (doto ^org.w3c.dom.events.EventTarget el
+            ;;   (.addEventListener
+            ;;    "click"
+            ;;    (reify org.w3c.dom.events.EventListener
+            ;;      (handleEvent [this event]
+            ;;        (javafx.application.Platform/exit)))))
+            )
+
+            )
         (range (.getLength els)))))
 
 (defn new-scene []

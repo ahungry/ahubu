@@ -537,6 +537,18 @@
                  (-> .getChildren (.add (Label. (get-buffer-entry-text scene i))))))))
           (range (count scenes))))))
 
+;; Map over elements (links) on page load...sweet
+(defn el-link-fn [els]
+  (doall
+   (map (fn [i]
+          (let [el (-> els (.item i))]
+            (println (-> el .getText))
+            (println (-> el .getTextContent))
+            ;; getNodeName().contains('xx')
+            (println (-> el (.getAttribute "href")))
+            ))
+        (range (.getLength els)))))
+
 (defn new-scene []
   (run-later
    (let [
@@ -572,6 +584,19 @@
                   (when (= new-value Worker$State/SUCCEEDED)
                     ;; (.removeListener observable this)
                     (println "In boot change listener")
+                    ;; https://docs.oracle.com/javase/8/javafx/api/javafx/scene/web/WebEngine.html
+                    (println (-> webengine .getLocation))
+                    (println (-> webengine .getDocument .toString))
+
+                    (-> webengine .getDocument (.getElementsByTagName "a") el-link-fn)
+
+                    ;; (-> webengine .getDocument (.getElementById "content")
+                    ;;     (.addEventListener
+                    ;;      "click"
+                    ;;      (reify org.w3c.dom.events.EventListener
+                    ;;        (handleEvent [this event]
+                    ;;          (javafx.application.Platform/exit)))))
+
                     (execute-script webengine js-bundle))))))
 
          (.load (get-default-url))

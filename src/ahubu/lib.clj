@@ -107,6 +107,14 @@
   (run-later
    (-> (get-tip) (.setText s))))
 
+(defn set-omnibar-text [s]
+  (run-later
+   (-> (get-omnibar) (.setText s))))
+
+(defn set-omnibar-text-to-url []
+  (set-omnibar-text
+   (-> (get-webengine) .getLocation)))
+
 (defn url-ignore-regexes-from-file [file]
   (map re-pattern (str/split (slurp file) #"\n")))
 
@@ -287,6 +295,7 @@
 (defn omnibar-stop []
   (key-map-set :default)
   (run-later
+   (future (Thread/sleep 100) (set-omnibar-text-to-url))
    (doto (get-omnibar) (.setDisable true))
    (doto (get-webview) (.setDisable false))))
 
@@ -602,6 +611,10 @@
                     (println (-> webengine .getLocation))
                     (println (-> webengine .getDocument .toString))
 
+                    ;; When a thing loads, set the URL to match
+                    (-> scene (.lookup "#txtURL") (.setText (-> webengine .getLocation)))
+
+                    ;; map over all the page links on load
                     (-> webengine .getDocument (.getElementsByTagName "a") el-link-fn)
 
                     ;; (-> webengine .getDocument (.getElementById "content")

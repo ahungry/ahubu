@@ -554,14 +554,14 @@
             ;; getNodeName().contains('xx')
             (println (-> el (.getAttribute "href")))
 
-            ;;(-> el (.addEventListener "click" (fn [event] (println event))))
+            (-> el (.addEventListener
+                    "click"
+                    (reify org.w3c.dom.events.EventListener
+                      (handleEvent [this event]
+                        (println "I clicked a link, good job")
+                        (println (-> el .getTextContent))))
+                    false))
 
-            ;; (doto ^org.w3c.dom.events.EventTarget el
-            ;;   (.addEventListener
-            ;;    "click"
-            ;;    (reify org.w3c.dom.events.EventListener
-            ;;      (handleEvent [this event]
-            ;;        (javafx.application.Platform/exit)))))
             )
 
             )

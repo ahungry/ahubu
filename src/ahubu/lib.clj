@@ -13,7 +13,7 @@
    (javafx.fxml FXMLLoader)
    (javafx.scene Parent Scene)
    (javafx.scene.control Label)
-   (javafx.scene.input KeyEvent)
+   (javafx.scene.input Clipboard ClipboardContent KeyEvent)
    (javafx.scene.web WebView)
    (javafx.stage Stage)
    (javax.net.ssl HttpsURLConnection)
@@ -362,10 +362,20 @@
         (do (omnibar-stop) (set-tip "NORMAL") "Overlay.hide()"))
       true)))
 
+(defn yank [s]
+  (let [content (ClipboardContent.)]
+    (run-later
+     (-> content (.putString s))
+     (-> (Clipboard/getSystemClipboard) (.setContent content)))))
+
+(defn yank-current-url []
+  (-> (get-webengine) .getLocation yank))
+
 (defn keys-def-map [key]
   (case key
     "g" (key-map-set :g)
     "d" (delete-current-scene)
+    "y" (yank-current-url)
     "G" "window.scrollTo(0, window.scrollY + 5000)"
     "z" (key-map-set :fontsize)
     "f" (do (set-tip "HINTING") (key-map-set :hinting) "Hinting.on(); Overlay.show()" )

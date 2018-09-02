@@ -386,6 +386,8 @@
     "F12" (slurp "js-src/inject-firebug.js")
     "k" "window.scrollTo(window.scrollX, window.scrollY - 50)"
     "j" "window.scrollTo(window.scrollX, window.scrollY + 50)"
+    "h" "window.scrollTo(window.scrollX - 50, window.scrollY)"
+    "l" "window.scrollTo(window.scrollX + 50, window.scrollY)"
     "c" "document.body.innerHTML=''"
     "r" "window.location.reload()"
     "a" "alert(1)"

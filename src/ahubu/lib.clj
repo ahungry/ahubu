@@ -55,6 +55,7 @@
    {
     :default-url (format "file://%s/docs/index.html" (System/getProperty "user.dir"))
     :new-tab? false
+    :omnibar-open? false
     :scene-id 0
     :scenes []
     :showing-buffers? false
@@ -118,8 +119,9 @@
    (-> (get-omnibar) (.setText s))))
 
 (defn set-omnibar-text-to-url []
-  (set-omnibar-text
-   (-> (get-webengine) .getLocation)))
+  (when (not (:omnibar-open? @world))
+    (set-omnibar-text
+     (-> (get-webengine) .getLocation))))
 
 (defn url-ignore-regexes-from-file [file]
   (map re-pattern (str/split (slurp file) #"\n")))
@@ -314,6 +316,7 @@
 
 (defn omnibar-stop []
   (key-map-set :default)
+  (swap! world conj {:omnibar-open? false})
   (run-later
    (future (Thread/sleep 100) (set-omnibar-text-to-url))
    (doto (get-omnibar) (.setDisable true))
@@ -321,6 +324,7 @@
 
 (defn omnibar-start []
   (key-map-set :omnibar)
+  (swap! world conj {:omnibar-open? true})
   (run-later
    (doto (get-omnibar) (.setDisable false) (.requestFocus))
    (doto (get-webview) (.setDisable true))))
@@ -653,7 +657,7 @@
                     (println (-> webengine .getDocument .toString))
 
                     ;; When a thing loads, set the URL to match
-                    (-> scene (.lookup "#txtURL") (.setText (-> webengine .getLocation)))
+                    (set-omnibar-text-to-url)
 
                     ;; map over all the page links on load
                     (-> webengine .getDocument (.getElementsByTagName "a") el-link-fn)

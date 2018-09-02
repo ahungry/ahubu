@@ -487,7 +487,9 @@
   (let [n (get-scene-id)]
     (when (> n 0)
       (goto-scene (- n 1))
-      (del-scene n))))
+      (run-later
+       (Thread/sleep 50)
+       (del-scene n)))))
 
 (defn omnibar-load-url [url]
   (run-later

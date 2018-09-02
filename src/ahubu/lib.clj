@@ -1,31 +1,25 @@
 (ns ahubu.lib
-  (:require [clojure.string :as str]))
-
-(import MyEventDispatcher)
-(import WebUIController)
-(import java.io.File)
-(import java.io.File)
-(import java.net.HttpURLConnection)
-(import java.net.URL)
-(import java.net.URL)
-(import java.net.URLConnection)
-(import java.net.URLStreamHandler)
-(import java.net.URLStreamHandlerFactory)
-(import javafx.application.Application)
-(import javafx.application.Platform)
-(import javafx.beans.value.ChangeListener)
-(import javafx.concurrent.Worker$State)
-(import javafx.event.EventHandler)
-(import javafx.fxml.FXMLLoader)
-(import javafx.scene.Parent)
-(import javafx.scene.Scene)
-(import javafx.scene.control.Label)
-(import javafx.scene.input.KeyEvent)
-(import javafx.scene.web.WebView)
-(import javafx.stage.Stage)
-(import javax.net.ssl.HttpsURLConnection)
-(import netscape.javascript.JSObject)
-(import sun.net.www.protocol.https.Handler)
+  (:require
+   [clojure.string :as str])
+  (:import
+   MyEventDispatcher
+   WebUIController
+   (java.io File)
+   (java.net HttpURLConnection URL URLConnection URLStreamHandler URLStreamHandlerFactory)
+   (javafx.application Application Platform)
+   (javafx.beans.value ChangeListener)
+   (javafx.concurrent Worker$State)
+   (javafx.event EventHandler)
+   (javafx.fxml FXMLLoader)
+   (javafx.scene Parent Scene)
+   (javafx.scene.control Label)
+   (javafx.scene.input KeyEvent)
+   (javafx.scene.web WebView)
+   (javafx.stage Stage)
+   (javax.net.ssl HttpsURLConnection)
+   (netscape.javascript JSObject)
+   (sun.net.www.protocol.https Handler)
+   ))
 
 (gen-class
  :extends javafx.application.Application

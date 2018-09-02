@@ -78,22 +78,22 @@
 (defn del-scene [n]
   (swap! world conj {:scenes (-> (:scenes @world) (delete-nth-scene n))}))
 
-(def atomic-scene-id (atom 0))
-(defn set-scene-id [n] (swap! atomic-scene-id (fn [_] n)))
-(defn get-scene-id [] @atomic-scene-id)
+(defn set-scene-id [n] (swap! world conj {:scene-id n}))
+(defn get-scene-id [] (:scene-id @world))
 
-(def atomic-new-tab (atom false))
-(defn set-new-tab [b] (swap! atomic-new-tab (fn [_] b)))
-(defn get-new-tab? [] @atomic-new-tab)
+(defn set-new-tab [b]
+  (swap! world conj {:new-tab? b}))
+(defn get-new-tab? [] (:new-tab? @world))
 
 ;; (def atomic-default-url (atom "http://ahungry.com"))
-(def atomic-default-url (atom (format "file://%s/docs/index.html" (System/getProperty "user.dir"))))
-(defn set-default-url [s] (swap! atomic-default-url (fn [_] s)))
-(defn get-default-url [] @atomic-default-url)
+(defn set-default-url [s]
+  (swap! world conj {:default-url s}))
+(defn get-default-url [] (:default-url @world))
 
 (def atomic-showing-buffers (atom false))
-(defn set-showing-buffers [b] (swap! atomic-showing-buffers (fn [_] b)))
-(defn get-showing-buffers? [] @atomic-showing-buffers)
+(defn set-showing-buffers [b]
+  (swap! world conj {:showing-buffers? b}))
+(defn get-showing-buffers? [] (:showing-buffers? @world))
 
 (defn get-omnibar []
   (-> (get-scene-id) get-scene (.lookup "#txtURL")))

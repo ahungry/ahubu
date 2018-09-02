@@ -50,20 +50,33 @@
         (deliver p# (try ~@forms (catch Throwable t# t#)))))
      p#))
 
-(def atomic-stage (atom nil))
-(defn set-atomic-stage [stage] (swap! atomic-stage (fn [_] stage)))
-(defn get-atomic-stage [] @atomic-stage)
+(def world
+  (atom
+   {
+    :default-url (format "file://%s/docs/index.html" (System/getProperty "user.dir"))
+    :new-tab? false
+    :scene-id 0
+    :scenes []
+    :showing-buffers? false
+    :stage nil
+    }))
+
+(defn set-atomic-stage [stage]
+  (swap! world conj {:stage stage}))
+(defn get-atomic-stage [] (:stage @world))
 
 ;; Each scene is basically a tab
-(def atomic-scenes (atom []))
-(defn add-scene [scene] (swap! atomic-scenes (fn [_] (conj @atomic-scenes scene))))
-(defn get-scene [n] (get @atomic-scenes n))
-(defn get-scenes [] @atomic-scenes)
+(defn add-scene [scene]
+  (swap! world conj {:scenes (conj (:scenes @world) scene)}))
+(defn get-scene [n]
+  (-> (:scenes @world) (get n)))
+(defn get-scenes [] (:scenes @world))
 (defn delete-nth-scene [scenes n]
   (into []
         (concat (subvec scenes 0 n)
                 (subvec scenes (+ 1 n) (count scenes)))))
-(defn del-scene [n] (swap! atomic-scenes delete-nth-scene n))
+(defn del-scene [n]
+  (swap! world conj {:scenes (-> (:scenes @world) (delete-nth-scene n))}))
 
 (def atomic-scene-id (atom 0))
 (defn set-scene-id [n] (swap! atomic-scene-id (fn [_] n)))

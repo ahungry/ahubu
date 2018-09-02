@@ -90,7 +90,6 @@
   (swap! world conj {:default-url s}))
 (defn get-default-url [] (:default-url @world))
 
-(def atomic-showing-buffers (atom false))
 (defn set-showing-buffers [b]
   (swap! world conj {:showing-buffers? b}))
 (defn get-showing-buffers? [] (:showing-buffers? @world))

@@ -1,13 +1,14 @@
 ;; -*- mode: clojure -*-
 
 {
- :quickmarks
+ :xquickmarks
  {
   :a "http://ahungry.com"
   :b "http://example.com"
   :g "https://github.com"
   :2 "http://example.com"
   }
+
  :keymaps
  {
   :default
@@ -67,6 +68,15 @@
 
   :omnibar
   {
+   "ENTER" ahubu.lib/default-mode
+   "ESCAPE" ahubu.lib/default-mode
+   }
+
+  :quickmarks
+  {
+   :a #(ahubu.lib/quickmark-url "http://ahungry.com")
+   :e #(ahubu.lib/quickmark-url "http://example.com")
+   :g #(ahubu.lib/quickmark-url "https://github.com/ahungry/ahubu")
    "ENTER" ahubu.lib/default-mode
    "ESCAPE" ahubu.lib/default-mode
    }

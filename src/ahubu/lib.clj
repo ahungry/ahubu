@@ -35,6 +35,7 @@
 (declare show-buffers)
 (declare filter-buffers)
 (declare omnibar-load-url)
+(declare default-mode)
 
 (defmacro compile-time-slurp [file]
   (slurp file))
@@ -427,6 +428,7 @@
     true))
 
 (defn quickmark-url [url]
+  (default-mode)
   (omnibar-load-url url))
 
 (defn get-rc-file []
@@ -453,6 +455,10 @@
 (defn font-mode []
   (set-mode :font)
   (set-tip "FONT"))
+
+(defn quickmarks-mode []
+  (set-tip "QUICKMARKS")
+  (set-mode :quickmarks))
 
 (defn default-mode []
   (set-mode :default)
@@ -489,6 +495,7 @@
         op? (get rc key)
         key (keyword key)
         op (or op? (get rc key))]
+    (println rc)
     op))
 
 (defn key-map-handler [key]

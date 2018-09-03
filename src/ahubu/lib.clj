@@ -431,7 +431,7 @@
   (default-mode)
   (omnibar-load-url url))
 
-(defn get-rc-file []
+(defn get-rc-file-raw []
   (let [defaults (read-string (slurp "conf/default-rc"))]
     (try
       (conj
@@ -440,6 +440,15 @@
       (catch Throwable t
         (println t)
         defaults))))
+
+(defn get-rc-file []
+  (let [rc (get-rc-file-raw)
+        quickmarks (:quickmarks rc)
+        qm-fns (reduce-kv #(assoc %1 %2 (fn [] (quickmark-url %3))) {} quickmarks)
+        merged-qms (conj (:quickmarks (:keymaps rc)) qm-fns)]
+    (conj rc
+          {:keymaps (conj (:keymaps rc)
+                          {:quickmarks merged-qms})})))
 
 (defn keys-quickmarks-map [key]
   (key-map-set :default)
@@ -458,13 +467,18 @@
 
 (defn quickmarks-mode []
   (set-tip "QUICKMARKS")
-  (set-mode :quickmarks))
+  (set-mode :quickmarks)
+  (dojs "Form.enable()"))
 
 (defn default-mode []
   (set-mode :default)
   (set-tip "NORMAL")
   (omnibar-stop)
   (dojs "Hinting.off(); Overlay.hide()"))
+
+(defn insert-mode []
+  (set-mode :insert)
+  (set-tip "INSERT"))
 
 (defn hinting-mode []
   (set-mode :hinting)

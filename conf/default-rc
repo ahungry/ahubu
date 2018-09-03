@@ -1,14 +1,13 @@
 ;; -*- mode: clojure -*-
 
 {
- :xquickmarks
+ ;; These shadow into the keybinds with a more concise syntax.
+ :quickmarks
  {
-  :a "http://ahungry.com"
-  :b "http://example.com"
-  :g "https://github.com"
-  :2 "http://example.com"
+  :d "http://ddg.gg"
   }
 
+ ;; These tie to the various modes.
  :keymaps
  {
   :default

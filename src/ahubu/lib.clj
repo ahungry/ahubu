@@ -121,7 +121,9 @@
 
 (defn set-omnibar-text [s]
   (run-later
-   (-> (get-omnibar) (.setText s))))
+   (doto (get-omnibar)
+     (.setText s)
+     (.positionCaret (count s)))))
 
 (defn set-omnibar-text-to-url []
   (when (not (:omnibar-open? @world))
@@ -509,11 +511,13 @@
   (set-mode :omnibar)
   (set-tip "OMNI")
   (omnibar-start)
+  (set-omnibar-text ":open ")
   (dojs "Overlay.show()"))
 
 (defn omnibar-open-new-tab []
   (set-new-tab true)
-  (omnibar-open))
+  (omnibar-open)
+  (set-omnibar-text ":tabopen "))
 
 (defn go-top []
   (default-mode)

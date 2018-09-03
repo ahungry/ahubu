@@ -38,6 +38,7 @@
 (declare default-mode)
 (declare omnibar-handler)
 (declare omnibar-parse-command)
+(declare omnibar-handle-command)
 
 (defmacro compile-time-slurp [file]
   (slurp file))
@@ -441,9 +442,9 @@
   (set-tip "BUFFERS")
   (set-showing-buffers true)
   (run-later
-   (-> (get-omnibar) (.setText ""))
    (omnibar-start)
    (show-buffers)
+   (set-omnibar-text ":buffers! ")
    "Overlay.show()"))
 
 (defn quickmark-url [url]
@@ -644,7 +645,10 @@
     (hide-buffers)))
 
 (defn omnibar-parse-command [cmd]
-  (let [[_ cmd arg] (re-matches #":(.*?) (.*)" cmd)]
+  (re-matches #":(.*?) (.*)" cmd))
+
+(defn omnibar-handle-command [cmd]
+  (let [[_ cmd arg] (omnibar-parse-command cmd)]
     (println (format "OB Parse Cmd: %s %s %s" _ cmd arg))
     (case cmd
       "open" (omnibar-handler arg)
@@ -655,7 +659,7 @@
   (if (get-showing-buffers?) (switch-to-buffer)
       (let [query
             (cond
-              (re-matches #"^:.*" n) (omnibar-parse-command n)
+              (re-matches #"^:.*" n) (omnibar-handle-command n)
               (re-matches #"^file:.*" n) n
               (re-matches #"^http:.*" n) n
               (re-matches #".*\..*" n) (format "http://%s" n)
@@ -669,7 +673,8 @@
      (-> bufs .getChildren .clear))))
 
 (defn is-matching-buf? [s]
-  (let [ob-text (-> (get-omnibar) .getText)
+  (let [[_ cmd arg] (-> (get-omnibar) .getText omnibar-parse-command)
+        ob-text (or arg _)
         pattern (re-pattern (str/lower-case (str/join "" [".*" ob-text ".*"])))]
     (re-matches pattern (str/lower-case s))))
 

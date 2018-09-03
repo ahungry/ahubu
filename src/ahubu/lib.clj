@@ -531,9 +531,16 @@
     op))
 
 (defn key-map-handler [key]
-  (let [op (key-map-op key )
+  (let [op (key-map-op key)
         webengine (get-webengine)]
+
     (println (format "KM OP: %s" op))
+
+    ;; Global key listeners
+    (when (get-showing-buffers?)
+      (filter-buffers))
+
+    ;; Find and dispatch on an op
     (when op
       (if (= java.lang.String (type op))
         (execute-script webengine op)

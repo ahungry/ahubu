@@ -297,6 +297,7 @@
 ;; TODO: Add numeric prefixes for repeatables
 
 (defn prev-scene []
+  (default-mode)
   (let [n (get-scene-id)
         id (- n 1)]
     (if (< id 0)
@@ -304,6 +305,7 @@
       (goto-scene id))))
 
 (defn next-scene []
+  (default-mode)
   (let [n (get-scene-id)
         id (+ n 1)]
     (if (>= id (count (get-scenes)))
@@ -509,7 +511,6 @@
         op? (get rc key)
         key (keyword key)
         op (or op? (get rc key))]
-    (println rc)
     op))
 
 (defn key-map-handler [key]

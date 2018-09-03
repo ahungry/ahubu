@@ -36,6 +36,8 @@
 (declare filter-buffers)
 (declare omnibar-load-url)
 (declare default-mode)
+(declare omnibar-handler)
+(declare omnibar-parse-command)
 
 (defmacro compile-time-slurp [file]
   (slurp file))
@@ -634,10 +636,19 @@
     (set-showing-buffers false)
     (hide-buffers)))
 
+(defn omnibar-parse-command [cmd]
+  (let [[_ cmd arg] (re-matches #":(.*?) (.*)" cmd)]
+    (println (format "OB Parse Cmd: %s %s %s" _ cmd arg))
+    (case cmd
+      "open" (omnibar-handler arg)
+      "tabopen" (omnibar-handler arg)
+      (omnibar-handler _))))
+
 (defn omnibar-handler [n]
   (if (get-showing-buffers?) (switch-to-buffer)
       (let [query
             (cond
+              (re-matches #"^:.*" n) (omnibar-parse-command n)
               (re-matches #"^file:.*" n) n
               (re-matches #"^http:.*" n) n
               (re-matches #".*\..*" n) (format "http://%s" n)

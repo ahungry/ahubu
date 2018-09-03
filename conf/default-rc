@@ -1,10 +1,74 @@
 ;; -*- mode: clojure -*-
 
-{:quickmarks
-  {
-    :a "http://ahungry.com"
-    :b "http://example.com"
-    :g "https://github.com"
-    :2 "http://example.com"
+{
+ :quickmarks
+ {
+  :a "http://ahungry.com"
+  :b "http://example.com"
+  :g "https://github.com"
+  :2 "http://example.com"
   }
-}
+ :keymaps
+ {
+  :default
+  {
+   :g ahubu.lib/go-mode
+   :d ahubu.lib/delete-current-scene
+   :y ahubu.lib/yank-current-url
+   :G "window.scrollTo(0, window.scrollY + 5000)"
+   :z ahubu.lib/font-mode
+   :f ahubu.lib/hinting-mode
+   :O ahubu.lib/new-scene
+   :F12 ahubu.lib/inject-firebug
+   :k "window.scrollTo(window.scrollX, window.scrollY - 50)"
+   :j "window.scrollTo(window.scrollX, window.scrollY + 50)"
+   :h "window.scrollTo(window.scrollX - 50, window.scrollY)"
+   :l "window.scrollTo(window.scrollX + 50, window.scrollY)"
+   :c "document.body.innerHTML=''"
+   :r "window.location.reload()"
+   :a "alert(1)"
+   :o ahubu.lib/omnibar-open
+   :t ahubu.lib/omnibar-open-new-tab
+   "" "window.history.back()"         ; C-o
+   "	" "window.history.forward()"    ; C-i
+   }
+
+  :go
+  {
+   :g ahubu.lib/go-top
+   :i ahubu.lib/insert-mode
+   :o ahubu.lib/quickmarks-mode
+   :n ahubu.lib/quickmarks-new-tab-mode
+   :T ahubu.lib/prev-scene
+   :t ahubu.lib/next-scene
+   "ENTER" ahubu.lib/default-mode
+   "ESCAPE" ahubu.lib/default-mode
+   }
+
+  :font
+  {
+   :o ahubu.lib/decrease-font-size
+   :i ahubu.lib/increase-font-size
+   "ENTER" ahubu.lib/default-mode
+   "ESCAPE" ahubu.lib/default-mode
+   }
+
+  :hinting
+  {
+   "ENTER" ahubu.lib/default-mode
+   "ESCAPE" ahubu.lib/default-mode
+   }
+
+  :insert
+  {
+   "ENTER" ahubu.lib/default-mode
+   "ESCAPE" ahubu.lib/default-mode
+   }
+
+  :omnibar
+  {
+   "ENTER" ahubu.lib/default-mode
+   "ESCAPE" ahubu.lib/default-mode
+   }
+  }
+ }

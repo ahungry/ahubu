@@ -54,6 +54,7 @@
   (atom
    {
     :default-url (format "file://%s/docs/index.html" (System/getProperty "user.dir"))
+    :mode :default
     :new-tab? false
     :omnibar-open? false
     :scene-id 0
@@ -61,6 +62,9 @@
     :showing-buffers? false
     :stage nil
     }))
+
+(defn set-mode [mode]
+  (swap! world conj {:mode mode}))
 
 (defn set-atomic-stage [stage]
   (swap! world conj {:stage stage}))
@@ -208,14 +212,17 @@
        (str result)
        result))))
 
-(defn dojs [file]
+(defn dojs [s ]
+  (execute-script (get-webengine) s))
+
+(defn dojsf [file]
   (execute-script (get-webengine) (slurp (format "js-src/%s.js" file))))
 
 (defn decrease-font-size []
-  (dojs "decrease-font-size"))
+  (dojsf "decrease-font-size"))
 
 (defn increase-font-size []
-  (dojs "increase-font-size"))
+  (dojsf "increase-font-size"))
 
 (defn inject-firebug [w-engine]
   (execute-script w-engine (slurp "js-src/inject-firebug.js")))
@@ -423,11 +430,14 @@
   (omnibar-load-url url))
 
 (defn get-rc-file []
-  (try
-    (read-string (slurp (format "%s/.ahuburc" (System/getProperty "user.home"))))
-    (catch Throwable t
-      (println t)
-      (read-string (slurp "conf/default-rc")))))
+  (let [defaults (read-string (slurp "conf/default-rc"))]
+    (try
+      (conj
+       defaults
+       (read-string (slurp (format "%s/.ahuburc" (System/getProperty "user.home")))))
+      (catch Throwable t
+        (println t)
+        defaults))))
 
 (defn keys-quickmarks-map [key]
   (key-map-set :default)
@@ -436,27 +446,60 @@
     (quickmark-url url))
   true)
 
-(defn key-map-dispatcher []
-  (case (key-map-get)
-    :default keys-def-map
-    :g keys-g-map
-    :hinting keys-hinting-map
-    :fontsize keys-fontsize-map
-    :insert keys-insert-map
-    :omnibar keys-omnibar-map
-    :quickmarks keys-quickmarks-map
-    keys-def-map))
+(defn go-mode []
+  (set-mode :go)
+  (set-tip "GO"))
 
+(defn font-mode []
+  (set-mode :font)
+  (set-tip "FONT"))
+
+(defn default-mode []
+  (set-mode :default)
+  (set-tip "NORMAL")
+  (omnibar-stop)
+  (dojs "Hinting.off(); Overlay.hide()"))
+
+(defn hinting-mode []
+  (set-mode :hinting)
+  (set-tip "HINTING")
+  (dojs "Hinting.on(); Overlay.show()"))
+
+(defn inject-firebug []
+  (dojsf "inject-firebug"))
+
+(defn omnibar-open []
+  (set-mode :omnibar)
+  (set-tip "OMNI")
+  (omnibar-start)
+  (dojs "Overlay.show()"))
+
+(defn omnibar-open-new-tab []
+  (set-new-tab true)
+  (omnibar-open))
+
+(defn go-top []
+  (default-mode)
+  (dojs "window.scrollTo(0, 0)"))
+
+;; Try to grab string key, then keyword key
 (defn key-map-op [key]
-  (let [fn-map (key-map-dispatcher)]
-    (fn-map key)))
+  (let [mode (:mode @world)
+        rc (-> (:keymaps (get-rc-file)) (get mode))
+        op? (get rc key)
+        key (keyword key)
+        op (or op? (get rc key))]
+    op))
 
 (defn key-map-handler [key]
   (let [op (key-map-op key )
         webengine (get-webengine)]
     (println (format "KM OP: %s" op))
-    (when (= java.lang.String (type op))
-      (execute-script webengine op))))
+    (when op
+      (if (= java.lang.String (type op))
+        (execute-script webengine op)
+        ((eval op))))
+    true))                              ; bubble up keypress
 
 ;; ENTER (code) vs <invis> (char), we want ENTER
 ;; Ideally, we want the char, since it tracks lowercase etc.

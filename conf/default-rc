@@ -12,6 +12,7 @@
  {
   :default
   {
+   :b ahubu.lib/buffers-start
    :g ahubu.lib/go-mode
    :d ahubu.lib/delete-current-scene
    :y ahubu.lib/yank-current-url

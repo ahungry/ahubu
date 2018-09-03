@@ -429,6 +429,16 @@
     ;; TODO: Hmm, if we return false, it does not seem to bubble
     true))
 
+(defn buffers-start []
+  (set-mode :omnibar)
+  (set-tip "BUFFERS")
+  (set-showing-buffers true)
+  (run-later
+   (-> (get-omnibar) (.setText ""))
+   (omnibar-start)
+   (show-buffers)
+   "Overlay.show()"))
+
 (defn quickmark-url [url]
   (default-mode)
   (omnibar-load-url url))
@@ -468,13 +478,20 @@
   (set-tip "FONT"))
 
 (defn quickmarks-mode []
-  (set-tip "QUICKMARKS")
   (set-mode :quickmarks)
+  (set-tip "QUICKMARKS")
+  (dojs "Form.enable()"))
+
+(defn quickmarks-new-tab-mode []
+  (set-mode :quickmarks)
+  (set-tip "QUICKMARKS")
+  (set-new-tab true)
   (dojs "Form.enable()"))
 
 (defn default-mode []
   (set-mode :default)
   (set-tip "NORMAL")
+  (hide-buffers)
   (omnibar-stop)
   (dojs "Hinting.off(); Overlay.hide()"))
 

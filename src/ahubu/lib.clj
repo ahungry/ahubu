@@ -479,25 +479,23 @@
 
 (defn quickmarks-mode []
   (set-mode :quickmarks)
-  (set-tip "QUICKMARKS")
-  (dojs "Form.enable()"))
+  (set-tip "QUICKMARKS"))
 
 (defn quickmarks-new-tab-mode []
-  (set-mode :quickmarks)
-  (set-tip "QUICKMARKS")
   (set-new-tab true)
-  (dojs "Form.enable()"))
+  (quickmarks-mode))
 
 (defn default-mode []
   (set-mode :default)
   (set-tip "NORMAL")
   (hide-buffers)
   (omnibar-stop)
-  (dojs "Hinting.off(); Overlay.hide()"))
+  (dojs "Hinting.off(); Overlay.hide(); Form.disable()"))
 
 (defn insert-mode []
   (set-mode :insert)
-  (set-tip "INSERT"))
+  (set-tip "INSERT")
+  (dojs "Form.enable()"))
 
 (defn hinting-mode []
   (set-mode :hinting)

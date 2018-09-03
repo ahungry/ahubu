@@ -19,7 +19,7 @@
    :G "window.scrollTo(0, window.scrollY + 5000)"
    :z ahubu.lib/font-mode
    :f ahubu.lib/hinting-mode
-   :O ahubu.lib/new-scene
+   :O ahubu.lib/omnibar-open-current
    :F12 ahubu.lib/inject-firebug
    :k "window.scrollTo(window.scrollX, window.scrollY - 50)"
    :j "window.scrollTo(window.scrollX, window.scrollY + 50)"

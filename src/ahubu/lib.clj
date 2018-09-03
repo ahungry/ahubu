@@ -121,6 +121,9 @@
   (run-later
    (-> (get-tip) (.setText s))))
 
+(defn get-omnibar-text []
+  (-> (get-omnibar) .getText))
+
 (defn set-omnibar-text [s]
   (run-later
    (doto (get-omnibar)
@@ -515,6 +518,10 @@
   (omnibar-start)
   (set-omnibar-text ":open ")
   (dojs "Overlay.show()"))
+
+(defn omnibar-open-current []
+  (omnibar-open)
+  (set-omnibar-text (format  ":open %s" (get-omnibar-text))))
 
 (defn omnibar-open-new-tab []
   (set-new-tab true)

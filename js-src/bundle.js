@@ -169,6 +169,7 @@ try {
 
       setTimeout(() => {
         Hinting.off()
+        Overlay.hide()
       }, 50)
     },
 

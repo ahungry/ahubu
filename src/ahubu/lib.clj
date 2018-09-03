@@ -528,21 +528,32 @@
         op (or op? (get rc key))]
     op))
 
+(defn process-op [op]
+  (when op
+    (if (= java.lang.String (type op))
+      (execute-script (get-webengine) op)
+      ((eval op)))))
+
 (defn key-map-handler [key]
   (let [op (key-map-op key)
-        webengine (get-webengine)]
+        op-before (key-map-op :BEFORE)
+        op-after (key-map-op :AFTER)]
 
+    (println (format "KM OP: %s" op-before))
     (println (format "KM OP: %s" op))
+    (println (format "KM OP: %s" op-after))
 
     ;; Global key listeners
     (when (get-showing-buffers?)
       (filter-buffers))
 
-    ;; Find and dispatch on an op
-    (when op
-      (if (= java.lang.String (type op))
-        (execute-script webengine op)
-        ((eval op))))
+    ;; Check for the BEFORE bind (runs with any other keypress)
+    (process-op op-before)
+    (process-op op)
+    (future
+      (Thread/sleep 100)
+      (process-op op-after))
+
     true))                              ; bubble up keypress
 
 ;; ENTER (code) vs <invis> (char), we want ENTER

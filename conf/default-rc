@@ -48,6 +48,7 @@
 
   :font
   {
+   :AFTER ahubu.lib/default-mode
    :o ahubu.lib/decrease-font-size
    :i ahubu.lib/increase-font-size
    "ENTER" ahubu.lib/default-mode
@@ -75,6 +76,7 @@
 
   :quickmarks
   {
+   :AFTER ahubu.lib/default-mode
    :a #(ahubu.lib/quickmark-url "http://ahungry.com")
    :e #(ahubu.lib/quickmark-url "http://example.com")
    :g #(ahubu.lib/quickmark-url "https://github.com/ahungry/ahubu")

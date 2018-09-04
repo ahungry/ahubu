@@ -748,6 +748,7 @@
                     "click"
                     (reify org.w3c.dom.events.EventListener
                       (handleEvent [this event]
+                        (default-mode)
                         (println "I clicked a link, good job")
                         (println (-> el .getTextContent))))
                     false))

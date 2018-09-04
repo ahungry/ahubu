@@ -93,7 +93,9 @@ try {
   var Hinting = {
     map: {},
     mode: false,
-    hints: 'abcdefghijklmnopqrstuvwxyz1234567890'.split(''),
+    // hints: 'abcdefghijklmnopqrstuvwxyz1234567890'.split(''),
+    hints: 'asdfghjkl'.split(''),
+    buf: [],
 
     get_hint (c) {
       var h = document.createElement('div')
@@ -117,11 +119,19 @@ try {
     on () {
       Hinting.map = {}
       var links = document.getElementsByTagName('a')
+      var hp1 = 0
+      var hp2 = 0
 
       for (var i = 0; i < links.length; i++) {
-        if (i > Hinting.hints.length) continue
+        hp2++
 
-        var hint = Hinting.hints[i]
+        // if (i > Hinting.hints.length) continue
+        if (hp2 >= Hinting.hints.length) {
+          hp2 = 0
+          hp1++
+        }
+
+        var hint = Hinting.hints[hp1] + Hinting.hints[hp2]
         var parent = links[i]
 
         if (parent.style.display === 'none' || parent.style.display === 'hidden') continue
@@ -182,7 +192,15 @@ try {
       document.addEventListener('keyup', (e) => {
         if (false === Hinting.mode) return
 
-        Hinting.find(String.fromCharCode(e.keyCode))
+        console.log('Here we go')
+        Hinting.buf.push(String.fromCharCode(e.keyCode))
+
+        if (Hinting.buf.length > 1) {
+          var findit = Hinting.buf.join('')
+          console.log('hint buf:', findit)
+          Hinting.buf = []
+          Hinting.find(findit)
+        }
       })
     }
   }

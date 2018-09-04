@@ -14,7 +14,7 @@ As such, the browser aims to allow this power to shift to what the
 *user* needs and desires (via customization / extensions not just as
 sandboxed javascript, but native code that can hook into everything
 from DOM events, network requests/content, and arbitrary event
-listeners, both in and out of the DOM.
+listeners, both in and out of the DOM).
 
 ## What is it?
 

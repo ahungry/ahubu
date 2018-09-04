@@ -111,7 +111,7 @@ try {
       h.style.left = '0'
       h.style.top = '0'
       h.style.zIndex = '999999999999999999999999999999999999999999999'
-      h.innerHTML = c
+      h.innerHTML = '<span style="color:#af0;">' + c[0] + '</span><span style="color:#f39">' + c[1] + '</span>'
 
       return h
     },
@@ -149,12 +149,23 @@ try {
       setTimeout(() => { Hinting.mode = true }, 200)
     },
 
-    off (display) {
+    off () {
       Object.keys(Hinting.map).map((k) => {
         Hinting.map[k].remove()
       })
 
       Hinting.mode = false
+    },
+
+    // Remove if the first digit of key does not match
+    offIfNot (c) {
+      Object.keys(Hinting.map).map((k) => {
+        if (k[0] !== c) {
+          Hinting.map[k].remove()
+        } else {
+          Hinting.map[k].getElementsByTagName('span')[0].style.color = '#666'
+        }
+      })
     },
 
     // Simulate an event
@@ -192,12 +203,14 @@ try {
       document.addEventListener('keyup', (e) => {
         if (false === Hinting.mode) return
 
-        console.log('Here we go')
-        Hinting.buf.push(String.fromCharCode(e.keyCode))
+        var char = String.fromCharCode(e.keyCode).toLowerCase()
+
+        Hinting.buf.push(char)
+        Hinting.offIfNot(char)
 
         if (Hinting.buf.length > 1) {
           var findit = Hinting.buf.join('')
-          console.log('hint buf:', findit)
+
           Hinting.buf = []
           Hinting.find(findit)
         }

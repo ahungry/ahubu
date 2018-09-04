@@ -100,6 +100,7 @@ try {
 
       h.style.backgroundColor = 'rgba(0,0,0,.6)'
       h.style.fontFamily = 'Iosevka, monospace'
+      h.style.fontSize = '16px'
       h.style.fontWeight = 'bold'
       h.style.padding = '3px'
       h.style.borderRadius = '3px'

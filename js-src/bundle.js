@@ -118,7 +118,8 @@ try {
       var links = document.getElementsByTagName('a')
 
       for (var i = 0; i < links.length; i++) {
-        var hint = i > Hinting.hints.length ? '' : Hinting.hints[i]
+        if (i > Hinting.hints.length) continue
+        var hint = Hinting.hints[i]
         var parent = links[i]
 
         // This could maybe break some floating links or something...

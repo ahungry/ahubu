@@ -15,7 +15,7 @@ shipit: dist.tar.gz
 dist.tar.gz: dist
 	tar czvf dist.tar.gz dist
 
-dist:
+dist: clean
 	mkdir dist
 	lein deps
 	lein uberjar

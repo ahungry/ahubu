@@ -16,6 +16,27 @@ sandboxed javascript, but native code that can hook into everything
 from DOM events, network requests/content, and arbitrary event
 listeners, both in and out of the DOM).
 
+<!-- markdown-toc start - Don't edit this section. Run M-x markdown-toc-refresh-toc -->
+**Table of Contents**
+
+- [AHUBU (ahungry-browser)](#ahubu-ahungry-browser)
+    - [AHUBU Helps Users Be Utilitarian](#ahubu-helps-users-be-utilitarian)
+    - [What is it?](#what-is-it)
+        - [Why?](#why)
+    - [Installation](#installation)
+        - [Java Dependencies](#java-dependencies)
+            - [Arch Linux](#arch-linux)
+            - [Ubuntu 18.04](#ubuntu-1804)
+    - [Usage](#usage)
+    - [Options](#options)
+        - [Custom keybinds/behavior](#custom-keybindsbehavior)
+        - [Network Filtering](#network-filtering)
+        - [Hooks](#hooks)
+    - [License](#license)
+
+<!-- markdown-toc end -->
+
+
 ## What is it?
 
 A very customizable browser - initial keybindings are a mesh

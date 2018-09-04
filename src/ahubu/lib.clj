@@ -121,9 +121,9 @@
 (defn set-tip [s]
   (let [style (case s
                 "NORMAL" "-fx-text-fill: #af0; -fx-background-color: #000;"
-                "INSERT" "-fx-text-fill: #000; -fx-background-color: #36a"
-                "GO" "-fx-text-fill: #000; -fx-background-color: #36f"
-                "OMNI" "-fx-text-fill: #000; -fx-background-color: #f36"
+                "OMNI" "-fx-text-fill: #000; -fx-background-color: #36f"
+                "GO" "-fx-text-fill: #000; -fx-background-color: #f69"
+                "INSERT" "-fx-text-fill: #000; -fx-background-color: #f36"
                 "HINTING" "-fx-text-fill: #000; -fx-background-color: #f63"
                 "BUFFERS" "-fx-text-fill: #000; -fx-background-color: #63f"
                 "-fx-text-fill: #000; -fx-background-color: #af0")]
@@ -800,6 +800,9 @@
                              (= old-value Worker$State/SCHEDULED))
                     (println "The running and schedule change")
                     (execute-script webengine js-bundle))
+
+                  (when (not (= new-value Worker$State/SUCCEEDED))
+                    (set-omnibar-text "Loading"))
 
                   (when (= new-value Worker$State/SUCCEEDED)
                     ;; (.removeListener observable this)

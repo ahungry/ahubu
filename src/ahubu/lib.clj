@@ -779,6 +779,11 @@
        ;; Clean up this mess
        (doto webengine
 
+         ;; (.onStatusChanged
+         ;;  (reify javafx.event.EventHandler
+         ;;    (handle [this event]
+         ;;      (println "On status change"))))
+
          (.setOnAlert
           (reify javafx.event.EventHandler
             (handle [this event]
@@ -790,6 +795,12 @@
              (.addListener
               (reify ChangeListener
                 (changed [this observable old-value new-value]
+
+                  (when (and (= new-value Worker$State/RUNNING)
+                             (= old-value Worker$State/SCHEDULED))
+                    (println "The running and schedule change")
+                    (execute-script webengine js-bundle))
+
                   (when (= new-value Worker$State/SUCCEEDED)
                     ;; (.removeListener observable this)
                     (println "In boot change listener")
@@ -802,7 +813,6 @@
 
                     ;; map over all the page links on load
                     (-> webengine .getDocument (.getElementsByTagName "a") el-link-fn)
-
                     (-> webengine (.setUserAgent "Mozilla/5.0 (Windows NT 6.1) Gecko/20100101 Firefox/61.0"))
 
                     ;; (-> webengine .getDocument (.getElementById "content")
@@ -812,7 +822,8 @@
                     ;;        (handleEvent [this event]
                     ;;          (javafx.application.Platform/exit)))))
 
-                    (execute-script webengine js-bundle))))))
+                    ;; (execute-script webengine js-bundle)
+                    )))))
 
          (.load (get-default-url))
          ))

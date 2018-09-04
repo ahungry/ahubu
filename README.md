@@ -97,6 +97,8 @@ lein run -m ahubu.core
 
 ## Usage
 
+See: [Docs](docs/index.org "Docs") for user guide.
+
 When it exists, you would run that command below.
 
     $ java -jar ahubu-0.1.0-standalone.jar [args]

@@ -210,6 +210,7 @@
     (doto stage
       (.setOnCloseRequest exit)
       (.setScene scene)
+      (.setTitle "AHUBU")
       (.show))))
 
 (defn execute-script [w-engine s]

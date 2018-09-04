@@ -825,7 +825,7 @@
                     ;;        (handleEvent [this event]
                     ;;          (javafx.application.Platform/exit)))))
 
-                    ;; (execute-script webengine js-bundle)
+                    (execute-script webengine js-bundle)
                     )))))
 
          (.load (get-default-url))

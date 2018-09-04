@@ -30,8 +30,11 @@ try {
       return ob
     },
   }
-  document.body.appendChild(Overlay.create())
-  Overlay.hide()
+
+  if (null === document.getElementById('ab-ob')) {
+    document.body.appendChild(Overlay.create())
+    Overlay.hide()
+  }
   // OVERLAY
 
   // DISABLE FORMS
@@ -229,7 +232,7 @@ try {
     },
 
     bind () {
-      // document.removeEventListener('keyup', Hinting.keyHandler)
+      document.removeEventListener('keyup', Hinting.keyHandler)
       document.addEventListener('keyup', Hinting.keyHandler)
     }
   }

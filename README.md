@@ -76,26 +76,53 @@ When it exists, you would run that command below.
 
 ## Options
 
-Create an rc file in ~/.ahuburc with contents such as this:
+### Custom keybinds/behavior
+
+Create an rc file in ~/.ahuburc with contents such as this (`cp conf/default-rc ~/.ahuburc`):
+
+You can bind any of the following to your key presses:
+
+- A valid Clojure function call (or expression, such as a Clojure lambda)
+- A string literal (this will run as javascript in the browser)
+- A keyword bind can be a keyword letter, OR a string (useful for CTRL + key binds)
+
+At the moment, rebinding :keymaps will require you to fully spec out your custom keymaps,
+so make sure to start with a full config and customize as needed.
 
 ```clojure
+
 ;; -*- mode: clojure -*-
 
-{:quickmarks
-  {
-    :a "http://ahungry.com"
-    :b "http://example.com"
-    :g "https://github.com"
-    :2 "http://example.com"
+{
+ ;; These shadow into the keybinds with a more concise syntax.
+ :quickmarks
+ {
+  :d "http://ddg.gg"
   }
-}
+
+ ;; These tie to the various modes.
+ :keymaps
+ {
+  :default
+  {
+   :z "my_custom_js_call()"
+   :y ahubu.lib/any-builtin-function
+   :x #(println "Hello)
+  }
+ }
 ```
+
+### Network Filtering
 
 Look in conf/url-ignore-regexes.txt for now - any URL patterns you add
 here (newline separated) will be stopped from downloading at the
 browser's network request level (aka, your browser will never even
 attempt to download those requests - effectively blackholing garbage
 you don't care about receiving).
+
+### Hooks
+
+Coming soon
 
 ## License
 

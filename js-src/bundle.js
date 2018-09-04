@@ -94,7 +94,7 @@ try {
     map: {},
     mode: false,
     // hints: 'abcdefghijklmnopqrstuvwxyz1234567890'.split(''),
-    hints: 'asdfghjklqwertyuiopzxcvbnm'.split(''),
+    hints: 'asdfghjklqwertyuiopzxcvbnm1234567890'.split(''),
     buf: [],
     inputThrottled: false,
 

@@ -229,7 +229,7 @@ try {
     },
 
     bind () {
-      document.removeEventListener('keyup', Hinting.keyHandler)
+      // document.removeEventListener('keyup', Hinting.keyHandler)
       document.addEventListener('keyup', Hinting.keyHandler)
     }
   }

@@ -4,19 +4,17 @@
 
 ## AHUBU Helps Users Be Utilitarian
 
-A doctrine that the useful is the good and that the determining
-consideration of right conduct should be the usefulness of its
-consequences; specifically : a theory that the aim of action should be
-the largest possible balance of pleasure over pain or the greatest
-happiness of the greatest number .
+> A doctrine that the useful is the good and that the determining
+> consideration of right conduct should be the usefulness of its
+> consequences; specifically : a theory that the aim of action should be
+> the largest possible balance of pleasure over pain or the greatest
+> happiness of the greatest number .
 
-> Stinson notes that many computer scientists have an implicit
-> orientation to utilitarianism, an ethical theory that aims to maximize
-> happiness for the greatest number by adding up each action’s costs and
-> benefits.
-> —
-> molly driscoll, The Christian Science Monitor, "‘2001: A Space
-> Odyssey’ turns 50: Why HAL endures," 3 Apr. 2018
+As such, the browser aims to allow this power to shift to what the
+*user* needs and desires (via customization / extensions not just as
+sandboxed javascript, but native code that can hook into everything
+from DOM events, network requests/content, and arbitrary event
+listeners, both in and out of the DOM.
 
 ## What is it?
 
@@ -34,33 +32,6 @@ Most the good built in keybind browsers (vimprobable2) have outdated
 web engines with little maintenance, and the new module system on
 Firefox 55+ has weak support for the level of sophistication we need
 in handling these key bindings.
-
-## Todones and Todos
-
-Built in regex based URL filtering (dynamic content
-filtering/replacement to come).
-
-Custom interaction between the website and the ahubu is
-possible thanks to JavaFX allowing 2 way calling (which means, in
-theory, I can set up a per-page Lisp REPL for the user to go way
-beyond standard page scraping integration some other browser add ons
-may do - we could have a bind on each email in a gmail inbox, have the
-page receive dynamically injected javasript, and 'call home' to this
-browser - posting the email subjects to this browser to relay to Emacs
-or whatever other endpoint we wish).
-
-## WARNING
-
-USE AT YOUR OWN RISK.  Make NO assumption of security or protection
-from this naive browser implementation.  It is built on the webkit
-that is bundled with JavaFX (tested only with openjfx in my case).
-
-I'm noodling some ideas for a superior way to standbox a browser such
-as this, and I think it might actually be a good idea to run such a
-browser in an Alpine Docker image - that would mean your browser is
-100% isolated and sandboxed from your host OS (we could allow the
-virtual mount for sharing data between the sandbox and some select
-host OS drive as well).
 
 ## Installation
 

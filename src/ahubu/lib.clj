@@ -119,8 +119,18 @@
   (-> (get-scene-id) get-scene (.lookup "#tip")))
 
 (defn set-tip [s]
-  (run-later
-   (-> (get-tip) (.setText s))))
+  (let [style (case s
+                "NORMAL" "-fx-text-fill: #af0; -fx-background-color: #000;"
+                "INSERT" "-fx-text-fill: #000; -fx-background-color: #36a"
+                "GO" "-fx-text-fill: #000; -fx-background-color: #36f"
+                "OMNI" "-fx-text-fill: #000; -fx-background-color: #f36"
+                "HINTING" "-fx-text-fill: #000; -fx-background-color: #f63"
+                "BUFFERS" "-fx-text-fill: #000; -fx-background-color: #63f"
+                "-fx-text-fill: #000; -fx-background-color: #af0")]
+    (run-later
+     (doto (get-tip)
+       (.setText s)
+       (.setStyle style)))))
 
 (defn get-omnibar-text []
   (-> (get-omnibar) .getText))
@@ -388,6 +398,8 @@
 (defn yank [s]
   (let [content (ClipboardContent.)]
     (run-later
+     (set-tip "YANKED!")
+     (future (Thread/sleep 500) (set-tip "NORMAL"))
      (-> content (.putString s))
      (-> (Clipboard/getSystemClipboard) (.setContent content)))))
 
@@ -688,7 +700,7 @@
 
 (defn filter-buffers []
   (future
-    (Thread/sleep 100)
+    ;; (Thread/sleep 100)
     (let [bufs (get-buffers)
           children (-> bufs .getChildren)]
 

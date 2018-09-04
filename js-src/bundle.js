@@ -120,8 +120,11 @@ try {
 
       for (var i = 0; i < links.length; i++) {
         if (i > Hinting.hints.length) continue
+
         var hint = Hinting.hints[i]
         var parent = links[i]
+
+        if (parent.style.display === 'none' || parent.style.display === 'hidden') continue
 
         // This could maybe break some floating links or something...
         // TODO: Maybe check existing position setting is not absolute first.

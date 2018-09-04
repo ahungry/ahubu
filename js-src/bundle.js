@@ -94,7 +94,7 @@ try {
     map: {},
     mode: false,
     // hints: 'abcdefghijklmnopqrstuvwxyz1234567890'.split(''),
-    hints: 'asdfghjkl'.split(''),
+    hints: 'asdfghjklqwertyuiopzxcvbnm'.split(''),
     buf: [],
     inputThrottled: false,
 
@@ -120,6 +120,7 @@ try {
     on () {
       Hinting.map = {}
       var links = document.getElementsByTagName('a')
+      var hints = Hinting.hints.slice(0, 1 + Math.ceil(Math.sqrt(links.length)))
       var hp1 = 0
       var hp2 = 0
 
@@ -127,12 +128,15 @@ try {
         hp2++
 
         // if (i > Hinting.hints.length) continue
-        if (hp2 >= Hinting.hints.length) {
+        if (hp2 >= hints.length) {
           hp2 = 0
           hp1++
         }
 
-        var hint = Hinting.hints[hp1] + Hinting.hints[hp2]
+        // All links exhausted, so move on
+        if (undefined === hints[hp1] || undefined === hints[hp2]) continue
+
+        var hint = hints[hp1] + hints[hp2]
         var parent = links[i]
 
         if (parent.style.display === 'none' || parent.style.display === 'hidden') continue

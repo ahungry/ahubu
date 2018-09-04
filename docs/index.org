@@ -32,15 +32,57 @@ So, if your file looked like this:
 #+BEGIN_SRC clojure
 ;; -*- mode: clojure -*-
 
-{:quickmarks
-  {
-    :a "http://ahungry.com"
-    :e "http://example.com"
-    :g "https://github.com"
-    :2 "http://example.com"
+{
+ ;; These shadow into the keybinds with a more concise syntax.
+ :quickmarks
+ {
+  :a "http://ahungry.com"
+  :d "http://ddg.gg"
+  :e "http://example.com"
   }
-}
+ }
 #+END_SRC
 
 You could press 'goa' to jump to ahungry.com, or 'gne' to open
 example.com in a new buffer.
+
+** Customizing the behavior / your own quickmarks
+
+Create an rc file in ~/.ahuburc with contents such as this:
+
+#+BEGIN_SRC sh
+ cp conf/default-rc ~/.ahuburc
+#+END_SRC
+
+You can bind any of the following to your key presses:
+
+- A valid Clojure function call (or expression, such as a Clojure lambda)
+- A string literal (this will run as javascript in the browser)
+- A keyword bind can be a keyword letter, OR a string (useful for CTRL + key binds)
+
+At the moment, rebinding :keymaps will require you to fully spec out your custom keymaps,
+so make sure to start with a full config and customize as needed.
+
+#+BEGIN_SRC clojure
+;; -*- mode: clojure -*-
+
+{
+ ;; These shadow into the keybinds with a more concise syntax.
+ :quickmarks
+ {
+  :a "http://ahungry.com"
+  :d "http://ddg.gg"
+  :e "http://example.com"
+  }
+
+ ;; These tie to the various modes.
+ :keymaps
+ {
+  :default
+  {
+   :z "my_custom_js_call()"
+   :y ahubu.lib/any-builtin-function
+   :x #(println "Hello)
+  }
+ }
+#+END_SRC

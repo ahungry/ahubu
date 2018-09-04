@@ -96,8 +96,9 @@ try {
     // hints: 'abcdefghijklmnopqrstuvwxyz1234567890'.split(''),
     hints: 'asdfghjkl'.split(''),
     buf: [],
+    inputThrottled: false,
 
-    get_hint (c) {
+    get_hint (c, p) {
       var h = document.createElement('div')
 
       h.style.backgroundColor = 'rgba(0,0,0,.6)'
@@ -113,7 +114,7 @@ try {
       h.style.zIndex = '999999999999999999999999999999999999999999999'
       h.innerHTML = '<span style="color:#af0;">' + c[0] + '</span><span style="color:#f39">' + c[1] + '</span>'
 
-      return h
+      return { el: h, parent: p }
     },
 
     on () {
@@ -140,8 +141,8 @@ try {
         // TODO: Maybe check existing position setting is not absolute first.
         parent.style.position = 'relative'
 
-        var h = Hinting.get_hint(hint)
-        parent.appendChild(h)
+        var h = Hinting.get_hint(hint, parent)
+        parent.appendChild(h.el)
 
         Hinting.map[hint] = h
       }
@@ -151,7 +152,7 @@ try {
 
     off () {
       Object.keys(Hinting.map).map((k) => {
-        Hinting.map[k].remove()
+        Hinting.map[k].el.remove()
       })
 
       Hinting.mode = false
@@ -161,9 +162,9 @@ try {
     offIfNot (c) {
       Object.keys(Hinting.map).map((k) => {
         if (k[0] !== c) {
-          Hinting.map[k].remove()
+          Hinting.map[k].el.remove()
         } else {
-          Hinting.map[k].getElementsByTagName('span')[0].style.color = '#666'
+          Hinting.map[k].el.getElementsByTagName('span')[0].style.color = '#666'
         }
       })
     },
@@ -191,7 +192,10 @@ try {
         return Hinting.find(c, ++retries)
       }
 
-      Hinting.eventFire(el, 'click')
+      // alert(el.parentNode)
+      // alert(el.parentNode.innerHTML)
+      // alert(el.parentNode.href)
+      Hinting.eventFire(el.parent, 'click')
 
       setTimeout(() => {
         Hinting.off()
@@ -199,22 +203,30 @@ try {
       }, 50)
     },
 
+    keyHandler (e) {
+      if (false === Hinting.mode) return
+
+      // Sometimes input comes through too fast, so delay it
+      if (true === Hinting.inputThrottled) return
+      Hinting.inputThrottled = true
+      setTimeout(() => { Hinting.inputThrottled = false }, 10)
+
+      var char = String.fromCharCode(e.keyCode).toLowerCase()
+
+      Hinting.buf.push(char)
+      Hinting.offIfNot(char)
+
+      if (Hinting.buf.length > 1) {
+        var findit = Hinting.buf.join('')
+
+        Hinting.buf = []
+        Hinting.find(findit)
+      }
+    },
+
     bind () {
-      document.addEventListener('keyup', (e) => {
-        if (false === Hinting.mode) return
-
-        var char = String.fromCharCode(e.keyCode).toLowerCase()
-
-        Hinting.buf.push(char)
-        Hinting.offIfNot(char)
-
-        if (Hinting.buf.length > 1) {
-          var findit = Hinting.buf.join('')
-
-          Hinting.buf = []
-          Hinting.find(findit)
-        }
-      })
+      document.removeEventListener('keyup', Hinting.keyHandler)
+      document.addEventListener('keyup', Hinting.keyHandler)
     }
   }
 

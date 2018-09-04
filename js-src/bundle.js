@@ -210,15 +210,13 @@ try {
       }, 50)
     },
 
-    keyHandler (e) {
+    keyHandler (char) {
       if (false === Hinting.mode) return
 
       // Sometimes input comes through too fast, so delay it
       if (true === Hinting.inputThrottled) return
       Hinting.inputThrottled = true
       setTimeout(() => { Hinting.inputThrottled = false }, 10)
-
-      var char = String.fromCharCode(e.keyCode).toLowerCase()
 
       Hinting.buf.push(char)
       Hinting.offIfNot(char)
@@ -232,12 +230,12 @@ try {
     },
 
     bind () {
-      document.removeEventListener('keyup', Hinting.keyHandler)
-      document.addEventListener('keyup', Hinting.keyHandler)
+      // document.removeEventListener('keyup', Hinting.keyHandler)
+      // document.addEventListener('keyup', Hinting.keyHandler)
     }
   }
 
-  Hinting.bind()
+  // Hinting.bind()
   // END HINTING
 
 } catch (e) {

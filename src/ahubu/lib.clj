@@ -58,6 +58,7 @@
   (atom
    {
     :default-url (format "file://%s/docs/index.html" (System/getProperty "user.dir"))
+    :hinting? false
     :mode :default
     :new-tab? false
     :omnibar-open? false
@@ -511,6 +512,7 @@
   (set-tip "NORMAL")
   (hide-buffers)
   (omnibar-stop)
+  (swap! world conj {:hinting? false})
   (dojs "Hinting.off(); Overlay.hide(); Form.disable()"))
 
 (defn insert-mode []
@@ -521,6 +523,7 @@
 (defn hinting-mode []
   (set-mode :hinting)
   (set-tip "HINTING")
+  (swap! world conj {:hinting? true})
   (dojs "Hinting.on(); Overlay.show()"))
 
 (defn inject-firebug []
@@ -573,6 +576,10 @@
     ;; Global key listeners
     (when (get-showing-buffers?)
       (filter-buffers))
+
+    (when (:hinting? @world)
+      (dojs (format "Hinting.keyHandler('%s')" key))
+      (println (format  "HINTING: %s" key)))
 
     ;; Check for the BEFORE bind (runs with any other keypress)
     (process-op op-before)

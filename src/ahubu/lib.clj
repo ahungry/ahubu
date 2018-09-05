@@ -578,9 +578,9 @@
         op-before (key-map-op :BEFORE)
         op-after (key-map-op :AFTER)]
 
-    (println (format "KM OP: %s" op-before))
-    (println (format "KM OP: %s" op))
-    (println (format "KM OP: %s" op-after))
+    ;; (println (format "KM OP: %s" op-before))
+    ;; (println (format "KM OP: %s" op))
+    ;; (println (format "KM OP: %s" op-after))
 
     ;; Global key listeners
     (when (get-showing-buffers?)

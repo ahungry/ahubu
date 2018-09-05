@@ -1,2 +1,7 @@
 .*analytics.*
 .*pagead.*
+.*adservice.*
+.*adsystem.*
+.*pubads.*
+.*pixel.*
+.*ads.*

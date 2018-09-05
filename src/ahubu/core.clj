@@ -7,12 +7,12 @@
             )
   (:gen-class))
 
-(defn -main []
+(defn -main [& args]
   (println "Starting version 0.0.0")
   (b/boot)
   (do
-    (Thread/sleep 100)
-    (l/async-load (l/get-default-url))
+    (Thread/sleep 500)
+    (l/async-load (if args (first args) (l/get-default-url)))
     ;; (l/async-load "http://ahungry.com")
     )
   ;; (l/inject-firebug b/webengine)

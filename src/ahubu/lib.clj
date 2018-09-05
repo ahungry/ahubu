@@ -681,7 +681,7 @@
             (cond
               (re-matches #"^:.*" n) (omnibar-handle-command n)
               (re-matches #"^file:.*" n) n
-              (re-matches #"^http:.*" n) n
+              (re-matches #"^http[s]*:.*" n) n
               (re-matches #".*\..*" n) (format "http://%s" n)
               :else (format "https://duckduckgo.com/lite/?q=%s" n)
               )]
@@ -809,7 +809,8 @@
                     (execute-script webengine js-bundle))
 
                   (when (not (= new-value Worker$State/SUCCEEDED))
-                    (set-omnibar-text "Loading"))
+                    (set-omnibar-text
+                     (format "Loading :: %s" (-> webengine .getLocation))))
 
                   (when (= new-value Worker$State/SUCCEEDED)
                     ;; (.removeListener observable this)

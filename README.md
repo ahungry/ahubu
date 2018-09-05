@@ -102,7 +102,9 @@ When it exists, you would run that command below.
 
 ### Custom keybinds/behavior
 
-Create an rc file in ~/.ahuburc with contents such as this (`cp conf/default-rc ~/.ahuburc`):
+Ahubu looks for configuration in `$HOME/.ahuburc` and `$XDG_CONFIG_HOME/ahubu/ahuburc`,
+which overrides the defaults. To get started customizing, copy the default from
+`conf/default-rc` in this project to either of those locations and modify accordingly.
 
 You can bind any of the following to your key presses:
 

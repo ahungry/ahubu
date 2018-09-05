@@ -191,15 +191,17 @@
       java.net.CookieHandler/setDefault)))
 
 (defn quietly-set-stream-factory []
-  (try
-    (def stream-handler-factory
-      (URL/setURLStreamHandlerFactory
-       (reify URLStreamHandlerFactory
-         (createURLStreamHandler [this protocol] (#'my-connection-handler protocol)))))
-    (catch Throwable e
-      ;; TODO: Attempt to force set with reflection maybe - although this is usually good enough.
-      ;; TODO: Make sure this isn't some big performance penalty.
-      )))
+  (WebUIController/stfuAndSetURLStreamHandlerFactory)
+  ;; (try
+  ;;   (def stream-handler-factory
+  ;;     (URL/setURLStreamHandlerFactory
+  ;;      (reify URLStreamHandlerFactory
+  ;;        (createURLStreamHandler [this protocol] (#'my-connection-handler protocol)))))
+  ;;   (catch Throwable e
+  ;;     ;; TODO: Attempt to force set with reflection maybe - although this is usually good enough.
+  ;;     ;; TODO: Make sure this isn't some big performance penalty.
+  ;;     ))
+  )
 
 (defn -start [this stage]
   (let [
@@ -753,8 +755,8 @@
           (let [el (-> els (.item i))]
             ;; https://docs.oracle.com/cd/E13222_01/wls/docs61/xerces/org/apache/html/dom/HTMLAnchorElementImpl.html
             ;; (-> el (.setTextContent  "OH WEL"))
-            (println (-> el .getTextContent))
-            (println (-> el (.getAttribute "href")))
+            ;; (println (-> el .getTextContent))
+            ;; (println (-> el (.getAttribute "href")))
 
             (-> el (.addEventListener
                     "click"

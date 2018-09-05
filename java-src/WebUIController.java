@@ -14,17 +14,19 @@ import javafx.scene.web.WebView;
 import javafx.event.EventHandler;
 import javafx.scene.input.KeyEvent;
 
-/**
- *
- * @author Alvin Tabontabon
- */
+import java.net.URLStreamHandlerFactory;
+import java.lang.reflect.Field;
+
 public class WebUIController implements Initializable {
 
   @FXML
   TextField txtURL;
+
   @FXML
   WebView webView;
+
   private WebEngine webEngine;
+
   public static WebEngine engine;
   public static WebView view;
 
@@ -40,10 +42,28 @@ public class WebUIController implements Initializable {
     //webEngine.load(txtURL.getText().startsWith("http") ? txtURL.getText() : "http://" + txtURL.getText());
   }
 
+  public static String stfuAndSetURLStreamHandlerFactory() {
+    try {
+      Field f = URL.class.getDeclaredField("factory");
+      f.setAccessible(true);
+      Object curFac = f.get(null);
+      f.set(null, null);
+
+      URL.setURLStreamHandlerFactory(new MyUrlStreamHandlerFactory());
+      // System.out.println("Set the factory, yes!");
+
+      return curFac.getClass().getName();
+    } catch (Exception e) {
+      return null;
+    }
+  }
+
   @Override
   public void initialize(URL url, ResourceBundle rb) {
     // TODO: Why is this being hit twice?
     System.out.println("INITIALIZE WAS CALLED!!!");
+
+    WebUIController.stfuAndSetURLStreamHandlerFactory();
 
     webEngine = webView.getEngine();
     engine = webEngine;

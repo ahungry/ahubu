@@ -1,4 +1,2 @@
 .*analytics.*
 .*pagead.*
-.*\.css$
-.*\.js$

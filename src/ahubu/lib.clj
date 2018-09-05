@@ -279,6 +279,11 @@
   (-> cookie-manager .getCookieStore .removeAll))
 
 (defn async-load [url]
+  (run-later
+   (doto (get-webengine)
+     (.load url))))
+
+(defn async-loadx [url]
   (let [
         webengine (get-webengine)
         p (promise)

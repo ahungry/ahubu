@@ -82,7 +82,7 @@ public class WebUIController implements Initializable {
         @Override
         public void handle(KeyEvent event)
         {
-          System.out.println("Key pushed\n");
+          // System.out.println("Key pushed\n");
           // currentlyActiveKeys.add(event.getCode().toString());
         }
       });

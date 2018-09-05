@@ -588,7 +588,8 @@
 
     (when (:hinting? @world)
       (dojs (format "Hinting.keyHandler('%s')" key))
-      (println (format  "HINTING: %s" key)))
+      ;; (println (format  "HINTING: %s" key))
+      )
 
     ;; Check for the BEFORE bind (runs with any other keypress)
     (process-op op-before)
@@ -615,7 +616,7 @@
         (handle [this event]
           (let [ecode (-> event .getCode .toString)
                 etext (-> event .getText .toString)]
-            (println (get-readable-key ecode etext))
+            ;; (println (get-readable-key ecode etext))
             ;; (.consume event)
             ;; disable webview here, until some delay was met
             ;; https://stackoverflow.com/questions/27038443/javafx-disable-highlight-and-copy-mode-in-webengine
@@ -784,7 +785,6 @@
      (map #(remove-annoying-div dom %) ids))))
 
 (defn remove-annoying-class [dom class-name]
-  (println class-name)
   (let [els (-> dom (.getElementsByClassName class-name))]
     (doall
      (map
@@ -796,7 +796,6 @@
 
 (defn remove-annoying-classes [dom]
   (let [ids (str/split (slurp "conf/dom-class-ignores.txt") #"\n")]
-    (println ids)
     (doall
      (map #(remove-annoying-class dom %) ids))))
 
@@ -852,7 +851,7 @@
                     (println "In boot change listener")
                     ;; https://docs.oracle.com/javase/8/javafx/api/javafx/scene/web/WebEngine.html
                     (println (-> webengine .getLocation))
-                    (println (-> webengine .getDocument .toString))
+                    ;; (println (-> webengine .getDocument .toString))
 
                     ;; When a thing loads, set the URL to match
                     (set-omnibar-text-to-url)

@@ -57,6 +57,7 @@
 (def world
   (atom
    {
+    :cross-domain-url ""
     :default-url (format "file://%s/docs/index.html" (System/getProperty "user.dir"))
     :hinting? false
     :mode :default
@@ -166,10 +167,38 @@
         true)
       false)))
 
+(defn get-base-domain-pattern [s]
+  (let [[_ fqdn] (re-matches #".*?://(.*?)[/.$]*" s)]
+    (if fqdn
+      (let [domain-parts (-> (str/split fqdn #"\.") reverse)
+            domain (-> (into [] domain-parts) (subvec 0 2))]
+        (if domain
+          (re-pattern
+           (format "^http[s]*://(.*\\.)*%s\\.%s/.*"
+                   (second domain)
+                   (first domain)))
+          #".*")) #".*")))
+
+;; Work with a sort of timeout here - cross domain base is set strictly after
+;; first URL request, then lax again after some time has expired.
+;; FIXME: Handle root domain logic better - when to flip/flop cross domain setting
+;; TODO: Add cross domain user setting
+(defn block-cross-domain-net?x [url]
+  (let [domain (get-base-domain-pattern (:cross-domain-url @world))]
+    (swap! world conj {:cross-domain-url url})
+    (future (Thread/sleep 5000) (swap! world conj {:cross-domain-url ""}))
+    (if (not (re-matches (re-pattern domain) url))
+      (do (println (format "Blocking X-Domain request: %s" url))
+          (println domain)
+          true)
+      false)))
+
+(defn block-cross-domain-net? [_ ] false)
+
 (defn url-or-no [url proto]
   (let [url (.toString url)]
     (URL.
-     (if (url-ignorable? url)
+     (if (or (url-ignorable? url) (block-cross-domain-net? url))
        (format "%s://0.0.0.0:65535" proto)
        url))))
 

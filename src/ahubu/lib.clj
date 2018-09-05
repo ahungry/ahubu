@@ -148,7 +148,9 @@
      (-> (get-webengine) .getLocation))))
 
 (defn url-ignore-regexes-from-file [file]
-  (map re-pattern (str/split (slurp file) #"\n")))
+  (map re-pattern
+       (map #(format ".*%s.*" %)
+            (str/split (slurp file) #"\n"))))
 
 (defn url-ignore-regexes []
   (url-ignore-regexes-from-file "conf/url-ignore-regexes.txt"))

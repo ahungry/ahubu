@@ -1,7 +1,7 @@
-.*analytics.*
-.*pagead.*
-.*adservice.*
-.*adsystem.*
-.*pubads.*
-.*pixel.*
-.*ads.*
+analytics
+pagead
+adservice
+adsystem
+pubads
+pixel
+ads

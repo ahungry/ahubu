@@ -5,6 +5,7 @@
  :quickmarks
  {
   :d "http://ddg.gg"
+  :s "https://stackoverflow.com"
   }
 
  ;; These tie to the various modes.
@@ -78,6 +79,8 @@
    :AFTER ahubu.lib/default-mode
    :a #(ahubu.lib/quickmark-url "http://ahungry.com")
    :e #(ahubu.lib/quickmark-url "http://example.com")
+   :d #(ahubu.lib/quickmark-url "http://ddg.gg")
+   :s #(ahubu.lib/quickmark-url "https://stackoverflow.com")
    :g #(ahubu.lib/quickmark-url "https://github.com/ahungry/ahubu")
    "ENTER" ahubu.lib/default-mode
    "ESCAPE" ahubu.lib/default-mode

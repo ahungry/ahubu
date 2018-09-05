@@ -46,8 +46,21 @@ So, if your file looked like this:
 You could press 'goa' to jump to ahungry.com, or 'gne' to open
 example.com in a new buffer.
 
-** Customizing the behavior / your own quickmarks
+** Customizing the behavior
+*** Filters
+**** Network level
+Look at this project's conf/url-ignore-regexes.txt file to add your
+own list of regexes to exclude from requesting.
 
+**** DOM id level
+Look at the project's conf/dom-id-ignores.txt file to add your own
+list of DOM IDs to exclude from rendering.
+
+**** DOM class level
+Look at the project's conf/dom-class-ignores.txt file to add your own
+list of DOM class identifiers to exclude from rendering.
+
+*** Quickmarks and Keybinds
 Create an rc file in ~/.ahuburc with contents such as this:
 
 #+BEGIN_SRC sh

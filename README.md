@@ -56,9 +56,15 @@ in handling these key bindings.
 
 ## Installation
 
-Make sure you have a java distribution with openjfx available (on Arch
-Linux openjdk + openjfx worked out of the box.  On Ubuntu 18.04 I
-needed to do some extra work).
+If you want to run from lein to play with the source and interactive REPL, ensure you have lein installed
+(https://leiningen.org/) as well as a JDK that supports JavaFX
+(openjdk-8-jdk and openjfx will work on most distros - later versions
+of openjdk beyond 9 do not allow side installs of openjfx, nor do most
+distros ship with it pre-compiled in).
+
+On Arch Linux, just installing latest openjdk + openjfx worked out of
+the box.  On Ubuntu 18.04, special care must be taken to use the Java
+version 8 instead of the 11 preview.
 
 ### Java Dependencies
 
@@ -71,11 +77,8 @@ Just install openjdk and openjfx
 Install this:
 
 ```sh
-sudo add-apt-repository ppa:linuxuprising/java
-sudo apt update
-sudo apt install oracle-java10-installer # accept the license
-sudo apt install oracle-java10-set-default
-sudo apt install libcanberra-gtk3-dev libcanberra-gtk-module
+sudo apt install openjdk-8-jdk openjfx
+sudo update-alternatives --config java # Select java 8
 ```
 
 Run the following (until I am distributing the uberjar to run a standalone):

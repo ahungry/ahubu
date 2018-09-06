@@ -8,7 +8,7 @@
 <?import javafx.scene.web.*?>
 
 
-<AnchorPane id="AnchorPane" prefHeight="371.0" prefWidth="431.0" xmlns:fx="http://javafx.com/fxml" fx:controller="WebUIController">
+<AnchorPane id="AnchorPane" prefHeight="600.0" prefWidth="800.0" xmlns:fx="http://javafx.com/fxml" fx:controller="WebUIController">
   <stylesheets>
     <String fx:value="styles.css" />
   </stylesheets>

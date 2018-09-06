@@ -267,11 +267,7 @@ if (undefined === Overlay) {
       incrementalFind (c) {
         if (c.length === 1 && /[A-Za-z0-9]{1}/.test(c)) {
           Search.term += c
-          clearTimeout(Search.timeout)
-
-          Search.timeout = setTimeout(() => {
-            Search.find(Search.term)
-          }, 500)
+          Search.find(Search.term)
         }
       },
 
@@ -306,16 +302,20 @@ if (undefined === Overlay) {
         overlay.innerHTML = s
       },
 
+      clearOldMatches () {
+        var el = document.getElementsByClassName('re-find')[0]
+
+        while (undefined !== el) {
+          el.outerHTML = el.innerHTML
+          el = document.getElementsByClassName('re-find')[0]
+        }
+      },
+
       find (s) {
         Search.addOverlay(s)
         Search.candidates = []
         Search.idx = 0
-
-        var els = document.getElementsByClassName('re-find')
-
-        for (var i = 0; i < els.length; i++) {
-          els[i].outerHTML = els[i].innerHTML
-        }
+        Search.clearOldMatches()
 
         var re = new RegExp(s, 'gi')
         var all = document.getElementsByTagName("*")

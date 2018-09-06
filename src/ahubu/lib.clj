@@ -402,14 +402,15 @@
   (omnibar-load-url url))
 
 (defn get-rc-file-raw []
-  (let [defaults (read-string (slurp "conf/default-rc"))]
-    (try
-      (conj
-       defaults
-       (read-string (slurp (format "%s/.ahuburc" (System/getProperty "user.home")))))
-      (catch Throwable t
-        (println t)
-        defaults))))
+  (let [defaults (read-string (slurp "conf/default-rc"))
+        home-rc (format "%s/.ahuburc" (System/getProperty "user.home"))
+        xdg-rc (format "%s/ahubu/ahuburc" (System/getenv "XDG_CONFIG_HOME"))]
+    (conj
+      defaults
+      (if (.exists (clojure.java.io/file home-rc))
+        (read-string (slurp home-rc)))
+      (if (.exists (clojure.java.io/file xdg-rc))
+        (read-string (slurp xdg-rc))))))
 
 (defn get-rc-file []
   (let [rc (get-rc-file-raw)

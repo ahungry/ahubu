@@ -26,8 +26,6 @@
  :name com.ahungry.Browser)
 
 (declare delete-current-scene)
-(declare keys-g-map)
-(declare keys-default)
 (declare bind-keys)
 (declare new-scene)
 (declare goto-scene)
@@ -333,7 +331,6 @@
                        (bind "println" f webengine)
                        (future
                          (Thread/sleep 1000)
-                         ;; (execute-script webengine js-disable-inputs)
                          (execute-script webengine "console.log = function(s) {println.invoke(s)};
                                                  console.error = function(s) {println.invoke(s)};
                                                  "))
@@ -347,12 +344,6 @@
 
 (defn back [webengine]
   (execute-script webengine "window.history.back()"))
-
-;; Atomic (thread safe), pretty neat.
-(def key-map-current (atom :default))
-(defn key-map-set [which] (swap! key-map-current (fn [_] which)))
-(defn key-map-get [] @key-map-current)
-;; TODO: Add numeric prefixes for repeatables
 
 (defn prev-scene []
   (default-mode)
@@ -370,20 +361,7 @@
       (goto-scene 0)
       (goto-scene id))))
 
-(defn keys-g-map [key]
-  (case key
-    "g" (do (key-map-set :default) "window.scrollTo(0, 0)")
-    "i" (do (set-tip "INSERT") (key-map-set :insert) "Form.enable()")
-    "o" (key-map-set :quickmarks)
-    "n" (do
-          (set-new-tab true)
-          (key-map-set :quickmarks))
-    "T" (do (key-map-set :default) (prev-scene))
-    "t" (do (key-map-set :default) (next-scene))
-    true))
-
 (defn omnibar-stop []
-  (key-map-set :default)
   (swap! world conj {:omnibar-open? false})
   (run-later
    (future (Thread/sleep 100) (set-omnibar-text-to-url))
@@ -391,48 +369,10 @@
    (doto (get-webview) (.setDisable false))))
 
 (defn omnibar-start []
-  (key-map-set :omnibar)
   (swap! world conj {:omnibar-open? true})
   (run-later
    (doto (get-omnibar) (.setDisable false) (.requestFocus))
    (doto (get-webview) (.setDisable true))))
-
-;; TODO: Timing event - Hinting.off should run after js link visit does
-(defn keys-hinting-map [key]
-  (case key
-    "ESCAPE" (do (set-tip "NORMAL") (key-map-set :default) "Overlay.hide(); Hinting.off(); ")
-    (do (set-tip "NORMAL") (key-map-set :default) "Overlay.hide(); setTimeout(Hinting.off, 200)")))
-
-(defn keys-insert-map [key]
-  (case key
-    "ESCAPE" (do (set-tip "NORMAL") (key-map-set :default) "Form.disable()")
-    true))
-
-(defn keys-fontsize-map [key]
-  (key-map-set :default)
-  (case key
-    "o" (decrease-font-size)
-    "i" (increase-font-size)
-    true))
-
-;; This is basically 'escape' mode -
-(defn keys-omnibar-map [key]
-  (when (get-showing-buffers?)
-    (filter-buffers))
-  (case key
-    "ENTER" (do (omnibar-stop) (set-tip "NORMAL") "Overlay.hide()")
-    "ESCAPE" (do (set-showing-buffers false) (hide-buffers) (omnibar-stop) (set-tip "NORMAL") "Overlay.hide()")
-    ;; Default is to dispatch on the codes.
-    (let [ccodes (map int key)]
-      (println "In omnibar map with codes: ")
-      (println ccodes)
-      ;; Newline types
-      (when (or (= '(10) ccodes)        ; ret
-                (= '(13) ccodes)
-                (= '(27) ccodes)        ; escape
-                )
-        (do (omnibar-stop) (set-tip "NORMAL") "Overlay.hide()"))
-      true)))
 
 (defn yank [s]
   (let [content (ClipboardContent.)]
@@ -444,50 +384,6 @@
 
 (defn yank-current-url []
   (-> (get-webengine) .getLocation yank))
-
-(defn keys-def-map [key]
-  (case key
-    "g" (key-map-set :g)
-    "d" (delete-current-scene)
-    "y" (yank-current-url)
-    "G" "window.scrollTo(0, window.scrollY + 5000)"
-    "z" (key-map-set :fontsize)
-    "f" (do (set-tip "HINTING") (key-map-set :hinting) "Hinting.on(); Overlay.show()" )
-    "F12" (slurp "js-src/inject-firebug.js")
-    "k" "window.scrollTo(window.scrollX, window.scrollY - 50)"
-    "j" "window.scrollTo(window.scrollX, window.scrollY + 50)"
-    "h" "window.scrollTo(window.scrollX - 50, window.scrollY)"
-    "l" "window.scrollTo(window.scrollX + 50, window.scrollY)"
-    "c" "document.body.innerHTML=''"
-    "r" "window.location.reload()"
-    "a" "alert(1)"
-    "" "window.history.back()"        ; C-o
-    "	" "window.history.forward()"    ; C-i
-    ;; "b" "confirm('you sure?')"
-    ;; "o" (do (key-map-set :omnibar) (slurp "js-src/omnibar.js"))
-    "O" (new-scene)
-    "t" (do
-          (set-new-tab true)
-          (key-map-set :omnibar)
-          (omnibar-start)
-          "Overlay.show()")
-    "DIGIT1" (goto-scene 0)
-    "DIGIT2" (goto-scene 1)
-    "DIGIT3" (goto-scene 2)
-    "b" (do (key-map-set :omnibar)
-            (set-tip "BUFFERS")
-            (set-showing-buffers true)
-            (run-later
-             (-> (get-omnibar) (.setText "")))
-            (omnibar-start)
-            (show-buffers)
-            "Overlay.show()")
-    "o" (do (key-map-set :omnibar)
-            (set-tip "OMNI")
-            (omnibar-start)
-            "Overlay.show()")
-    ;; TODO: Hmm, if we return false, it does not seem to bubble
-    true))
 
 (defn buffers-start []
   (set-mode :omnibar)
@@ -521,13 +417,6 @@
     (conj rc
           {:keymaps (conj (:keymaps rc)
                           {:quickmarks merged-qms})})))
-
-(defn keys-quickmarks-map [key]
-  (key-map-set :default)
-  (let [rc (:quickmarks (get-rc-file))
-        url (get rc (keyword key))]
-    (quickmark-url url))
-  true)
 
 (defn go-mode []
   (set-mode :go)
@@ -650,7 +539,6 @@
             ;; disable webview here, until some delay was met
             ;; https://stackoverflow.com/questions/27038443/javafx-disable-highlight-and-copy-mode-in-webengine
             ;; https://docs.oracle.com/javase/8/javafx/api/javafx/scene/web/WebView.html
-            ;; (execute-script webengine js-disable-inputs)
             (key-map-handler (get-readable-key ecode etext)))
           false
           ))))))

@@ -242,24 +242,26 @@ if (undefined === Overlay) {
     // BEGIN Search
     var Search = {
       candidates: [],
+      direction: 0,
       idx: 0,
       term: '',
       timeout: null,
 
       styleActive (el) {
-        el.style.backgroundColor = '#af0'
-        el.style.fontWeight = 'bold'
-        el.style.textDecoration = 'underline'
+        el.style.backgroundColor = 'rgba(255,200,0,.8)'
+        el.style.borderRadius = '3px'
+        el.style.padding = '5px'
       },
 
       styleInActive (el) {
-        el.style.backgroundColor = '#af0'
-        el.style.fontWeight = 'normal'
-        el.style.textDecoration = 'none'
+        el.style.backgroundColor = 'rgba(255,200,0,.4)'
+        el.style.borderRadius = '3px'
+        el.style.padding = '5px'
       },
 
       prev () {
-        var el = Search.candidates[Search.idx]
+        Search.direction = 1
+        var el = Search.candidates[Search.idx - Search.direction + 1]
 
         Search.doAll('re-find', (el) => {
           Search.styleInActive(el)
@@ -278,7 +280,8 @@ if (undefined === Overlay) {
       },
 
       next () {
-        var el = Search.candidates[Search.idx]
+        Search.direction = -1
+        var el = Search.candidates[Search.idx + Search.direction + 1]
 
         Search.doAll('re-find', (el) => {
           Search.styleInActive(el)
@@ -296,10 +299,18 @@ if (undefined === Overlay) {
         }
       },
 
+      timeout: null,
+
       incrementalFind (c) {
         if (c.length === 1 && /[A-Za-z0-9]{1}/.test(c)) {
           Search.term += c
-          Search.find(Search.term)
+          Search.addOverlay(Search.term)
+
+          clearTimeout(Search.timeout)
+
+          Search.timeout = setTimeout(() => {
+            Search.find(Search.term)
+          }, 500)
         }
       },
 
@@ -359,6 +370,7 @@ if (undefined === Overlay) {
 
         for (var i = 0; i < all.length; i++) {
           if (all[i].children.length > 0) continue
+          if (all[i].style.display === 'none' || all[i].style.display === 'hidden') continue
           if (all[i].id === 'search-overlay') continue
 
           if (re.test(all[i].innerHTML)) {

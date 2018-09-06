@@ -246,21 +246,53 @@ if (undefined === Overlay) {
       term: '',
       timeout: null,
 
+      styleActive (el) {
+        el.style.backgroundColor = '#af0'
+        el.style.fontWeight = 'bold'
+        el.style.textDecoration = 'underline'
+      },
+
+      styleInActive (el) {
+        el.style.backgroundColor = '#af0'
+        el.style.fontWeight = 'normal'
+        el.style.textDecoration = 'none'
+      },
+
       prev () {
         var el = Search.candidates[Search.idx]
 
+        Search.doAll('re-find', (el) => {
+          Search.styleInActive(el)
+        })
+
         if (undefined !== el) {
           window.scrollTo(0, el.offsetTop - window.innerHeight / 2)
-          Search.idx = Math.max(0, Search.idx - 1)
+          Search.styleActive(el)
+
+          Search.idx--
+
+          if (Search.idx < 0) {
+            Search.idx = Search.candidates.length - 1
+          }
         }
       },
 
       next () {
         var el = Search.candidates[Search.idx]
 
+        Search.doAll('re-find', (el) => {
+          Search.styleInActive(el)
+        })
+
         if (undefined !== el) {
           window.scrollTo(0, el.offsetTop - window.innerHeight / 2)
-          Search.idx = Math.min(Number(Search.candidates.length - 1), Number(Search.idx) + 1)
+          Search.styleActive(el)
+
+          Search.idx++
+
+          if (Search.idx >= Search.candidates.length) {
+            Search.idx = 0
+          }
         }
       },
 
@@ -279,10 +311,6 @@ if (undefined === Overlay) {
 
       addOverlay (s) {
         var overlay = document.getElementById('search-overlay')
-
-        if (null !== overlay) {
-          overlay.remove()
-        }
 
         if (null === overlay) {
           overlay = document.createElement('div')
@@ -311,6 +339,14 @@ if (undefined === Overlay) {
         }
       },
 
+      doAll (sel, afn) {
+        var els = document.getElementsByClassName(sel)
+
+        for (var i = 0; i < els.length; i++) {
+          afn(els[i])
+        }
+      },
+
       find (s) {
         Search.addOverlay(s)
         Search.candidates = []
@@ -319,23 +355,25 @@ if (undefined === Overlay) {
 
         var re = new RegExp(s, 'gi')
         var all = document.getElementsByTagName("*")
+        var candidates = []
 
         for (var i = 0; i < all.length; i++) {
           if (all[i].children.length > 0) continue
           if (all[i].id === 'search-overlay') continue
 
           if (re.test(all[i].innerHTML)) {
-            Search.candidates.push(all[i])
+            candidates.push(all[i])
           }
         }
 
         // We have to modify the element outside the loop to avoid infinite loop
-        for (var i = 0; i < Search.candidates.length; i++) {
-          Search.candidates[i].innerHTML = Search.candidates[i].innerHTML
+        for (var i = 0; i < candidates.length; i++) {
+          candidates[i].innerHTML = candidates[i].innerHTML
             .replace(re, '<span class="re-find" style="background-color:#af0 !important;">' +
               s + '</span>')
         }
 
+        Search.candidates = document.getElementsByClassName('re-find')
         Search.next()
       }
     }

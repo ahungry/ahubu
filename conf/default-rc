@@ -21,7 +21,7 @@
    :z ahubu.lib/font-mode
    :f ahubu.lib/hinting-mode
    "SLASH" ahubu.lib/search-mode
-   :p "Search.prev()"
+   :N "Search.prev()"
    :n "Search.next()"
    :O ahubu.lib/omnibar-open-current
    :F12 ahubu.lib/inject-firebug

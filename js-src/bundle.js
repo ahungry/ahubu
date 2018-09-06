@@ -239,6 +239,62 @@ if (undefined === Overlay) {
     // Hinting.bind()
     // END HINTING
 
+    // BEGIN Search
+    var Search = {
+      candidates: [],
+      idx: 0,
+
+      prev () {
+        var el = Search.candidates[Search.idx]
+
+        if (undefined !== el) {
+          window.scrollTo(0, el.offsetTop - window.innerHeight / 2)
+          Search.idx = Math.max(0, Search.idx - 1)
+        }
+      },
+
+      next () {
+        var el = Search.candidates[Search.idx]
+
+        if (undefined !== el) {
+          window.scrollTo(0, el.offsetTop - window.innerHeight / 2)
+          Search.idx = Math.min(Number(Search.candidates.length), Number(Search.idx) + 1)
+        }
+      },
+
+      find (s) {
+        Search.candidates = []
+        Search.idx = 0
+
+        var els = document.getElementsByClassName('re-find')
+
+        for (var i = 0; i < els.length; i++) {
+          els[i].outerHTML = els[i].innerHTML
+        }
+
+        var re = new RegExp(s, 'gi')
+        var all = document.getElementsByTagName("*")
+
+        for (var i = 0; i < all.length; i++) {
+          if (all[i].children.length > 0) continue
+
+          if (re.test(all[i].innerHTML)) {
+            Search.candidates.push(all[i])
+          }
+        }
+
+        // We have to modify the element outside the loop to avoid infinite loop
+        for (var i = 0; i < Search.candidates.length; i++) {
+          Search.candidates[i].innerHTML = Search.candidates[i].innerHTML
+            .replace(re, '<span class="re-find" style="background-color:#af0 !important;">' +
+              s + '</span>')
+        }
+
+        Search.next()
+      }
+    }
+    // END Search
+
   } catch (e) {
     alert(e.toString())
   }

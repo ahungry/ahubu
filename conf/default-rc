@@ -88,6 +88,9 @@
    :AFTER ahubu.lib/default-mode
    :a #(ahubu.lib/quickmark-url "http://ahungry.com")
    :e #(ahubu.lib/quickmark-url "http://example.com")
+   :h #(ahubu.lib/quickmark-url "https://news.ycombinator.com/")
+   :r #(ahubu.lib/quickmark-url "https://old.reddit.com/r/Clojure")
+   :R #(ahubu.lib/quickmark-url "https://old.reddit.com/r/Emacs")
    :d #(ahubu.lib/quickmark-url "http://ddg.gg")
    :s #(ahubu.lib/quickmark-url "https://stackoverflow.com")
    :g #(ahubu.lib/quickmark-url "https://github.com/ahungry/ahubu")

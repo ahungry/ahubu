@@ -244,6 +244,7 @@ if (undefined === Overlay) {
       candidates: [],
       idx: 0,
       term: '',
+      timeout: null,
 
       prev () {
         var el = Search.candidates[Search.idx]
@@ -266,7 +267,11 @@ if (undefined === Overlay) {
       incrementalFind (c) {
         if (c.length === 1 && /[A-Za-z0-9]{1}/.test(c)) {
           Search.term += c
-          Search.find(Search.term)
+          clearTimeout(Search.timeout)
+
+          Search.timeout = setTimeout(() => {
+            Search.find(Search.term)
+          }, 500)
         }
       },
 
@@ -276,7 +281,7 @@ if (undefined === Overlay) {
         Search.term = ''
       },
 
-      find (s) {
+      addOverlay (s) {
         var overlay = document.getElementById('search-overlay')
 
         if (null !== overlay) {
@@ -286,7 +291,7 @@ if (undefined === Overlay) {
         if (null === overlay) {
           overlay = document.createElement('div')
           overlay.id = 'search-overlay'
-          overlay.style.color = '#fff'
+          overlay.style.color = '#af0'
           overlay.style.position = 'fixed'
           overlay.style.bottom = 0
           overlay.style.right = 0
@@ -299,7 +304,10 @@ if (undefined === Overlay) {
         }
 
         overlay.innerHTML = s
+      },
 
+      find (s) {
+        Search.addOverlay(s)
         Search.candidates = []
         Search.idx = 0
 

@@ -243,6 +243,7 @@ if (undefined === Overlay) {
     var Search = {
       candidates: [],
       idx: 0,
+      term: '',
 
       prev () {
         var el = Search.candidates[Search.idx]
@@ -258,11 +259,47 @@ if (undefined === Overlay) {
 
         if (undefined !== el) {
           window.scrollTo(0, el.offsetTop - window.innerHeight / 2)
-          Search.idx = Math.min(Number(Search.candidates.length), Number(Search.idx) + 1)
+          Search.idx = Math.min(Number(Search.candidates.length - 1), Number(Search.idx) + 1)
         }
       },
 
+      incrementalFind (c) {
+        if (c.length === 1 && /[A-Za-z0-9]{1}/.test(c)) {
+          Search.term += c
+          Search.find(Search.term)
+        }
+      },
+
+      reset () {
+        Search.candidates = []
+        Search.idx = 0
+        Search.term = ''
+      },
+
       find (s) {
+        var overlay = document.getElementById('search-overlay')
+
+        if (null !== overlay) {
+          overlay.remove()
+        }
+
+        if (null === overlay) {
+          overlay = document.createElement('div')
+          overlay.id = 'search-overlay'
+          overlay.style.color = '#fff'
+          overlay.style.position = 'fixed'
+          overlay.style.bottom = 0
+          overlay.style.right = 0
+          overlay.style.display = 'block'
+          overlay.style.backgroundColor = 'rgba(0,0,0,.5)'
+          overlay.style.padding = '10px'
+          overlay.style.fontFamily = 'Iosevka, monospace'
+          overlay.style.zIndex = '88888'
+          document.body.appendChild(overlay)
+        }
+
+        overlay.innerHTML = s
+
         Search.candidates = []
         Search.idx = 0
 
@@ -277,6 +314,7 @@ if (undefined === Overlay) {
 
         for (var i = 0; i < all.length; i++) {
           if (all[i].children.length > 0) continue
+          if (all[i].id === 'search-overlay') continue
 
           if (re.test(all[i].innerHTML)) {
             Search.candidates.push(all[i])

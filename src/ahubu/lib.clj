@@ -63,6 +63,7 @@
     :omnibar-open? false
     :scene-id 0
     :scenes []
+    :searching? false
     :showing-buffers? false
     :stage nil
     }))
@@ -125,6 +126,7 @@
                 "GO" "-fx-text-fill: #000; -fx-background-color: #f69"
                 "INSERT" "-fx-text-fill: #000; -fx-background-color: #f36"
                 "HINTING" "-fx-text-fill: #000; -fx-background-color: #f63"
+                "SEARCHING" "-fx-text-fill: #000; -fx-background-color: #f33"
                 "BUFFERS" "-fx-text-fill: #000; -fx-background-color: #63f"
                 "-fx-text-fill: #000; -fx-background-color: #af0")]
     (run-later
@@ -439,13 +441,20 @@
   (set-tip "NORMAL")
   (hide-buffers)
   (omnibar-stop)
-  (swap! world conj {:hinting? false})
+  (swap! world conj {:hinting? false :searching? false})
   (dojs "Hinting.off(); Overlay.hide(); Form.disable()"))
 
 (defn insert-mode []
   (set-mode :insert)
   (set-tip "INSERT")
   (dojs "Form.enable()"))
+
+(defn search-mode []
+  (set-mode :search)
+  (set-tip "SEARCHING")
+  (swap! world conj {:searching? true})
+  (println "Searching")
+  (dojs "Search.reset()"))
 
 (defn hinting-mode []
   (set-mode :hinting)
@@ -497,7 +506,8 @@
         op-after (key-map-op :AFTER)]
 
     ;; (println (format "KM OP: %s" op-before))
-    ;; (println (format "KM OP: %s" op))
+    (println key)
+    (println (format "KM OP: %s" op))
     ;; (println (format "KM OP: %s" op-after))
 
     ;; Global key listeners
@@ -507,6 +517,10 @@
     (when (:hinting? @world)
       (dojs (format "Hinting.keyHandler('%s')" key))
       ;; (println (format  "HINTING: %s" key))
+      )
+
+    (when (:searching? @world)
+      (dojs (format "Search.incrementalFind('%s')" key))
       )
 
     ;; Check for the BEFORE bind (runs with any other keypress)

@@ -216,44 +216,77 @@
     nil
     ))
 
-(defn quietly-set-cookies []
-  (def cookie-manager
-    (doto (java.net.CookieManager.)
-      java.net.CookieHandler/setDefault)))
-
 ;; Opposite of slurp
 (defn barf [file-name data]
   (with-open [wr (clojure.java.io/writer file-name)]
     (.write wr (pr-str data))))
 
-(defn dump-cookies []
-  (doall
-   (map (fn [cookie]
-          {:name (.getName cookie)
-           :value (.getValue cookie)
-           :domain (.getDomain cookie)
-           :maxAge (.getMaxAge cookie)
-           :secure (.getSecure cookie)})
-        (-> cookie-manager .getCookieStore .getCookies))))
+(defn cookie-to-map [cookie]
+  {:name (.getName cookie)
+   :value (.getValue cookie)
+   :domain (.getDomain cookie)
+   :maxAge (.getMaxAge cookie)
+   :secure (.getSecure cookie)})
 
-;; Add a previously dumped cookie
-(defn add-cookie [{name :name value :value domain :domain maxAge :maxAge secure :secure}]
-  (let [cookie (java.net.HttpCookie. name value)
-        uri nil
-        ;; uri (java.net.URI. domain)
-        ]
+(defn cookiemap-to-cookie [{name :name value :value domain :domain maxAge :maxAge secure :secure}]
+  (let [cookie (java.net.HttpCookie. name value)]
     (doto cookie
+      (.setVersion 0)
       (.setDomain domain)
       (.setSecure secure)
-      (.setMaxAge maxAge))
-    (-> cookie-manager .getCookieStore (.add uri cookie))))
+      (.setMaxAge maxAge))))
+
+;; Add a previously dumped cookie
+(defn add-cookie [store cookiemap]
+  (let [cookie (cookiemap-to-cookie cookiemap)
+        uri nil
+        ;; uri (java.net.URI. uri)
+        ]
+    (-> store (.add uri cookie))))
+
+(defn load-cookies [store]
+  (when (.exists (clojure.java.io/file "ahubu.cookies"))
+    (let [cookies (read-string (slurp "ahubu.cookies"))]
+      (doall (map #(add-cookie store %) cookies)))))
+
+;; https://www.baeldung.com/cookies-java
+(defn my-cookie-store []
+  (let [store (-> (java.net.CookieManager.) .getCookieStore)
+        my-store (proxy [java.net.CookieStore Runnable] []
+                   (run []
+                     (println "Save to disk here"))
+                   (add [uri cookie]
+                     ;; TODO: Could track URI here maybe?
+                     (println uri cookie)
+                     (.add store uri cookie))
+                   (get [& [uri :as args]]
+                     (let [result (.get store uri)]
+                       result))
+                   (getCookies []
+                     (.getCookies store))
+                   (getURIs []
+                     (.getURIs store))
+                   (remove [uri cookie]
+                     (.remove store uri cookie))
+                   (removeAll []
+                     (.removeAll store)))]
+    (load-cookies my-store)
+    my-store))
+
+(defn quietly-set-cookies []
+  (def cookie-manager
+    (doto (java.net.CookieManager.
+           (my-cookie-store)
+           java.net.CookiePolicy/ACCEPT_ALL
+           ;; java.net.CookiePolicy/ACCEPT_ORIGINAL_SERVER
+           )
+      java.net.CookieHandler/setDefault)))
+
+(defn dump-cookies [store]
+  (doall (map cookie-to-map (.getCookies store))))
 
 (defn save-cookies []
-  (barf "ahubu.cookies" (dump-cookies)))
-
-(defn load-cookies []
-  (let [cookies (read-string (slurp "ahubu.cookies"))]
-    (doall (map add-cookie cookies))))
+  (barf "ahubu.cookies" (dump-cookies (-> cookie-manager .getCookieStore))))
 
 (defn quietly-set-stream-factory []
   (WebUIController/stfuAndSetURLStreamHandlerFactory)
@@ -275,7 +308,8 @@
         exit (reify javafx.event.EventHandler
                (handle [this event]
                  (println "Goodbye")
-                 (save-cookies)
+                 ;; TODO: Enable when saving of cookies is working
+                 ;; (save-cookies)
                  (javafx.application.Platform/exit)
                  (System/exit 0)
                  ))

@@ -284,9 +284,9 @@
     (bind-keys stage)
     (set-atomic-stage stage)
 
-    (.addShutdownHook
-     (java.lang.Runtime/getRuntime)
-     (Thread. (println "Adios!") (save-cookies)))
+    ;; (.addShutdownHook
+    ;;  (java.lang.Runtime/getRuntime)
+    ;;  (Thread. (println "Adios!") (save-cookies)))
 
     ;; (set-scene-id 0)
     ;; (add-scene scene)

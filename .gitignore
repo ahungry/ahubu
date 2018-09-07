@@ -12,3 +12,4 @@ pom.xml.asc
 dist
 dist.tar.gz
 *.log
+*.cookies

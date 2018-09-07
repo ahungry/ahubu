@@ -221,6 +221,11 @@
     (doto (java.net.CookieManager.)
       java.net.CookieHandler/setDefault)))
 
+;; Opposite of slurp
+(defn barf [file-name data]
+  (with-open [wr (clojure.java.io/writer file-name)]
+    (.write wr (pr-str data))))
+
 (defn dump-cookies []
   (doall
    (map (fn [cookie]
@@ -243,6 +248,13 @@
       (.setMaxAge maxAge))
     (-> cookie-manager .getCookieStore (.add uri cookie))))
 
+(defn save-cookies []
+  (barf "ahubu.cookies" (dump-cookies)))
+
+(defn load-cookies []
+  (let [cookies (read-string (slurp "ahubu.cookies"))]
+    (doall (map add-cookie cookies))))
+
 (defn quietly-set-stream-factory []
   (WebUIController/stfuAndSetURLStreamHandlerFactory)
   ;; (try
@@ -263,6 +275,7 @@
         exit (reify javafx.event.EventHandler
                (handle [this event]
                  (println "Goodbye")
+                 (save-cookies)
                  (javafx.application.Platform/exit)
                  (System/exit 0)
                  ))
@@ -270,6 +283,11 @@
 
     (bind-keys stage)
     (set-atomic-stage stage)
+
+    (.addShutdownHook
+     (java.lang.Runtime/getRuntime)
+     (Thread. (println "Adios!") (save-cookies)))
+
     ;; (set-scene-id 0)
     ;; (add-scene scene)
     ;; (bind-keys scene)

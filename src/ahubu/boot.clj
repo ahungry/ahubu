@@ -31,6 +31,8 @@
 (defn boot []
   (defonce launch (future (Application/launch com.ahungry.Browser (make-array String 0))))
 
+  (quietly-set-cookies)
+
   ;; Call this infinitely so it just always keeps setting it
   (future
     (while true

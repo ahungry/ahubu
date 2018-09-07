@@ -221,6 +221,28 @@
     (doto (java.net.CookieManager.)
       java.net.CookieHandler/setDefault)))
 
+(defn dump-cookies []
+  (doall
+   (map (fn [cookie]
+          {:name (.getName cookie)
+           :value (.getValue cookie)
+           :domain (.getDomain cookie)
+           :maxAge (.getMaxAge cookie)
+           :secure (.getSecure cookie)})
+        (-> cookie-manager .getCookieStore .getCookies))))
+
+;; Add a previously dumped cookie
+(defn add-cookie [{name :name value :value domain :domain maxAge :maxAge secure :secure}]
+  (let [cookie (java.net.HttpCookie. name value)
+        uri nil
+        ;; uri (java.net.URI. domain)
+        ]
+    (doto cookie
+      (.setDomain domain)
+      (.setSecure secure)
+      (.setMaxAge maxAge))
+    (-> cookie-manager .getCookieStore (.add uri cookie))))
+
 (defn quietly-set-stream-factory []
   (WebUIController/stfuAndSetURLStreamHandlerFactory)
   ;; (try

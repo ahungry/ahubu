@@ -55,6 +55,7 @@
 (def world
   (atom
    {
+    :cookies {}
     :cross-domain-url ""
     :default-url (format "file://%s/docs/index.html" (System/getProperty "user.dir"))
     :hinting? false
@@ -221,6 +222,9 @@
   (with-open [wr (clojure.java.io/writer file-name)]
     (.write wr (pr-str data))))
 
+(defn clean-uri [uri]
+  (java.net.URI. (.getScheme uri) (.getHost uri) nil nil))
+
 (defn cookie-to-map [cookie]
   {:name (.getName cookie)
    :value (.getValue cookie)
@@ -237,40 +241,56 @@
       (.setMaxAge maxAge))))
 
 ;; Add a previously dumped cookie
-(defn add-cookie [store cookiemap]
+(defn add-cookie [store uri cookiemap]
   (let [cookie (cookiemap-to-cookie cookiemap)
-        uri nil
-        ;; uri (java.net.URI. uri)
-        ]
+        uri (clean-uri (java.net.URI. uri))]
     (-> store (.add uri cookie))))
 
 (defn load-cookies [store]
   (when (.exists (clojure.java.io/file "ahubu.cookies"))
     (let [cookies (read-string (slurp "ahubu.cookies"))]
-      (doall (map #(add-cookie store %) cookies)))))
+      (doseq [[k v] cookies] (add-cookie store k v)))))
+
+(defn ignore-cookie-uri? [s]
+  (re-matches #".*\.(css|js|jpg|png|gif)$" s))
+
+(defn push-cookie-to-world [uri cookie]
+  (swap! world (fn [old] (assoc old :cookies (conj (:cookies old) {uri cookie})))))
 
 ;; https://www.baeldung.com/cookies-java
+;; https://gist.github.com/manishk3008/2a2373c6c155a5df6326
 (defn my-cookie-store []
   (let [store (-> (java.net.CookieManager.) .getCookieStore)
-        my-store (proxy [java.net.CookieStore Runnable] []
-                   (run []
-                     (println "Save to disk here"))
-                   (add [uri cookie]
-                     ;; TODO: Could track URI here maybe?
-                     (println uri cookie)
-                     (.add store uri cookie))
-                   (get [& [uri :as args]]
-                     (let [result (.get store uri)]
-                       result))
-                   (getCookies []
-                     (.getCookies store))
-                   (getURIs []
-                     (.getURIs store))
-                   (remove [uri cookie]
-                     (.remove store uri cookie))
-                   (removeAll []
-                     (.removeAll store)))]
+        my-store
+        (proxy [java.net.CookieStore Runnable] []
+          (run []
+            (println "Save to disk here"))
+          (add [uri cookie]
+            (let [clean (clean-uri uri)
+                  u (.toString clean)]
+              (when (not (ignore-cookie-uri? u))
+                (.add store clean cookie)
+                (push-cookie-to-world u (cookie-to-map cookie)))))
+          (get [& [uri :as args]]
+            (let [clean (clean-uri uri)
+                  u (.toString clean)]
+              (if (ignore-cookie-uri? u)
+                (java.util.ArrayList.)
+                (let [result (.get store clean)]
+                  (println u)
+                  result))))
+          (getCookies []
+            (.getCookies store))
+          (getURIs []
+            (.getURIs store))
+          (remove [uri cookie]
+            (.remove store uri cookie))
+          (removeAll []
+            (.removeAll store)))]
     (load-cookies my-store)
+    (println "COOKIE DEBUG INFO")
+    (println (:cookies @world))
+    (println (.getCookies store))
     my-store))
 
 (defn quietly-set-cookies []
@@ -286,7 +306,9 @@
   (doall (map cookie-to-map (.getCookies store))))
 
 (defn save-cookies []
-  (barf "ahubu.cookies" (dump-cookies (-> cookie-manager .getCookieStore))))
+  (barf "ahubu.cookies" (:cookies @world))
+  ;; (barf "ahubu.cookies" (dump-cookies (-> cookie-manager .getCookieStore)))
+  )
 
 (defn quietly-set-stream-factory []
   (WebUIController/stfuAndSetURLStreamHandlerFactory)
@@ -309,7 +331,7 @@
                (handle [this event]
                  (println "Goodbye")
                  ;; TODO: Enable when saving of cookies is working
-                 ;; (save-cookies)
+                 (save-cookies)
                  (javafx.application.Platform/exit)
                  (System/exit 0)
                  ))

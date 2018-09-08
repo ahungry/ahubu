@@ -277,7 +277,8 @@
               (if (ignore-cookie-uri? u)
                 (java.util.ArrayList.)
                 (let [result (.get store clean)]
-                  (println u)
+                  (println "Serving a cookie")
+                  (println result uri u)
                   result))))
           (getCookies []
             (.getCookies store))

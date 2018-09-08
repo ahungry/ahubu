@@ -259,6 +259,7 @@
 
 ;; https://www.baeldung.com/cookies-java
 ;; https://gist.github.com/manishk3008/2a2373c6c155a5df6326
+;; https://stackoverflow.com/questions/14385233/setting-a-cookie-using-javafxs-webengine-webview
 (defn my-cookie-store []
   (let [store (-> (java.net.CookieManager.) .getCookieStore)
         my-store
@@ -301,7 +302,13 @@
            java.net.CookiePolicy/ACCEPT_ALL
            ;; java.net.CookiePolicy/ACCEPT_ORIGINAL_SERVER
            )
-      java.net.CookieHandler/setDefault)))
+      java.net.CookieHandler/setDefault))
+  ;; Now, lets see it
+  ;; YES!!!! success!!
+  (let [uri (java.net.URI. "http" "127.0.0.1" nil nil)]
+    (.put cookie-manager uri {"Set-Cookie" ["bar=8"]})
+    )
+  )
 
 (defn dump-cookies [store]
   (doall (map cookie-to-map (.getCookies store))))

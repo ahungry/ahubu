@@ -295,6 +295,11 @@
     (println (.getCookies store))
     my-store))
 
+(defn feed-cookies-to-the-manager [manager cookies]
+  (doseq [[domain c] cookies]
+    (let [uri (clean-uri (java.net.URI. domain))]
+      (.put manager uri {"Set-Cookie" [(format "%s=%s" (:name c) (:value c)) ]}))))
+
 (defn quietly-set-cookies []
   (def cookie-manager
     (doto (java.net.CookieManager.
@@ -305,9 +310,10 @@
       java.net.CookieHandler/setDefault))
   ;; Now, lets see it
   ;; YES!!!! success!!
-  (let [uri (java.net.URI. "http" "127.0.0.1" nil nil)]
-    (.put cookie-manager uri {"Set-Cookie" ["bar=8"]})
-    )
+  (feed-cookies-to-the-manager cookie-manager (:cookies @world))
+  ;; (let [uri (java.net.URI. "http" "127.0.0.1" nil nil)]
+  ;;   (.put cookie-manager uri {"Set-Cookie" ["bar=8"]})
+  ;;   )
   )
 
 (defn dump-cookies [store]

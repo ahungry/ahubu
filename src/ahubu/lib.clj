@@ -254,8 +254,19 @@
 (defn ignore-cookie-uri? [s]
   (re-matches #".*\.(css|js|jpg|png|gif)$" s))
 
+(defn push-cookie-to-uri-map [cookie mp]
+  (let [name (:name cookie)]
+    (assoc mp name cookie)))
+
+(defn push-cookie-to-cookie-map [cookie uri mp]
+  (let [old (get mp uri)]
+    (assoc mp uri (push-cookie-to-uri-map cookie old))))
+
 (defn push-cookie-to-world [uri cookie]
-  (swap! world (fn [old] (assoc old :cookies (conj (:cookies old) {uri cookie})))))
+  (swap!
+   world
+   (fn [old]
+     (assoc old :cookies (push-cookie-to-cookie-map cookie uri old)))))
 
 ;; https://www.baeldung.com/cookies-java
 ;; https://gist.github.com/manishk3008/2a2373c6c155a5df6326

@@ -250,13 +250,8 @@
   (when (.exists (clojure.java.io/file "ahubu.cookies"))
     (let [cookies (read-string (slurp "ahubu.cookies"))]
       (doseq [[uri uri-map] cookies]
-        (println uri-map)
         (doseq [[name cookie] uri-map]
-          (println uri cookie)
           (add-cookie store uri cookie))))))
-
-(defn ignore-cookie-uri? [s]
-  (re-matches #".*\.(css|js|jpg|png|gif)$" s))
 
 (defn push-cookie-to-uri-map [cookie mp]
   (let [name (:name cookie)]
@@ -284,18 +279,13 @@
           (add [uri cookie]
             (let [clean (clean-uri uri)
                   u (.toString clean)]
-              (when (not (ignore-cookie-uri? u))
-                (.add store clean cookie)
-                (push-cookie-to-world u (cookie-to-map cookie)))))
+              (.add store clean cookie)
+              (push-cookie-to-world u (cookie-to-map cookie))))
           (get [& [uri :as args]]
             (let [clean (clean-uri uri)
                   u (.toString clean)]
-              (if (ignore-cookie-uri? u)
-                (java.util.ArrayList.)
-                (let [result (.get store clean)]
-                  (println "Serving a cookie")
-                  (println result uri u)
-                  result))))
+              (let [result (.get store clean)]
+                result)))
           (getCookies []
             (.getCookies store))
           (getURIs []
@@ -305,9 +295,6 @@
           (removeAll []
             (.removeAll store)))]
     (load-cookies my-store)
-    (println "COOKIE DEBUG INFO")
-    (println (:cookies @world))
-    (println (.getCookies store))
     my-store))
 
 (defn feed-cookies-to-the-manager [manager cookies]
@@ -637,8 +624,8 @@
         op-after (key-map-op :AFTER)]
 
     ;; (println (format "KM OP: %s" op-before))
-    (println key)
-    (println (format "KM OP: %s" op))
+    ;; (println key)
+    ;; (println (format "KM OP: %s" op))
     ;; (println (format "KM OP: %s" op-after))
 
     ;; Global key listeners
@@ -741,7 +728,7 @@
 
 (defn omnibar-handle-command [cmd]
   (let [[_ cmd arg] (omnibar-parse-command cmd)]
-    (println (format "OB Parse Cmd: %s %s %s" _ cmd arg))
+    ;; (println (format "OB Parse Cmd: %s %s %s" _ cmd arg))
     (case cmd
       "open" (omnibar-handler arg)
       "tabopen" (omnibar-handler arg)
@@ -901,7 +888,6 @@
 
                   (when (and (= new-value Worker$State/RUNNING)
                              (= old-value Worker$State/SCHEDULED))
-                    (println "The running and schedule change")
                     (execute-script webengine js-bundle))
 
                   (when (not (= new-value Worker$State/SUCCEEDED))
@@ -910,7 +896,6 @@
 
                   (when (= new-value Worker$State/SUCCEEDED)
                     ;; (.removeListener observable this)
-                    (println "In boot change listener")
                     ;; https://docs.oracle.com/javase/8/javafx/api/javafx/scene/web/WebEngine.html
                     (println (-> webengine .getLocation))
                     ;; (println (-> webengine .getDocument .toString))

@@ -249,7 +249,11 @@
 (defn load-cookies [store]
   (when (.exists (clojure.java.io/file "ahubu.cookies"))
     (let [cookies (read-string (slurp "ahubu.cookies"))]
-      (doseq [[k v] cookies] (add-cookie store k v)))))
+      (doseq [[uri uri-map] cookies]
+        (println uri-map)
+        (doseq [[name cookie] uri-map]
+          (println uri cookie)
+          (add-cookie store uri cookie))))))
 
 (defn ignore-cookie-uri? [s]
   (re-matches #".*\.(css|js|jpg|png|gif)$" s))
@@ -266,7 +270,7 @@
   (swap!
    world
    (fn [old]
-     (assoc old :cookies (push-cookie-to-cookie-map cookie uri old)))))
+     (assoc old :cookies (push-cookie-to-cookie-map cookie uri (:cookies old))))))
 
 ;; https://www.baeldung.com/cookies-java
 ;; https://gist.github.com/manishk3008/2a2373c6c155a5df6326
@@ -307,9 +311,10 @@
     my-store))
 
 (defn feed-cookies-to-the-manager [manager cookies]
-  (doseq [[domain c] cookies]
-    (let [uri (clean-uri (java.net.URI. domain))]
-      (.put manager uri {"Set-Cookie" [(format "%s=%s" (:name c) (:value c)) ]}))))
+  (doseq [[domain domain-map] cookies]
+    (doseq [[name c] domain-map]
+      (let [uri (clean-uri (java.net.URI. domain))]
+        (.put manager uri {"Set-Cookie" [(format "%s=%s" (:name c) (:value c)) ]})))))
 
 (defn quietly-set-cookies []
   (def cookie-manager

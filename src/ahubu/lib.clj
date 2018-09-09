@@ -262,10 +262,10 @@
     (assoc mp uri (push-cookie-to-uri-map cookie old))))
 
 (defn push-cookie-to-world [uri cookie]
-  (swap!
-   world
-   (fn [old]
-     (assoc old :cookies (push-cookie-to-cookie-map cookie uri (:cookies old))))))
+  (swap! world
+         (fn [old]
+           (assoc old :cookies
+                  (push-cookie-to-cookie-map cookie uri (:cookies old))))))
 
 ;; https://www.baeldung.com/cookies-java
 ;; https://gist.github.com/manishk3008/2a2373c6c155a5df6326
@@ -311,34 +311,16 @@
            ;; java.net.CookiePolicy/ACCEPT_ORIGINAL_SERVER
            )
       java.net.CookieHandler/setDefault))
-  ;; Now, lets see it
-  ;; YES!!!! success!!
-  (feed-cookies-to-the-manager cookie-manager (:cookies @world))
-  ;; (let [uri (java.net.URI. "http" "127.0.0.1" nil nil)]
-  ;;   (.put cookie-manager uri {"Set-Cookie" ["bar=8"]})
-  ;;   )
-  )
+  (feed-cookies-to-the-manager cookie-manager (:cookies @world)))
 
 (defn dump-cookies [store]
   (doall (map cookie-to-map (.getCookies store))))
 
 (defn save-cookies []
-  (barf "ahubu.cookies" (:cookies @world))
-  ;; (barf "ahubu.cookies" (dump-cookies (-> cookie-manager .getCookieStore)))
-  )
+  (barf "ahubu.cookies" (:cookies @world)))
 
 (defn quietly-set-stream-factory []
-  (WebUIController/stfuAndSetURLStreamHandlerFactory)
-  ;; (try
-  ;;   (def stream-handler-factory
-  ;;     (URL/setURLStreamHandlerFactory
-  ;;      (reify URLStreamHandlerFactory
-  ;;        (createURLStreamHandler [this protocol] (#'my-connection-handler protocol)))))
-  ;;   (catch Throwable e
-  ;;     ;; TODO: Attempt to force set with reflection maybe - although this is usually good enough.
-  ;;     ;; TODO: Make sure this isn't some big performance penalty.
-  ;;     ))
-  )
+  (WebUIController/stfuAndSetURLStreamHandlerFactory))
 
 (defn -start [this stage]
   (let [
@@ -347,7 +329,6 @@
         exit (reify javafx.event.EventHandler
                (handle [this event]
                  (println "Goodbye")
-                 ;; TODO: Enable when saving of cookies is working
                  (save-cookies)
                  (javafx.application.Platform/exit)
                  (System/exit 0)

@@ -313,11 +313,11 @@
       java.net.CookieHandler/setDefault))
   (feed-cookies-to-the-manager cookie-manager (:cookies @world)))
 
-(defn dump-cookies [store]
-  (doall (map cookie-to-map (.getCookies store))))
-
 (defn save-cookies []
   (barf "ahubu.cookies" (:cookies @world)))
+
+(defn dump-cookies [store]
+  (doall (map cookie-to-map (.getCookies store))))
 
 (defn quietly-set-stream-factory []
   (WebUIController/stfuAndSetURLStreamHandlerFactory))

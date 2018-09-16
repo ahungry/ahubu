@@ -329,7 +329,7 @@ if (undefined === Overlay) {
           overlay.style.color = '#af0'
           overlay.style.position = 'fixed'
           overlay.style.bottom = 0
-          overlay.style.right = 0
+          overlay.style.left = 0
           overlay.style.display = 'block'
           overlay.style.backgroundColor = 'rgba(0,0,0,.5)'
           overlay.style.padding = '10px'

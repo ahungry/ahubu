@@ -553,6 +553,7 @@
   (set-tip "SEARCHING")
   (swap! world conj {:searching? true})
   (println "Searching")
+  (set-omnibar-text "/")
   (dojs "Search.reset()"))
 
 (defn hinting-mode []
@@ -619,6 +620,8 @@
       )
 
     (when (:searching? @world)
+      (when (= 1 (count key))
+        (set-omnibar-text (format "%s%s" (get-omnibar-text) key)))
       (dojs (format "Search.incrementalFind('%s')" key))
       )
 

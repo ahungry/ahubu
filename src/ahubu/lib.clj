@@ -346,6 +346,9 @@
     ;; (add-scene scene)
     ;; (bind-keys scene)
     (doto stage
+      ;; (.initModality javafx.stage.Modality/APPLICATION_MODAL)
+      ;; (.initModality javafx.stage.Modality/WINDOW_MODAL)
+      ;; (.setAlwaysOnTop true)
       (.setOnCloseRequest exit)
       (.setScene scene)
       (.setTitle "AHUBU")

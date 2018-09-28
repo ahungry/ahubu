@@ -814,23 +814,20 @@
 
 (defn remove-annoying-divs [dom]
   (let [ids (str/split (slurp "conf/dom-id-ignores.txt") #"\n")]
-    (doall
-     (map #(remove-annoying-div dom %) ids))))
+    (doseq [id ids]
+      (remove-annoying-div id))))
 
 (defn remove-annoying-class [dom class-name]
   (let [els (-> dom (.getElementsByClassName class-name))]
-    (doall
-     (map
-      (fn [_]
-        ;; We remove item 0, because each remove causes a reindex
-        (let [el (-> els (.item 0))]
-          (-> el .remove)))
-      (range (.getLength els))))))
+    (doseq [_ (range (.getLength els))]
+      ;; We remove item 0, because each remove causes a reindex
+      (let [el (-> els (.item 0))]
+        (-> el .remove)))))
 
 (defn remove-annoying-classes [dom]
   (let [ids (str/split (slurp "conf/dom-class-ignores.txt") #"\n")]
-    (doall
-     (map #(remove-annoying-class dom %) ids))))
+    (doseq [id ids]
+      (remove-annoying-class dom id))))
 
 (defn new-scene []
   (run-later

@@ -630,10 +630,11 @@
 
     ;; Check for the BEFORE bind (runs with any other keypress)
     (process-op op-before)
-    (process-op op)
-    (future
-      (Thread/sleep 100)
-      (process-op op-after))
+    (when
+        (process-op op)
+        (future
+          (Thread/sleep 100)
+          (process-op op-after)))
 
     true))                              ; bubble up keypress
 

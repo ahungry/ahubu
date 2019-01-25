@@ -4,6 +4,8 @@ FROM clojure AS build-env
 WORKDIR /usr/src/myapp
 COPY project.clj /usr/src/myapp/
 RUN lein deps
+RUN apt-get update
+RUN apt-get -y install openjfx
 COPY . /usr/src/myapp
 RUN mv "$(lein uberjar | sed -n 's/^Created \(.*standalone\.jar\)/\1/p')" myapp-standalone.jar
 

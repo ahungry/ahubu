@@ -6,6 +6,7 @@ COPY project.clj /usr/src/myapp/
 RUN lein deps
 RUN apt-get update
 RUN apt-get -y install openjfx
+RUN DEBIAN_FRONTEND=noninteractive apt-get -y install xorg openbox
 COPY . /usr/src/myapp
 RUN mv "$(lein uberjar | sed -n 's/^Created \(.*standalone\.jar\)/\1/p')" myapp-standalone.jar
 

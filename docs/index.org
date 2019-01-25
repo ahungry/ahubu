@@ -2,7 +2,8 @@
 
 #+BEGIN_EXPORT html
 <link type="text/css" rel="stylesheet" href="./main.css"></link>
-<img src="../ahubu.png" style="float:right;" />
+<img src="../ahubu.png" style="float:right;margin-top:-200px;" />
+<br style="clear:both;">
 #+END_EXPORT
 
 * AHUBU Helps Users Be Utilitarian

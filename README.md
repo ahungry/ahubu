@@ -23,6 +23,7 @@ listeners, both in and out of the DOM).
     - [AHUBU Helps Users Be Utilitarian](#ahubu-helps-users-be-utilitarian)
     - [What is it?](#what-is-it)
         - [Why?](#why)
+    - [Quick Start](#quick-start)
     - [Installation](#installation)
         - [Java Dependencies](#java-dependencies)
             - [Arch Linux](#arch-linux)

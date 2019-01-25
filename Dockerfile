@@ -9,7 +9,11 @@ RUN apt-get -y install openjfx
 COPY . /usr/src/myapp
 RUN mv "$(lein uberjar | sed -n 's/^Created \(.*standalone\.jar\)/\1/p')" myapp-standalone.jar
 
-FROM openjdk:8-jre-alpine
-WORKDIR /myapp
-COPY --from=build-env /usr/src/myapp/myapp-standalone.jar /myapp/myapp.jar
-ENTRYPOINT ["java", "-jar", "/myapp/myapp.jar"]
+# Multi-stage build will not work here, as we are missing openjfx again.
+#FROM openjdk:8-jre-alpine
+#WORKDIR /myapp
+#COPY --from=build-env /usr/src/myapp/myapp-standalone.jar /myapp/myapp.jar
+#ENTRYPOINT ["java", "-jar", "/myapp/myapp.jar"]
+
+WORKDIR /usr/src/myapp
+ENTRYPOINT ["java", "-jar", "/usr/src/myapp/myapp-standalone.jar"]

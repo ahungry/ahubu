@@ -1,3 +1,5 @@
+# A clojure alpine exists, but is missing openjfx / javafx classes
+# FROM clojure:alpine AS build-env
 FROM clojure AS build-env
 WORKDIR /usr/src/myapp
 COPY project.clj /usr/src/myapp/

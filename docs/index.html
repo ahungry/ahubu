@@ -3,7 +3,7 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!-- 2018-09-06 Thu 00:48 -->
+<!-- 2019-01-25 Fri 11:37 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>AHUBU Helps Users Be Utilitarian</title>
@@ -185,7 +185,7 @@
 @licstart  The following is the entire license notice for the
 JavaScript code in this tag.
 
-Copyright (C) 2012-2017 Free Software Foundation, Inc.
+Copyright (C) 2012-2018 Free Software Foundation, Inc.
 
 The JavaScript code in this tag is free software: you can
 redistribute it and/or modify it under the terms of the GNU
@@ -234,13 +234,13 @@ for the JavaScript code in this tag.
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#org0861f29">1. AHUBU Helps Users Be Utilitarian</a>
+<li><a href="#orgb2b2f21">1. AHUBU Helps Users Be Utilitarian</a>
 <ul>
-<li><a href="#orgdcfdd00">1.1. Getting started / key binds</a></li>
-<li><a href="#orgcd35a8e">1.2. Customizing the behavior</a>
+<li><a href="#org60f8cac">1.1. Getting started / key binds</a></li>
+<li><a href="#org5378e1b">1.2. Customizing the behavior</a>
 <ul>
-<li><a href="#orgf6b7345">1.2.1. Filters</a></li>
-<li><a href="#org5054aa8">1.2.2. Quickmarks and Keybinds</a></li>
+<li><a href="#org4fa19da">1.2.1. Filters</a></li>
+<li><a href="#orgb746083">1.2.2. Quickmarks and Keybinds</a></li>
 </ul>
 </li>
 </ul>
@@ -249,17 +249,17 @@ for the JavaScript code in this tag.
 </div>
 </div>
 <link type="text/css" rel="stylesheet" href="./main.css"></link>
-<img src="../ahubu.png" />
+<img src="../ahubu.png" style="float:right;" />
 
-<div id="outline-container-org0861f29" class="outline-2">
-<h2 id="org0861f29"><span class="section-number-2">1</span> AHUBU Helps Users Be Utilitarian</h2>
+<div id="outline-container-orgb2b2f21" class="outline-2">
+<h2 id="orgb2b2f21"><span class="section-number-2">1</span> AHUBU Helps Users Be Utilitarian</h2>
 <div class="outline-text-2" id="text-1">
 <p>
 Welcome to AHUBU, the best web browser around.
 </p>
 </div>
-<div id="outline-container-orgdcfdd00" class="outline-3">
-<h3 id="orgdcfdd00"><span class="section-number-3">1.1</span> Getting started / key binds</h3>
+<div id="outline-container-org60f8cac" class="outline-3">
+<h3 id="org60f8cac"><span class="section-number-3">1.1</span> Getting started / key binds</h3>
 <div class="outline-text-3" id="text-1-1">
 <p>
 To move around the page, try the j/k keys for scrolling.
@@ -299,17 +299,17 @@ So, if your file looked like this:
 </p>
 
 <div class="org-src-container">
-<pre class="src src-clojure"><span style="color: #888a85; font-style: italic;">;; </span><span style="color: #888a85; font-style: italic;">-*- mode: clojure -*-</span>
+<pre class="src src-clojure"><span style="color: #999999;">;; </span><span style="color: #999999;">-*- mode: clojure -*-</span>
 
-<span style="color: #cf0;">{</span>
- <span style="color: #888a85; font-style: italic;">;; </span><span style="color: #888a85; font-style: italic;">These shadow into the keybinds with a more concise syntax.</span>
+<span style="color: #cf0; font-weight: bold; font-style: italic;">{</span>
+ <span style="color: #999999;">;; </span><span style="color: #999999;">These shadow into the keybinds with a more concise syntax.</span>
  <span style="color: #a6f000;">:quickmarks</span>
- <span style="color: #0cf;">{</span>
+ <span style="color: #0cf; font-weight: bold; font-style: italic;">{</span>
   <span style="color: #a6f000;">:a</span> <span style="color: #0c6;">"http://ahungry.com"</span>
   <span style="color: #a6f000;">:d</span> <span style="color: #0c6;">"http://ddg.gg"</span>
   <span style="color: #a6f000;">:e</span> <span style="color: #0c6;">"http://example.com"</span>
-  <span style="color: #0cf;">}</span>
- <span style="color: #cf0;">}</span>
+  <span style="color: #0cf; font-weight: bold; font-style: italic;">}</span>
+ <span style="color: #cf0; font-weight: bold; font-style: italic;">}</span>
 </pre>
 </div>
 
@@ -320,16 +320,16 @@ example.com in a new buffer.
 </div>
 </div>
 
-<div id="outline-container-orgcd35a8e" class="outline-3">
-<h3 id="orgcd35a8e"><span class="section-number-3">1.2</span> Customizing the behavior</h3>
+<div id="outline-container-org5378e1b" class="outline-3">
+<h3 id="org5378e1b"><span class="section-number-3">1.2</span> Customizing the behavior</h3>
 <div class="outline-text-3" id="text-1-2">
 </div>
-<div id="outline-container-orgf6b7345" class="outline-4">
-<h4 id="orgf6b7345"><span class="section-number-4">1.2.1</span> Filters</h4>
+<div id="outline-container-org4fa19da" class="outline-4">
+<h4 id="org4fa19da"><span class="section-number-4">1.2.1</span> Filters</h4>
 <div class="outline-text-4" id="text-1-2-1">
 </div>
 <ol class="org-ol">
-<li><a id="org74a9cce"></a>Network level<br />
+<li><a id="org3438857"></a>Network level<br />
 <div class="outline-text-5" id="text-1-2-1-1">
 <p>
 Look at this project's conf/url-ignore-regexes.txt file to add your
@@ -338,7 +338,7 @@ own list of regexes to exclude from requesting.
 </div>
 </li>
 
-<li><a id="org1cbad01"></a>DOM id level<br />
+<li><a id="orgd2ebf25"></a>DOM id level<br />
 <div class="outline-text-5" id="text-1-2-1-2">
 <p>
 Look at the project's conf/dom-id-ignores.txt file to add your own
@@ -347,7 +347,7 @@ list of DOM IDs to exclude from rendering.
 </div>
 </li>
 
-<li><a id="org9dc1c34"></a>DOM class level<br />
+<li><a id="org735876f"></a>DOM class level<br />
 <div class="outline-text-5" id="text-1-2-1-3">
 <p>
 Look at the project's conf/dom-class-ignores.txt file to add your own
@@ -358,15 +358,15 @@ list of DOM class identifiers to exclude from rendering.
 </ol>
 </div>
 
-<div id="outline-container-org5054aa8" class="outline-4">
-<h4 id="org5054aa8"><span class="section-number-4">1.2.2</span> Quickmarks and Keybinds</h4>
+<div id="outline-container-orgb746083" class="outline-4">
+<h4 id="orgb746083"><span class="section-number-4">1.2.2</span> Quickmarks and Keybinds</h4>
 <div class="outline-text-4" id="text-1-2-2">
 <p>
 Create an rc file in ~/.ahuburc (or $XDG<sub>CONFIG</sub><sub>HOME</sub>/ahubu/ahuburc) with contents such as this:
 </p>
 
 <div class="org-src-container">
-<pre class="src src-sh">cp conf/default-rc ~/.ahuburc
+<pre class="src src-sh"> cp conf/default-rc ~/.ahuburc
 </pre>
 </div>
 
@@ -386,25 +386,25 @@ so make sure to start with a full config and customize as needed.
 </p>
 
 <div class="org-src-container">
-<pre class="src src-clojure"><span style="color: #888a85; font-style: italic;">;; </span><span style="color: #888a85; font-style: italic;">-*- mode: clojure -*-</span>
+<pre class="src src-clojure"><span style="color: #999999;">;; </span><span style="color: #999999;">-*- mode: clojure -*-</span>
 
-<span style="color: #cf0;">{</span>
- <span style="color: #888a85; font-style: italic;">;; </span><span style="color: #888a85; font-style: italic;">These shadow into the keybinds with a more concise syntax.</span>
+<span style="color: #cf0; font-weight: bold; font-style: italic;">{</span>
+ <span style="color: #999999;">;; </span><span style="color: #999999;">These shadow into the keybinds with a more concise syntax.</span>
  <span style="color: #a6f000;">:quickmarks</span>
- <span style="color: #0cf;">{</span>
+ <span style="color: #0cf; font-weight: bold; font-style: italic;">{</span>
   <span style="color: #a6f000;">:a</span> <span style="color: #0c6;">"http://ahungry.com"</span>
   <span style="color: #a6f000;">:d</span> <span style="color: #0c6;">"http://ddg.gg"</span>
   <span style="color: #a6f000;">:e</span> <span style="color: #0c6;">"http://example.com"</span>
-  <span style="color: #0cf;">}</span>
+  <span style="color: #0cf; font-weight: bold; font-style: italic;">}</span>
 
- <span style="color: #888a85; font-style: italic;">;; </span><span style="color: #888a85; font-style: italic;">These tie to the various modes.</span>
+ <span style="color: #999999;">;; </span><span style="color: #999999;">These tie to the various modes.</span>
  <span style="color: #a6f000;">:keymaps</span>
- <span style="color: #0cf;">{</span>
+ <span style="color: #0cf; font-weight: bold; font-style: italic;">{</span>
   <span style="color: #a6f000;">:default</span>
-  <span style="color: #ff0;">{</span>
+  <span style="color: #ff0; font-weight: bold; font-style: italic;">{</span>
    <span style="color: #a6f000;">:z</span> <span style="color: #0c6;">"my_custom_js_call()"</span>
    <span style="color: #a6f000;">:y</span> <span style="color: #f06; font-weight: bold;">ahubu.lib</span>/any-builtin-function
-   <span style="color: #a6f000;">:x</span> #<span style="color: #0ff;">(</span>println <span style="color: #0c6;">"Hello)</span>
+   <span style="color: #a6f000;">:x</span> #<span style="color: #0ff; font-weight: bold; font-style: italic;">(</span>println <span style="color: #0c6;">"Hello)</span>
 <span style="color: #0c6;">  }</span>
 <span style="color: #0c6;"> }</span>
 </pre>
@@ -416,7 +416,7 @@ so make sure to start with a full config and customize as needed.
 </div>
 <div id="postamble" class="status">
 <p class="author">Author: Matthew Carter</p>
-<p class="date">Created: 2018-09-06 Thu 00:48</p>
+<p class="date">Created: 2019-01-25 Fri 11:37</p>
 <p class="validation"><a href="http://validator.w3.org/check?uri=referer">Validate</a></p>
 </div>
 </body>

@@ -54,6 +54,18 @@ web engines with little maintenance, and the new module system on
 Firefox 55+ has weak support for the level of sophistication we need
 in handling these key bindings.
 
+## Quick Start
+
+Just have a working docker and X server and run:
+
+```sh
+make docker-build && make docker-run
+```
+
+You'll get to try out the basic (non-customized) version and default
+keybinds etc.
+
+
 ## Installation
 
 If you want to run from lein to play with the source and interactive REPL, ensure you have lein installed

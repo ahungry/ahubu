@@ -11,7 +11,7 @@
   (println "Starting version 0.0.0")
   (b/boot)
   (do
-    (Thread/sleep 500)
+    (Thread/sleep 1000)
     (l/async-load (if args (first args) (l/get-default-url)))
     ;; (l/async-load "http://ahungry.com")
     )

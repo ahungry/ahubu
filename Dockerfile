@@ -15,6 +15,18 @@ RUN mv "$(lein uberjar | sed -n 's/^Created \(.*standalone\.jar\)/\1/p')" myapp-
 #WORKDIR /myapp
 #COPY --from=build-env /usr/src/myapp/myapp-standalone.jar /myapp/myapp.jar
 #ENTRYPOINT ["java", "-jar", "/myapp/myapp.jar"]
+COPY ./dist-skel/* /usr/src/myapp/
+COPY ./conf /usr/src/myapp/conf/
+COPY ./resources /usr/src/myapp/resources/
+COPY ./js-src /usr/src/myapp/js-src/
+COPY ./docs /usr/src/myapp/docs/
+
+#RUN mkdir -p /myapp/docs
+#RUN mkdir -p /root/docs
+#COPY ./docs/* /myapp/docs/
+#COPY ./docs/* /root/docs/
+
+COPY ./ahubu.png /usr/src/myapp/
 
 WORKDIR /usr/src/myapp
 ENTRYPOINT ["java", "-jar", "/usr/src/myapp/myapp-standalone.jar"]

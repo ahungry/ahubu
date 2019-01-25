@@ -3,8 +3,12 @@ default: all
 docker-build:
 	docker build -t ahubu .
 
-docker-run:
-	docker run --rm -it --name=ahubu ahubu:latest
+~/.local/share/ahubu:
+	mkdir -p ~/.local/share/ahubu
+
+docker-run: ~/.local/share/ahubu
+	#docker run --rm -it --name=ahubu ahubu:latest
+	./run-ahubu-docker.sh
 
 start:
 	lein run -m ahubu.core
